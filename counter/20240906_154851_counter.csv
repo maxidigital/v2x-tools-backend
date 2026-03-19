@@ -1,0 +1,2 @@
+timestamp, ip, received, sent
+1725630551941, /0:0:0:0:0:0:0:1:62430, , Error decoding V2X message, API

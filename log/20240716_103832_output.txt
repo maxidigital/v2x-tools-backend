@@ -1,0 +1,34 @@
+16-07-2024 10:38:32: Server started on port 8080
+16-07-2024 10:38:45: 
+16-07-2024 10:38:45: --------------------------------------------------------------------------------------------
+16-07-2024 10:38:45: New request: method(GET) remoteAddress(/127.0.0.1:62428) 
+16-07-2024 10:38:45: Path: /
+16-07-2024 10:38:45: 
+16-07-2024 10:38:45: --------------------------------------------------------------------------------------------
+16-07-2024 10:38:45: New request: method(GET) remoteAddress(/127.0.0.1:62428) 
+16-07-2024 10:38:45: Path: /v2xConverter.js
+16-07-2024 10:38:45: 
+16-07-2024 10:38:45: --------------------------------------------------------------------------------------------
+16-07-2024 10:38:45: New request: method(GET) remoteAddress(/127.0.0.1:62429) 
+16-07-2024 10:38:45: Path: /dlr_logo.jpeg
+16-07-2024 10:38:45: 
+16-07-2024 10:38:45: --------------------------------------------------------------------------------------------
+16-07-2024 10:38:45: New request: method(GET) remoteAddress(/127.0.0.1:62429) 
+16-07-2024 10:38:45: Path: /favicon.ico
+16-07-2024 10:38:45: Responding 400: File favicon.ico not found
+16-07-2024 10:38:50: 
+16-07-2024 10:38:50: --------------------------------------------------------------------------------------------
+16-07-2024 10:38:50: New request: method(GET) remoteAddress(/127.0.0.1:62428) 
+16-07-2024 10:38:50: Path: /command/random
+16-07-2024 10:38:50: Random message request: null(9:2)
+16-07-2024 10:38:50: Responding random: 02091fbe4362438ea8732d2011d9989ca6116040
+16-07-2024 10:38:53: 
+16-07-2024 10:38:53: --------------------------------------------------------------------------------------------
+16-07-2024 10:38:53: New request: method(POST) remoteAddress(/127.0.0.1:62428) 
+16-07-2024 10:38:53: Path: /localhost
+16-07-2024 10:38:53: Processing POST request: application/json
+16-07-2024 10:38:53: Received data from frontend: {"textData":"02091fbe4362438ea8732d2011d9989ca6116040","sendFormat":"UPER","receiveFormat":"XML"}
+16-07-2024 10:38:53: Received data from frontend: {"textData":"02091fbe4362438ea8732d2011d9989ca6116040","sendFormat":"UPER","receiveFormat":"XML"}
+16-07-2024 10:38:53: Decoding: Payload: mid(SREM(9:2)) encoding(PER) len(20)
+16-07-2024 10:38:53: Encoding to XML
+16-07-2024 10:38:53: Responding: <?xml version="1.0" encoding="UTF-8"?><sREM>    <header>        <protocolVersion>2</protocolVersion>        <messageID>9</messageID>        <stationID>532562786</stationID>    </header>    <srm>        <timeStamp>466256</timeStamp>        <second>58970</second>        <requestor>            <id>                <entityID>8eccc4e5</entityID>            </id>            <type>                <role>none-unknown</role>                <request>requestImportanceLevel11</request>                <iso3883>2</iso3883>            </type>        </requestor>    </srm></sREM>

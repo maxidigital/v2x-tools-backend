@@ -1,0 +1,29 @@
+13-03-2026 16:35:51: Configuration loaded from config.properties
+13-03-2026 16:35:51: TelegramCenter initialized successfully
+13-03-2026 16:35:51: Using Notification Service: http://localhost:8081
+13-03-2026 16:35:51: Rate Limit: 10 messages per 60s
+13-03-2026 16:35:51: ❌ Cannot reach notification service: Connection refused
+13-03-2026 17:38:38: Decoding: Payload: mid(SPATEM(4:2)) encoding(UPER) len(153845)
+13-03-2026 17:38:39: Encoding to XML
+13-03-2026 17:38:44: Decoding: Payload: mid(SPATEM(4:2)) encoding(UPER) len(153845)
+13-03-2026 17:38:44: Encoding to XML
+13-03-2026 17:39:11: Decoding: Payload: mid(SPATEM(4:2)) encoding(UPER) len(153845)
+13-03-2026 17:39:11: Encoding to XML
+13-03-2026 17:39:18: Decoding: Payload: mid(MADCAM(2:2)) encoding(UPER) len(41)
+13-03-2026 17:39:18: Encoding to XML
+13-03-2026 17:40:40: Decoding: Payload: mid(MADCAM(2:2)) encoding(UPER) len(314)
+13-03-2026 17:40:40: Encoding to XML
+13-03-2026 17:42:23: Decoding: Payload: mid(MADCAM(2:2)) encoding(UPER) len(44)
+13-03-2026 17:42:23: Encoding to JSON
+13-03-2026 17:42:23: Conversion completed: origin=WEB, client=null, responseTime=36ms
+13-03-2026 17:42:24: Error sending notification to service: Connection refused
+13-03-2026 17:45:14: Conversion completed: origin=WEB, client=null, responseTime=355819ms
+13-03-2026 17:45:14: Conversion completed: origin=WEB, client=null, responseTime=274185ms
+13-03-2026 17:45:14: Error sending notification to service: Connection refused
+13-03-2026 17:45:14: Error sending notification to service: Connection refused
+13-03-2026 17:45:14: Conversion completed: origin=WEB, client=null, responseTime=395663ms
+13-03-2026 17:45:14: Error sending notification to service: Connection refused
+13-03-2026 17:50:19: Decoding: Payload: mid(MADCAM(2:2)) encoding(UPER) len(45)
+13-03-2026 17:50:19: Encoding to XML
+13-03-2026 17:51:01: Conversion completed: origin=WEB, client=null, responseTime=709490ms
+13-03-2026 17:51:01: Error sending notification to service: Connection refused

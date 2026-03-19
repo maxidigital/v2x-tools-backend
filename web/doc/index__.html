@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+            overflow: auto;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        .endpoint {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-left: 4px solid rgb(36, 156, 244);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>API Documentation</h1>
+        
+        <h2>Introduction</h2>
+        <p>Welcome to the API documentation for this service. This API provides access to various resources via HTTP requests.</p>
+        
+        <h2>UPER to JSON</h2>
+        
+        <div class="endpoint">
+            <h3>POST /uper2json</h3>
+            <p>This endpoint allows sending binary data encoded in uPER (unaligned Packed Encoding Rules) format and receiving a structured JSON response.</p>
+            
+            <h4>Request Body</h4>
+            <p>The request body should contain binary data encoded in uPER format.</p>
+            
+            <h4>Example Request</h4>
+            <pre>
+POST /uper2json HTTP/1.1
+Host: www.example.com
+Content-Type: application/octet-stream
+
+[binary data]
+            </pre>
+            
+            <h4>Server Response</h4>
+            <p>The server will respond with a JSON object containing the following fields:</p>
+            
+            <pre>
+{
+    "responseCode": "200",
+    "encoding": "json",
+    "data": "{\"header\": {
+        \"protocolVersion\": 2,
+        \"messageID\": 2,
+        \"stationID\": 0
+        }}"
+}
+            </pre>
+            
+            <p>This is a typical example of the response structure you can expect when interacting with the API.</p>
+        </div>
+        
+        <h2>Additional Considerations</h2>
+        <ul>
+            <li>Ensure requests include appropriate headers like <code>Content-Type</code> and any necessary for authentication if applicable.</li>
+            <li>Handle errors and HTTP response codes appropriately for a smooth user experience.</li>
+            <li>For more details, consult the complete API documentation or contact technical support.</li>
+        </ul>
+        
+        <p>This documentation provides an overview of available resources and how to interact with them via the API service. Be sure to follow best practices and guidelines provided for successful integration.</p>
+    </div>
+</body>
+</html>

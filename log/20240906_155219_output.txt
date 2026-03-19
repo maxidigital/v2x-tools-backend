@@ -1,0 +1,49 @@
+06-09-2024 15:52:19: Server started on port 8080
+06-09-2024 15:52:27: 
+06-09-2024 15:52:27: --------------------------------------------------------------------------------------------
+06-09-2024 15:52:27: New request: method(POST) remoteAddress(/0:0:0:0:0:0:0:1:54767) 
+06-09-2024 15:52:27: Path: /uper2json
+06-09-2024 15:52:27: Requesting UPER2JSON ContentType: text/plain
+06-09-2024 15:52:27: Blob data: (34) 010e0a03dd290e8ee47db04ef24a60031386bab93cd2ab0ea4eab80048f140ca1300
+06-09-2024 15:52:27: Decoding: Payload: mid(null(14:1)) encoding(UPER) len(34)
+06-09-2024 15:52:27: Encoding to JSON
+06-09-2024 15:52:27: Responding: {
+    "its_header":{
+        "protocolVersion":1,
+        "messageId":14,
+        "stationId":168025385
+    },
+    "payload":{
+        "managementContainer":{
+            "referenceTime":4001720434688,
+            "referencePosition":{
+                "latitude":681861888,
+                "longitude":-148437673,
+                "positionConfidenceEllipse":{
+                    "semiMajorConfidence":633,
+                    "semiMinorConfidence":2645,
+                    "semiMajorOrientation":1565
+                },
+                "altitude":{
+                    "altitudeValue":202423,
+                    "altitudeConfidence":0
+                }
+            }
+        },
+        "cpmContainers":[
+            {
+                "originatingVehicleContainer":{
+                    "orientationAngle":{
+                        "value":2289,
+                        "confidence":33
+                    },
+                    "pitchAngle":{
+                        "value":1616,
+                        "confidence":77
+                    }
+                }
+            }
+        ]
+    }
+}
+06-09-2024 15:52:27: Responding: {"its_header":{"protocolVersion":1,"messageId":14,"stationId":168025385},"payload":{"managementContainer":{"referenceTime":4001720434688,"referencePosition":{"latitude":681861888,"longitude":-148437673,"positionConfidenceEllipse":{"semiMajorConfidence":633,"semiMinorConfidence":2645,"semiMajorOrientation":1565},"altitude":{"altitudeValue":202423,"altitudeConfidence":0}}},"cpmContainers":[{"originatingVehicleContainer":{"orientationAngle":{"value":2289,"confidence":33},"pitchAngle":{"value":1616,"confidence":77}}}]}}

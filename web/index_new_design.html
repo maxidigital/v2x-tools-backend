@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V2X.tools - Instant V2X Message Converter</title>
+    
+    <!-- SEO Protection - Prevent indexing -->
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noodp, noimageindex, notranslate">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta name="bingbot" content="noindex, nofollow">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#0066FF',
+              secondary: '#1a1a1a',
+              accent: '#00D4FF',
+              background: '#FAFAFA',
+              surface: '#FFFFFF',
+              border: '#E5E5E5',
+              success: '#00C853',
+              error: '#FF3737',
+            },
+            fontFamily: {
+              'sans': ['Inter', 'system-ui', 'sans-serif'],
+            },
+            animation: {
+              'fade-in': 'fadeIn 0.5s ease-in-out',
+              'slide-up': 'slideUp 0.3s ease-out',
+              'pulse-soft': 'pulseSoft 2s infinite',
+            },
+            keyframes: {
+              fadeIn: {
+                '0%': { opacity: '0' },
+                '100%': { opacity: '1' },
+              },
+              slideUp: {
+                '0%': { transform: 'translateY(10px)', opacity: '0' },
+                '100%': { transform: 'translateY(0)', opacity: '1' },
+              },
+              pulseSoft: {
+                '0%, 100%': { opacity: '1' },
+                '50%': { opacity: '0.8' },
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+        .gradient-text {
+            background: linear-gradient(135deg, #0066FF 0%, #00D4FF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #0066FF 0%, #00D4FF 100%);
+        }
+        
+        .hero-pattern {
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 102, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(0, 102, 255, 0.05) 0%, transparent 50%);
+        }
+        
+        .code-editor {
+            background: #1a1a1a;
+            color: #e0e0e0;
+            font-family: 'Monaco', 'Consolas', monospace;
+        }
+        
+        .hover-lift {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tab-active {
+            border-bottom: 2px solid #0066FF;
+            color: #0066FF;
+        }
+        
+        .loading-dots::after {
+            content: '';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-bold gradient-text">V2X.tools</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="#docs" class="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">Documentation</a>
+                    <a href="#examples" class="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">Examples</a>
+                    <a href="/stats.html" class="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">Stats</a>
+                    <a href="/contact.html" class="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-pattern py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-fade-in">
+            <h2 class="text-5xl font-bold text-gray-900 mb-4">
+                Convert V2X Messages <span class="gradient-text">Instantly</span>
+            </h2>
+            <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                Transform UPER-encoded V2X messages into readable JSON format. Support for CAM, DENM, IVIM, SPATEM, and MAPEM messages.
+            </p>
+            <div class="flex justify-center space-x-4">
+                <button onclick="scrollToConverter()" class="gradient-bg text-white px-8 py-3 rounded-lg font-semibold hover-lift">
+                    Try Converter
+                </button>
+                <button onclick="scrollToExamples()" class="bg-surface text-primary border-2 border-primary px-8 py-3 rounded-lg font-semibold hover-lift">
+                    View Examples
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Stats -->
+    <section class="py-12 bg-white border-y border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div class="animate-slide-up">
+                    <div class="text-3xl font-bold gradient-text">5+</div>
+                    <div class="text-gray-600">Message Types</div>
+                </div>
+                <div class="animate-slide-up" style="animation-delay: 0.1s">
+                    <div class="text-3xl font-bold gradient-text">1000+</div>
+                    <div class="text-gray-600">Messages Converted</div>
+                </div>
+                <div class="animate-slide-up" style="animation-delay: 0.2s">
+                    <div class="text-3xl font-bold gradient-text"><1s</div>
+                    <div class="text-gray-600">Conversion Time</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Examples Section -->
+    <section id="examples" class="py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h3 class="text-3xl font-bold text-center mb-12">Try Example Messages</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- CAM Example -->
+                <div class="bg-white rounded-lg p-6 border border-gray-200 hover-lift cursor-pointer" onclick="loadExample('cam')">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="text-lg font-semibold">CAM Message</h4>
+                        <span class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded">Cooperative Awareness</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">Vehicle position, speed, and heading information</p>
+                    <div class="text-xs font-mono bg-gray-50 p-2 rounded truncate">
+                        0102000032011180000...
+                    </div>
+                </div>
+                
+                <!-- DENM Example -->
+                <div class="bg-white rounded-lg p-6 border border-gray-200 hover-lift cursor-pointer" onclick="loadExample('denm')">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="text-lg font-semibold">DENM Message</h4>
+                        <span class="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded">Event Notification</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">Traffic event and hazard warnings</p>
+                    <div class="text-xs font-mono bg-gray-50 p-2 rounded truncate">
+                        0101004001020000...
+                    </div>
+                </div>
+                
+                <!-- MAPEM Example -->
+                <div class="bg-white rounded-lg p-6 border border-gray-200 hover-lift cursor-pointer" onclick="loadExample('mapem')">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="text-lg font-semibold">MAPEM Message</h4>
+                        <span class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded">Map Data</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">Road topology and lane information</p>
+                    <div class="text-xs font-mono bg-gray-50 p-2 rounded truncate">
+                        0104800100000000...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Converter Section -->
+    <section id="converter" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <!-- Tabs -->
+                <div class="flex border-b border-gray-200 mb-6">
+                    <button id="pasteTab" class="px-4 py-2 font-medium text-gray-700 tab-active" onclick="switchTab('paste')">
+                        Paste Message
+                    </button>
+                    <button id="generateTab" class="px-4 py-2 font-medium text-gray-700" onclick="switchTab('generate')">
+                        Generate Random
+                    </button>
+                </div>
+
+                <!-- Input Section -->
+                <div id="pasteSection" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Input -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            UPER Encoded Message
+                        </label>
+                        <div class="relative">
+                            <textarea 
+                                id="inputTextArea" 
+                                class="w-full h-64 p-4 border border-gray-300 rounded-lg font-mono text-sm focus:ring-2 focus:ring-primary focus:border-primary"
+                                placeholder="Paste your V2X UPER message here..."
+                            ></textarea>
+                            <button 
+                                onclick="clearInput()" 
+                                class="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
+                                title="Clear"
+                            >
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="mt-4 flex justify-between items-center">
+                            <span id="charCount" class="text-sm text-gray-500">0 characters</span>
+                            <button 
+                                onclick="convertMessage()" 
+                                class="gradient-bg text-white px-6 py-2 rounded-lg font-medium hover-lift"
+                            >
+                                Convert to JSON
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Output -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            JSON Output
+                        </label>
+                        <div class="relative">
+                            <pre id="outputTextArea" class="w-full h-64 p-4 border border-gray-300 rounded-lg overflow-auto bg-gray-50 text-sm"><span class="text-gray-400">JSON output will appear here...</span></pre>
+                            <button 
+                                onclick="copyOutput()" 
+                                class="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
+                                title="Copy to clipboard"
+                            >
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div id="messageInfo" class="mt-4 text-sm text-gray-600"></div>
+                    </div>
+                </div>
+
+                <!-- Generate Random Section (Hidden by default) -->
+                <div id="generateSection" class="hidden">
+                    <div class="text-center py-12">
+                        <p class="text-gray-600 mb-6">Generate a random V2X message for testing</p>
+                        <div class="flex justify-center space-x-4">
+                            <button onclick="generateRandom('cam')" class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-200">
+                                Random CAM
+                            </button>
+                            <button onclick="generateRandom('denm')" class="bg-orange-100 text-orange-700 px-4 py-2 rounded-lg hover:bg-orange-200">
+                                Random DENM
+                            </button>
+                            <button onclick="generateRandom('mapem')" class="bg-green-100 text-green-700 px-4 py-2 rounded-lg hover:bg-green-200">
+                                Random MAPEM
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-gray-400">© 2025 V2X.tools - Professional V2X Message Converter</p>
+        </div>
+    </footer>
+
+    <script>
+        // Character counter
+        document.getElementById('inputTextArea').addEventListener('input', function() {
+            document.getElementById('charCount').textContent = this.value.length + ' characters';
+        });
+
+        // Tab switching
+        function switchTab(tab) {
+            if (tab === 'paste') {
+                document.getElementById('pasteTab').classList.add('tab-active');
+                document.getElementById('generateTab').classList.remove('tab-active');
+                document.getElementById('pasteSection').classList.remove('hidden');
+                document.getElementById('generateSection').classList.add('hidden');
+            } else {
+                document.getElementById('generateTab').classList.add('tab-active');
+                document.getElementById('pasteTab').classList.remove('tab-active');
+                document.getElementById('generateSection').classList.remove('hidden');
+                document.getElementById('pasteSection').classList.add('hidden');
+            }
+        }
+
+        // Load example
+        function loadExample(type) {
+            const examples = {
+                cam: '01020000320111800001d52ba010e0096424b4984b8189b78b61f11c6fe7f87fc007f807f87ff0e05a30303038355c313165352e30312c4e2c30303832362e36382c450a',
+                denm: '010100400102000032011180000000002cb29f0a8402cb29e0021a00a90000016460968d30c020819080003001025a02cb29c00c90000',
+                mapem: '0104800100000000002dc6c365100027100080111ae36b9c60220001fffffe08f5b19ace6038080007fffff0434ad88d672ff1fc0001fffffe08695a11accc061e3ff87fffffc2774a886b36601c7d88c2b6e69dac24de7ff07fffff8410d6111ace701f0a80007ffffe083ad98c673380fc50003fffff0411ace88d662030f97ff87fffffc20bd6391acb80603affc1ffffbf100fad8b2d67203206401001ffde10a96c631999001030000'
+            };
+            
+            document.getElementById('inputTextArea').value = examples[type] || '';
+            document.getElementById('charCount').textContent = (examples[type] || '').length + ' characters';
+            switchTab('paste');
+            scrollToConverter();
+        }
+
+        // Generate random message
+        function generateRandom(type) {
+            // This would call your backend to generate a random message
+            fetch('/command/random')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('inputTextArea').value = data;
+                    document.getElementById('charCount').textContent = data.length + ' characters';
+                    switchTab('paste');
+                });
+        }
+
+        // Convert message
+        function convertMessage() {
+            const input = document.getElementById('inputTextArea').value.trim();
+            if (!input) {
+                alert('Please enter a V2X message to convert');
+                return;
+            }
+
+            // Show loading state
+            const outputArea = document.getElementById('outputTextArea');
+            outputArea.innerHTML = '<span class="text-gray-500 loading-dots">Converting</span>';
+
+            // Send to backend
+            fetch('/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    data: input,
+                    from: 'json compressor'
+                })
+            })
+            .then(response => response.text())
+            .then(data => {
+                try {
+                    const json = JSON.parse(data);
+                    outputArea.textContent = JSON.stringify(json, null, 2);
+                    
+                    // Show message info
+                    const info = document.getElementById('messageInfo');
+                    if (json.header && json.header.messageId) {
+                        const messageTypes = {
+                            2: 'CAM - Cooperative Awareness Message',
+                            1: 'DENM - Decentralized Environmental Notification',
+                            4: 'MAPEM - Map Extended Message',
+                            5: 'SPATEM - Signal Phase And Timing',
+                            6: 'IVIM - Infrastructure to Vehicle Information'
+                        };
+                        info.innerHTML = `<span class="font-medium">Message Type:</span> ${messageTypes[json.header.messageId] || 'Unknown'}`;
+                    }
+                } catch (e) {
+                    outputArea.innerHTML = '<span class="text-red-600">Error: ' + data + '</span>';
+                }
+            })
+            .catch(error => {
+                outputArea.innerHTML = '<span class="text-red-600">Error: ' + error.message + '</span>';
+            });
+        }
+
+        // Clear input
+        function clearInput() {
+            document.getElementById('inputTextArea').value = '';
+            document.getElementById('charCount').textContent = '0 characters';
+            document.getElementById('outputTextArea').innerHTML = '<span class="text-gray-400">JSON output will appear here...</span>';
+            document.getElementById('messageInfo').innerHTML = '';
+        }
+
+        // Copy output
+        function copyOutput() {
+            const output = document.getElementById('outputTextArea').textContent;
+            if (output && !output.includes('will appear here')) {
+                navigator.clipboard.writeText(output).then(() => {
+                    // Show temporary success message
+                    const btn = event.currentTarget;
+                    const originalHTML = btn.innerHTML;
+                    btn.innerHTML = '<svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
+                    setTimeout(() => {
+                        btn.innerHTML = originalHTML;
+                    }, 2000);
+                });
+            }
+        }
+
+        // Scroll functions
+        function scrollToConverter() {
+            document.getElementById('converter').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function scrollToExamples() {
+            document.getElementById('examples').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

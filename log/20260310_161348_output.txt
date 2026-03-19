@@ -1,0 +1,40 @@
+10-03-2026 16:13:48: Initializing monitoring system...
+10-03-2026 16:13:48: Configuration loaded from config.properties
+10-03-2026 16:13:48: === Current Configuration ===
+10-03-2026 16:13:48: Telegram Bot Token: ***SET***
+10-03-2026 16:13:48: Telegram Chat ID: ${TELEGRAM_CHAT_ID:}
+10-03-2026 16:13:48: Telegram Enabled: false
+10-03-2026 16:13:48: Monitoring Enabled: true
+10-03-2026 16:13:48: Rate Limit Per Window: 10
+10-03-2026 16:13:48: Rate Limit Window (ms): 60000
+10-03-2026 16:13:48: ===========================
+10-03-2026 16:13:48: TelegramCenter initialized successfully
+10-03-2026 16:13:48: Using Notification Service: http://localhost:8081
+10-03-2026 16:13:48: Rate Limit: 10 messages per 60s
+10-03-2026 16:13:48: Monitoring system initialized
+10-03-2026 16:13:48: ❌ Cannot reach notification service: Connection refused
+10-03-2026 16:13:48: Server started on port 8080
+10-03-2026 16:14:02: 
+10-03-2026 16:14:02: --------------------------------------------------------------------------------------------
+10-03-2026 16:14:02: New request: method(GET) remoteAddress(/[0:0:0:0:0:0:0:1]:48298) 
+10-03-2026 16:14:02: Path: /
+10-03-2026 16:14:02: Error sending notification to service: Connection refused
+10-03-2026 16:14:02: 
+10-03-2026 16:14:02: --------------------------------------------------------------------------------------------
+10-03-2026 16:14:02: New request: method(GET) remoteAddress(/[0:0:0:0:0:0:0:1]:48298) 
+10-03-2026 16:14:02: Path: /styles.css
+10-03-2026 16:14:02: 
+10-03-2026 16:14:02: --------------------------------------------------------------------------------------------
+10-03-2026 16:14:02: New request: method(GET) remoteAddress(/[0:0:0:0:0:0:0:1]:48310) 
+10-03-2026 16:14:02: Path: /tabManager.js
+10-03-2026 16:14:02: 
+10-03-2026 16:14:02: --------------------------------------------------------------------------------------------
+10-03-2026 16:14:02: New request: method(GET) remoteAddress(/[0:0:0:0:0:0:0:1]:48318) 
+10-03-2026 16:14:02: Path: /v2xConverter.js
+10-03-2026 16:14:03: 
+10-03-2026 16:14:03: --------------------------------------------------------------------------------------------
+10-03-2026 16:14:03: New request: method(GET) remoteAddress(/[0:0:0:0:0:0:0:1]:48318) 
+10-03-2026 16:14:03: Path: /favicon.ico
+10-03-2026 16:14:09: Shutting down monitoring system...
+10-03-2026 16:14:09: Shutting down TelegramCenter...
+10-03-2026 16:14:09: Error sending notification to service: Connection refused

@@ -1,0 +1,417 @@
+22-04-2025 21:42:12: Server started on port 8080
+22-04-2025 21:42:17: 
+22-04-2025 21:42:17: --------------------------------------------------------------------------------------------
+22-04-2025 21:42:17: New request: method(GET) remoteAddress(/127.0.0.1:49882) 
+22-04-2025 21:42:17: Path: /
+22-04-2025 21:42:17: 
+22-04-2025 21:42:17: --------------------------------------------------------------------------------------------
+22-04-2025 21:42:17: New request: method(GET) remoteAddress(/127.0.0.1:49882) 
+22-04-2025 21:42:18: Path: /styles.css
+22-04-2025 21:42:18: 
+22-04-2025 21:42:18: --------------------------------------------------------------------------------------------
+22-04-2025 21:42:18: New request: method(GET) remoteAddress(/127.0.0.1:49898) 
+22-04-2025 21:42:18: Path: /v2xConverter.js
+22-04-2025 21:42:18: 
+22-04-2025 21:42:18: --------------------------------------------------------------------------------------------
+22-04-2025 21:42:18: New request: method(GET) remoteAddress(/127.0.0.1:49898) 
+22-04-2025 21:42:18: Path: /dlr_logo.jpeg
+22-04-2025 21:42:18: 
+22-04-2025 21:42:18: --------------------------------------------------------------------------------------------
+22-04-2025 21:42:18: New request: method(GET) remoteAddress(/127.0.0.1:49898) 
+22-04-2025 21:42:18: Path: /favicon.ico
+22-04-2025 21:42:38: 
+22-04-2025 21:42:38: --------------------------------------------------------------------------------------------
+22-04-2025 21:42:38: New request: method(POST) remoteAddress(/127.0.0.1:49898) 
+22-04-2025 21:42:38: Path: /localhost
+22-04-2025 21:42:38: Processing POST request: application/json
+22-04-2025 21:42:38: Received data from frontend: {"textData":"uper:0202000000000000000d693a403ad274803ffffffc23b7742000e11fdffffe3fe1ed0737fe03fff400","sendFormat":"UPER","receiveFormat":"XML"}
+22-04-2025 21:42:38: Received data from frontend: {"textData":"uper:0202000000000000000d693a403ad274803ffffffc23b7742000e11fdffffe3fe1ed0737fe03fff400","sendFormat":"UPER","receiveFormat":"XML"}
+22-04-2025 21:42:38: Decoding: Payload: mid(null(2:2)) encoding(UPER) len(41)
+22-04-2025 21:42:38: Encoding to XML
+22-04-2025 21:42:38: Responding: <?xml version="1.0" encoding="UTF-8"?><mADCAM>    <header>        <protocolVersion>2</protocolVersion>        <messageID>2</messageID>        <stationID>0</stationID>    </header>    <cam>        <generationDeltaTime>0</generationDeltaTime>        <camParameters>            <basicContainer>                <stationType>0</stationType>                <referencePosition>                    <latitude>900000001</latitude>                    <longitude>1800000001</longitude>                    <positionConfidenceEllipse>                        <semiMajorConfidence>4095</semiMajorConfidence>                        <semiMinorConfidence>4095</semiMinorConfidence>                        <semiMajorOrientation>3601</semiMajorOrientation>                    </positionConfidenceEllipse>                    <altitude>                        <altitudeValue>800001</altitudeValue>                        <altitudeConfidence>alt-000-01</altitudeConfidence>                    </altitude>                </referencePosition>            </basicContainer>            <highFrequencyContainer>                <basicVehicleContainerHighFrequency>                    <heading>                        <headingValue>3601</headingValue>                        <headingConfidence>127</headingConfidence>                    </heading>                    <speed>                        <speedValue>16383</speedValue>                        <speedConfidence>127</speedConfidence>                    </speed>                    <driveDirection>forward</driveDirection>                    <vehicleLength>                        <vehicleLengthValue>1023</vehicleLengthValue>                        <vehicleLengthConfidenceIndication>noTrailerPresent</vehicleLengthConfidenceIndication>                    </vehicleLength>                    <vehicleWidth>62</vehicleWidth>                    <longitudinalAcceleration>                        <longitudinalAccelerationValue>161</longitudinalAccelerationValue>                        <longitudinalAccelerationConfidence>102</longitudinalAccelerationConfidence>                    </longitudinalAcceleration>                    <curvature>                        <curvatureValue>1023</curvatureValue>                        <curvatureConfidence>onePerMeter-0-00002</curvatureConfidence>                    </curvature>                    <curvatureCalculationMode>yawRateUsed</curvatureCalculationMode>                    <yawRate>                        <yawRateValue>32767</yawRateValue>                        <yawRateConfidence>degSec-000-01</yawRateConfidence>                    </yawRate>                </basicVehicleContainerHighFrequency>            </highFrequencyContainer>        </camParameters>    </cam></mADCAM>
+22-04-2025 21:52:07: 
+22-04-2025 21:52:07: --------------------------------------------------------------------------------------------
+22-04-2025 21:52:07: New request: method(GET) remoteAddress(/127.0.0.1:57654) 
+22-04-2025 21:52:07: Path: /
+22-04-2025 21:52:07: 
+22-04-2025 21:52:07: --------------------------------------------------------------------------------------------
+22-04-2025 21:52:07: New request: method(GET) remoteAddress(/127.0.0.1:57654) 
+22-04-2025 21:52:07: Path: /styles.css
+22-04-2025 21:52:07: 
+22-04-2025 21:52:07: --------------------------------------------------------------------------------------------
+22-04-2025 21:52:07: New request: method(GET) remoteAddress(/127.0.0.1:57668) 
+22-04-2025 21:52:07: Path: /v2xConverter.js
+22-04-2025 21:52:07: 
+22-04-2025 21:52:07: --------------------------------------------------------------------------------------------
+22-04-2025 21:52:07: New request: method(GET) remoteAddress(/127.0.0.1:57668) 
+22-04-2025 21:52:07: Path: /dlr_logo.jpeg
+22-04-2025 21:52:15: 
+22-04-2025 21:52:15: --------------------------------------------------------------------------------------------
+22-04-2025 21:52:15: New request: method(GET) remoteAddress(/127.0.0.1:57668) 
+22-04-2025 21:52:15: Path: /
+22-04-2025 21:52:15: 
+22-04-2025 21:52:15: --------------------------------------------------------------------------------------------
+22-04-2025 21:52:15: New request: method(GET) remoteAddress(/127.0.0.1:57668) 
+22-04-2025 21:52:15: Path: /v2xConverter.js
+22-04-2025 21:52:15: 
+22-04-2025 21:52:15: --------------------------------------------------------------------------------------------
+22-04-2025 21:52:15: New request: method(GET) remoteAddress(/127.0.0.1:57654) 
+22-04-2025 21:52:15: Path: /styles.css
+22-04-2025 21:52:15: 
+22-04-2025 21:52:15: --------------------------------------------------------------------------------------------
+22-04-2025 21:52:15: New request: method(GET) remoteAddress(/127.0.0.1:58304) 
+22-04-2025 21:52:15: Path: /dlr_logo.jpeg
+22-04-2025 21:52:18: 
+22-04-2025 21:52:18: --------------------------------------------------------------------------------------------
+22-04-2025 21:52:18: New request: method(GET) remoteAddress(/127.0.0.1:58304) 
+22-04-2025 21:52:18: Path: /
+22-04-2025 21:52:18: 
+22-04-2025 21:52:18: --------------------------------------------------------------------------------------------
+22-04-2025 21:52:18: New request: method(GET) remoteAddress(/127.0.0.1:57668) 
+22-04-2025 21:52:18: Path: /v2xConverter.js
+22-04-2025 21:52:18: 
+22-04-2025 21:52:18: --------------------------------------------------------------------------------------------
+22-04-2025 21:52:18: New request: method(GET) remoteAddress(/127.0.0.1:58304) 
+22-04-2025 21:52:18: Path: /styles.css
+22-04-2025 21:52:18: 
+22-04-2025 21:52:18: --------------------------------------------------------------------------------------------
+22-04-2025 21:52:18: New request: method(GET) remoteAddress(/127.0.0.1:57668) 
+22-04-2025 21:52:18: Path: /dlr_logo.jpeg
+22-04-2025 21:58:55: 
+22-04-2025 21:58:55: --------------------------------------------------------------------------------------------
+22-04-2025 21:58:55: New request: method(GET) remoteAddress(/127.0.0.1:34794) 
+22-04-2025 21:58:55: Path: /
+22-04-2025 21:58:55: 
+22-04-2025 21:58:55: --------------------------------------------------------------------------------------------
+22-04-2025 21:58:55: New request: method(GET) remoteAddress(/127.0.0.1:34794) 
+22-04-2025 21:58:55: Path: /styles.css
+22-04-2025 21:58:55: 
+22-04-2025 21:58:55: --------------------------------------------------------------------------------------------
+22-04-2025 21:58:55: New request: method(GET) remoteAddress(/127.0.0.1:34802) 
+22-04-2025 21:58:55: Path: /v2xConverter.js
+22-04-2025 21:58:55: 
+22-04-2025 21:58:55: --------------------------------------------------------------------------------------------
+22-04-2025 21:58:55: New request: method(GET) remoteAddress(/127.0.0.1:34802) 
+22-04-2025 21:58:55: Path: /dlr_logo.jpeg
+22-04-2025 22:00:13: 
+22-04-2025 22:00:13: --------------------------------------------------------------------------------------------
+22-04-2025 22:00:13: New request: method(GET) remoteAddress(/127.0.0.1:39366) 
+22-04-2025 22:00:13: Path: /
+22-04-2025 22:00:13: 
+22-04-2025 22:00:13: --------------------------------------------------------------------------------------------
+22-04-2025 22:00:13: New request: method(GET) remoteAddress(/127.0.0.1:39366) 
+22-04-2025 22:00:13: Path: /v2xConverter.js
+22-04-2025 22:00:13: 
+22-04-2025 22:00:13: --------------------------------------------------------------------------------------------
+22-04-2025 22:00:13: New request: method(GET) remoteAddress(/127.0.0.1:39382) 
+22-04-2025 22:00:13: Path: /styles.css
+22-04-2025 22:00:13: 
+22-04-2025 22:00:13: --------------------------------------------------------------------------------------------
+22-04-2025 22:00:13: New request: method(GET) remoteAddress(/127.0.0.1:39382) 
+22-04-2025 22:00:13: Path: /dlr_logo.jpeg
+22-04-2025 22:08:37: 
+22-04-2025 22:08:37: --------------------------------------------------------------------------------------------
+22-04-2025 22:08:37: New request: method(GET) remoteAddress(/127.0.0.1:43136) 
+22-04-2025 22:08:37: Path: /
+22-04-2025 22:08:37: 
+22-04-2025 22:08:37: --------------------------------------------------------------------------------------------
+22-04-2025 22:08:37: New request: method(GET) remoteAddress(/127.0.0.1:43136) 
+22-04-2025 22:08:37: Path: /styles.css
+22-04-2025 22:08:37: 
+22-04-2025 22:08:37: --------------------------------------------------------------------------------------------
+22-04-2025 22:08:37: New request: method(GET) remoteAddress(/127.0.0.1:43152) 
+22-04-2025 22:08:37: Path: /v2xConverter.js
+22-04-2025 22:08:37: 
+22-04-2025 22:08:37: --------------------------------------------------------------------------------------------
+22-04-2025 22:08:37: New request: method(GET) remoteAddress(/127.0.0.1:43152) 
+22-04-2025 22:08:37: Path: /dlr_logo.jpeg
+22-04-2025 22:09:34: 
+22-04-2025 22:09:34: --------------------------------------------------------------------------------------------
+22-04-2025 22:09:34: New request: method(GET) remoteAddress(/127.0.0.1:33810) 
+22-04-2025 22:09:34: Path: /
+22-04-2025 22:09:34: 
+22-04-2025 22:09:34: --------------------------------------------------------------------------------------------
+22-04-2025 22:09:34: New request: method(GET) remoteAddress(/127.0.0.1:33810) 
+22-04-2025 22:09:34: Path: /styles.css
+22-04-2025 22:09:34: 
+22-04-2025 22:09:34: --------------------------------------------------------------------------------------------
+22-04-2025 22:09:34: New request: method(GET) remoteAddress(/127.0.0.1:33822) 
+22-04-2025 22:09:34: Path: /v2xConverter.js
+22-04-2025 22:09:34: 
+22-04-2025 22:09:34: --------------------------------------------------------------------------------------------
+22-04-2025 22:09:34: New request: method(GET) remoteAddress(/127.0.0.1:33822) 
+22-04-2025 22:09:34: Path: /dlr_logo.jpeg
+22-04-2025 22:10:49: 
+22-04-2025 22:10:49: --------------------------------------------------------------------------------------------
+22-04-2025 22:10:49: New request: method(GET) remoteAddress(/127.0.0.1:35576) 
+22-04-2025 22:10:49: Path: /
+22-04-2025 22:10:49: 
+22-04-2025 22:10:49: --------------------------------------------------------------------------------------------
+22-04-2025 22:10:49: New request: method(GET) remoteAddress(/127.0.0.1:35576) 
+22-04-2025 22:10:49: Path: /styles.css
+22-04-2025 22:10:49: 
+22-04-2025 22:10:49: --------------------------------------------------------------------------------------------
+22-04-2025 22:10:49: New request: method(GET) remoteAddress(/127.0.0.1:35578) 
+22-04-2025 22:10:49: Path: /v2xConverter.js
+22-04-2025 22:10:50: 
+22-04-2025 22:10:50: --------------------------------------------------------------------------------------------
+22-04-2025 22:10:50: New request: method(GET) remoteAddress(/127.0.0.1:35578) 
+22-04-2025 22:10:50: Path: /dlr_logo.jpeg
+22-04-2025 22:13:21: 
+22-04-2025 22:13:21: --------------------------------------------------------------------------------------------
+22-04-2025 22:13:21: New request: method(GET) remoteAddress(/127.0.0.1:56596) 
+22-04-2025 22:13:21: Path: /
+22-04-2025 22:13:21: 
+22-04-2025 22:13:21: --------------------------------------------------------------------------------------------
+22-04-2025 22:13:21: New request: method(GET) remoteAddress(/127.0.0.1:56596) 
+22-04-2025 22:13:21: Path: /v2xConverter.js
+22-04-2025 22:13:21: 
+22-04-2025 22:13:21: --------------------------------------------------------------------------------------------
+22-04-2025 22:13:21: New request: method(GET) remoteAddress(/127.0.0.1:56598) 
+22-04-2025 22:13:21: Path: /styles.css
+22-04-2025 22:13:21: 
+22-04-2025 22:13:21: --------------------------------------------------------------------------------------------
+22-04-2025 22:13:21: New request: method(GET) remoteAddress(/127.0.0.1:56598) 
+22-04-2025 22:13:21: Path: /dlr_logo.jpeg
+22-04-2025 22:14:11: 
+22-04-2025 22:14:11: --------------------------------------------------------------------------------------------
+22-04-2025 22:14:11: New request: method(GET) remoteAddress(/127.0.0.1:46240) 
+22-04-2025 22:14:11: Path: /
+22-04-2025 22:14:11: 
+22-04-2025 22:14:11: --------------------------------------------------------------------------------------------
+22-04-2025 22:14:11: New request: method(GET) remoteAddress(/127.0.0.1:46240) 
+22-04-2025 22:14:11: Path: /styles.css
+22-04-2025 22:14:11: 
+22-04-2025 22:14:11: --------------------------------------------------------------------------------------------
+22-04-2025 22:14:11: New request: method(GET) remoteAddress(/127.0.0.1:46254) 
+22-04-2025 22:14:11: Path: /v2xConverter.js
+22-04-2025 22:14:11: 
+22-04-2025 22:14:11: --------------------------------------------------------------------------------------------
+22-04-2025 22:14:11: New request: method(GET) remoteAddress(/127.0.0.1:46254) 
+22-04-2025 22:14:11: Path: /dlr_logo.jpeg
+22-04-2025 22:14:31: 
+22-04-2025 22:14:31: --------------------------------------------------------------------------------------------
+22-04-2025 22:14:31: New request: method(POST) remoteAddress(/127.0.0.1:46254) 
+22-04-2025 22:14:31: Path: /localhost
+22-04-2025 22:14:31: Processing POST request: application/json
+22-04-2025 22:14:31: Received data from frontend: {"textData":"uper:0202000000000000000d693a403ad274803ffffffc23b7742000e11fdffffe3fe1ed0737fe03fff400","sendFormat":"UPER","receiveFormat":"XML"}
+22-04-2025 22:14:31: Received data from frontend: {"textData":"uper:0202000000000000000d693a403ad274803ffffffc23b7742000e11fdffffe3fe1ed0737fe03fff400","sendFormat":"UPER","receiveFormat":"XML"}
+22-04-2025 22:14:31: Decoding: Payload: mid(MADCAM(2:2)) encoding(UPER) len(41)
+22-04-2025 22:14:31: Encoding to XML
+22-04-2025 22:14:31: Responding: <?xml version="1.0" encoding="UTF-8"?><mADCAM>    <header>        <protocolVersion>2</protocolVersion>        <messageID>2</messageID>        <stationID>0</stationID>    </header>    <cam>        <generationDeltaTime>0</generationDeltaTime>        <camParameters>            <basicContainer>                <stationType>0</stationType>                <referencePosition>                    <latitude>900000001</latitude>                    <longitude>1800000001</longitude>                    <positionConfidenceEllipse>                        <semiMajorConfidence>4095</semiMajorConfidence>                        <semiMinorConfidence>4095</semiMinorConfidence>                        <semiMajorOrientation>3601</semiMajorOrientation>                    </positionConfidenceEllipse>                    <altitude>                        <altitudeValue>800001</altitudeValue>                        <altitudeConfidence>alt-000-01</altitudeConfidence>                    </altitude>                </referencePosition>            </basicContainer>            <highFrequencyContainer>                <basicVehicleContainerHighFrequency>                    <heading>                        <headingValue>3601</headingValue>                        <headingConfidence>127</headingConfidence>                    </heading>                    <speed>                        <speedValue>16383</speedValue>                        <speedConfidence>127</speedConfidence>                    </speed>                    <driveDirection>forward</driveDirection>                    <vehicleLength>                        <vehicleLengthValue>1023</vehicleLengthValue>                        <vehicleLengthConfidenceIndication>noTrailerPresent</vehicleLengthConfidenceIndication>                    </vehicleLength>                    <vehicleWidth>62</vehicleWidth>                    <longitudinalAcceleration>                        <longitudinalAccelerationValue>161</longitudinalAccelerationValue>                        <longitudinalAccelerationConfidence>102</longitudinalAccelerationConfidence>                    </longitudinalAcceleration>                    <curvature>                        <curvatureValue>1023</curvatureValue>                        <curvatureConfidence>onePerMeter-0-00002</curvatureConfidence>                    </curvature>                    <curvatureCalculationMode>yawRateUsed</curvatureCalculationMode>                    <yawRate>                        <yawRateValue>32767</yawRateValue>                        <yawRateConfidence>degSec-000-01</yawRateConfidence>                    </yawRate>                </basicVehicleContainerHighFrequency>            </highFrequencyContainer>        </camParameters>    </cam></mADCAM>
+22-04-2025 22:15:53: 
+22-04-2025 22:15:53: --------------------------------------------------------------------------------------------
+22-04-2025 22:15:53: New request: method(GET) remoteAddress(/127.0.0.1:39098) 
+22-04-2025 22:15:53: Path: /
+22-04-2025 22:15:53: 
+22-04-2025 22:15:53: --------------------------------------------------------------------------------------------
+22-04-2025 22:15:53: New request: method(GET) remoteAddress(/127.0.0.1:39098) 
+22-04-2025 22:15:53: Path: /styles.css
+22-04-2025 22:15:53: 
+22-04-2025 22:15:53: --------------------------------------------------------------------------------------------
+22-04-2025 22:15:53: New request: method(GET) remoteAddress(/127.0.0.1:39110) 
+22-04-2025 22:15:53: Path: /v2xConverter.js
+22-04-2025 22:15:53: 
+22-04-2025 22:15:53: --------------------------------------------------------------------------------------------
+22-04-2025 22:15:53: New request: method(GET) remoteAddress(/127.0.0.1:39110) 
+22-04-2025 22:15:53: Path: /dlr_logo.jpeg
+22-04-2025 22:16:19: 
+22-04-2025 22:16:19: --------------------------------------------------------------------------------------------
+22-04-2025 22:16:19: New request: method(POST) remoteAddress(/127.0.0.1:39110) 
+22-04-2025 22:16:19: Path: /localhost
+22-04-2025 22:16:19: Processing POST request: application/json
+22-04-2025 22:16:19: Received data from frontend: {"textData":"uper:0204000000000000000000000000000000","sendFormat":"UPER","receiveFormat":"XML"}
+22-04-2025 22:16:19: Received data from frontend: {"textData":"uper:0204000000000000000000000000000000","sendFormat":"UPER","receiveFormat":"XML"}
+22-04-2025 22:16:19: Decoding: Payload: mid(SPATEM(4:2)) encoding(UPER) len(17)
+22-04-2025 22:16:19: Encoding to XML
+22-04-2025 22:16:19: Responding: <?xml version="1.0" encoding="UTF-8"?><sPATEM>    <header>        <protocolVersion>2</protocolVersion>        <messageID>4</messageID>        <stationID>0</stationID>    </header>    <spat>        <intersections>            <IntersectionState>                <id>                    <id>0</id>                </id>                <revision>0</revision>                <status>0000000000000000</status>                <states>                    <MovementState>                        <signalGroup>0</signalGroup>                        <state_time_speed>                            <MovementEvent>                                <eventState>unavailable</eventState>                            </MovementEvent>                        </state_time_speed>                    </MovementState>                </states>            </IntersectionState>        </intersections>    </spat></sPATEM>
+22-04-2025 22:17:28: 
+22-04-2025 22:17:28: --------------------------------------------------------------------------------------------
+22-04-2025 22:17:28: New request: method(GET) remoteAddress(/127.0.0.1:35560) 
+22-04-2025 22:17:28: Path: /
+22-04-2025 22:17:28: 
+22-04-2025 22:17:28: --------------------------------------------------------------------------------------------
+22-04-2025 22:17:28: New request: method(GET) remoteAddress(/127.0.0.1:35560) 
+22-04-2025 22:17:28: Path: /v2xConverter.js
+22-04-2025 22:17:28: 
+22-04-2025 22:17:28: --------------------------------------------------------------------------------------------
+22-04-2025 22:17:28: New request: method(GET) remoteAddress(/127.0.0.1:35570) 
+22-04-2025 22:17:28: Path: /styles.css
+22-04-2025 22:17:28: 
+22-04-2025 22:17:28: --------------------------------------------------------------------------------------------
+22-04-2025 22:17:28: New request: method(GET) remoteAddress(/127.0.0.1:35570) 
+22-04-2025 22:17:28: Path: /dlr_logo.jpeg
+22-04-2025 22:18:24: 
+22-04-2025 22:18:24: --------------------------------------------------------------------------------------------
+22-04-2025 22:18:24: New request: method(GET) remoteAddress(/127.0.0.1:34798) 
+22-04-2025 22:18:24: Path: /
+22-04-2025 22:18:24: 
+22-04-2025 22:18:24: --------------------------------------------------------------------------------------------
+22-04-2025 22:18:24: New request: method(GET) remoteAddress(/127.0.0.1:34798) 
+22-04-2025 22:18:24: Path: /v2xConverter.js
+22-04-2025 22:18:24: 
+22-04-2025 22:18:24: --------------------------------------------------------------------------------------------
+22-04-2025 22:18:24: New request: method(GET) remoteAddress(/127.0.0.1:34806) 
+22-04-2025 22:18:24: Path: /styles.css
+22-04-2025 22:18:24: 
+22-04-2025 22:18:24: --------------------------------------------------------------------------------------------
+22-04-2025 22:18:24: New request: method(GET) remoteAddress(/127.0.0.1:34806) 
+22-04-2025 22:18:24: Path: /dlr_logo.jpeg
+22-04-2025 22:19:20: 
+22-04-2025 22:19:20: --------------------------------------------------------------------------------------------
+22-04-2025 22:19:20: New request: method(GET) remoteAddress(/127.0.0.1:33086) 
+22-04-2025 22:19:20: Path: /
+22-04-2025 22:19:20: 
+22-04-2025 22:19:20: --------------------------------------------------------------------------------------------
+22-04-2025 22:19:20: New request: method(GET) remoteAddress(/127.0.0.1:33086) 
+22-04-2025 22:19:20: Path: /v2xConverter.js
+22-04-2025 22:19:20: 
+22-04-2025 22:19:20: --------------------------------------------------------------------------------------------
+22-04-2025 22:19:20: New request: method(GET) remoteAddress(/127.0.0.1:33096) 
+22-04-2025 22:19:20: Path: /styles.css
+22-04-2025 22:19:20: 
+22-04-2025 22:19:20: --------------------------------------------------------------------------------------------
+22-04-2025 22:19:20: New request: method(GET) remoteAddress(/127.0.0.1:33096) 
+22-04-2025 22:19:20: Path: /dlr_logo.jpeg
+22-04-2025 22:20:53: 
+22-04-2025 22:20:53: --------------------------------------------------------------------------------------------
+22-04-2025 22:20:53: New request: method(GET) remoteAddress(/127.0.0.1:44046) 
+22-04-2025 22:20:53: Path: /
+22-04-2025 22:20:53: 
+22-04-2025 22:20:53: --------------------------------------------------------------------------------------------
+22-04-2025 22:20:53: New request: method(GET) remoteAddress(/127.0.0.1:44046) 
+22-04-2025 22:20:53: Path: /v2xConverter.js
+22-04-2025 22:20:53: 
+22-04-2025 22:20:53: --------------------------------------------------------------------------------------------
+22-04-2025 22:20:53: New request: method(GET) remoteAddress(/127.0.0.1:44060) 
+22-04-2025 22:20:53: Path: /styles.css
+22-04-2025 22:20:53: 
+22-04-2025 22:20:53: --------------------------------------------------------------------------------------------
+22-04-2025 22:20:53: New request: method(GET) remoteAddress(/127.0.0.1:44060) 
+22-04-2025 22:20:53: Path: /dlr_logo.jpeg
+22-04-2025 22:21:49: 
+22-04-2025 22:21:49: --------------------------------------------------------------------------------------------
+22-04-2025 22:21:49: New request: method(GET) remoteAddress(/127.0.0.1:41038) 
+22-04-2025 22:21:49: Path: /
+22-04-2025 22:21:49: 
+22-04-2025 22:21:49: --------------------------------------------------------------------------------------------
+22-04-2025 22:21:49: New request: method(GET) remoteAddress(/127.0.0.1:41038) 
+22-04-2025 22:21:49: Path: /v2xConverter.js
+22-04-2025 22:21:50: 
+22-04-2025 22:21:50: --------------------------------------------------------------------------------------------
+22-04-2025 22:21:50: New request: method(GET) remoteAddress(/127.0.0.1:41040) 
+22-04-2025 22:21:50: Path: /styles.css
+22-04-2025 22:21:50: 
+22-04-2025 22:21:50: --------------------------------------------------------------------------------------------
+22-04-2025 22:21:50: New request: method(GET) remoteAddress(/127.0.0.1:41040) 
+22-04-2025 22:21:50: Path: /dlr_logo.jpeg
+22-04-2025 22:22:02: 
+22-04-2025 22:22:02: --------------------------------------------------------------------------------------------
+22-04-2025 22:22:02: New request: method(GET) remoteAddress(/127.0.0.1:41040) 
+22-04-2025 22:22:02: Path: /
+22-04-2025 22:22:02: 
+22-04-2025 22:22:02: --------------------------------------------------------------------------------------------
+22-04-2025 22:22:02: New request: method(GET) remoteAddress(/127.0.0.1:41040) 
+22-04-2025 22:22:02: Path: /v2xConverter.js
+22-04-2025 22:22:02: 
+22-04-2025 22:22:02: --------------------------------------------------------------------------------------------
+22-04-2025 22:22:02: New request: method(GET) remoteAddress(/127.0.0.1:41038) 
+22-04-2025 22:22:02: Path: /styles.css
+22-04-2025 22:22:02: 
+22-04-2025 22:22:02: --------------------------------------------------------------------------------------------
+22-04-2025 22:22:02: New request: method(GET) remoteAddress(/127.0.0.1:44920) 
+22-04-2025 22:22:02: Path: /dlr_logo.jpeg
+22-04-2025 22:24:05: 
+22-04-2025 22:24:05: --------------------------------------------------------------------------------------------
+22-04-2025 22:24:05: New request: method(GET) remoteAddress(/127.0.0.1:57728) 
+22-04-2025 22:24:05: Path: /
+22-04-2025 22:24:05: 
+22-04-2025 22:24:05: --------------------------------------------------------------------------------------------
+22-04-2025 22:24:05: New request: method(GET) remoteAddress(/127.0.0.1:57728) 
+22-04-2025 22:24:05: Path: /v2xConverter.js
+22-04-2025 22:24:05: 
+22-04-2025 22:24:05: --------------------------------------------------------------------------------------------
+22-04-2025 22:24:05: New request: method(GET) remoteAddress(/127.0.0.1:57744) 
+22-04-2025 22:24:05: Path: /styles.css
+22-04-2025 22:24:05: 
+22-04-2025 22:24:05: --------------------------------------------------------------------------------------------
+22-04-2025 22:24:05: New request: method(GET) remoteAddress(/127.0.0.1:57744) 
+22-04-2025 22:24:05: Path: /dlr_logo.jpeg
+22-04-2025 22:24:08: 
+22-04-2025 22:24:08: --------------------------------------------------------------------------------------------
+22-04-2025 22:24:08: New request: method(GET) remoteAddress(/127.0.0.1:57744) 
+22-04-2025 22:24:08: Path: /
+22-04-2025 22:24:08: 
+22-04-2025 22:24:08: --------------------------------------------------------------------------------------------
+22-04-2025 22:24:08: New request: method(GET) remoteAddress(/127.0.0.1:57744) 
+22-04-2025 22:24:08: Path: /v2xConverter.js
+22-04-2025 22:24:08: 
+22-04-2025 22:24:08: --------------------------------------------------------------------------------------------
+22-04-2025 22:24:08: New request: method(GET) remoteAddress(/127.0.0.1:57760) 
+22-04-2025 22:24:08: Path: /styles.css
+22-04-2025 22:24:08: 
+22-04-2025 22:24:08: --------------------------------------------------------------------------------------------
+22-04-2025 22:24:08: New request: method(GET) remoteAddress(/127.0.0.1:57728) 
+22-04-2025 22:24:08: Path: /dlr_logo.jpeg
+22-04-2025 22:24:19: 
+22-04-2025 22:24:19: --------------------------------------------------------------------------------------------
+22-04-2025 22:24:19: New request: method(POST) remoteAddress(/127.0.0.1:57728) 
+22-04-2025 22:24:19: Path: /localhost
+22-04-2025 22:24:19: Processing POST request: application/json
+22-04-2025 22:24:19: Received data from frontend: {"textData":"uper:0204000000000000000000000000000000","sendFormat":"UPER","receiveFormat":"XML"}
+22-04-2025 22:24:19: Received data from frontend: {"textData":"uper:0204000000000000000000000000000000","sendFormat":"UPER","receiveFormat":"XML"}
+22-04-2025 22:24:19: Decoding: Payload: mid(SPATEM(4:2)) encoding(UPER) len(17)
+22-04-2025 22:24:19: Encoding to XML
+22-04-2025 22:24:20: Responding: <?xml version="1.0" encoding="UTF-8"?><sPATEM>    <header>        <protocolVersion>2</protocolVersion>        <messageID>4</messageID>        <stationID>0</stationID>    </header>    <spat>        <intersections>            <IntersectionState>                <id>                    <id>0</id>                </id>                <revision>0</revision>                <status>0000000000000000</status>                <states>                    <MovementState>                        <signalGroup>0</signalGroup>                        <state_time_speed>                            <MovementEvent>                                <eventState>unavailable</eventState>                            </MovementEvent>                        </state_time_speed>                    </MovementState>                </states>            </IntersectionState>        </intersections>    </spat></sPATEM>
+22-04-2025 22:31:16: 
+22-04-2025 22:31:16: --------------------------------------------------------------------------------------------
+22-04-2025 22:31:16: New request: method(GET) remoteAddress(/127.0.0.1:57622) 
+22-04-2025 22:31:16: Path: /
+22-04-2025 22:31:16: 
+22-04-2025 22:31:16: --------------------------------------------------------------------------------------------
+22-04-2025 22:31:16: New request: method(GET) remoteAddress(/127.0.0.1:57622) 
+22-04-2025 22:31:16: Path: /styles.css
+22-04-2025 22:31:16: 
+22-04-2025 22:31:16: --------------------------------------------------------------------------------------------
+22-04-2025 22:31:16: New request: method(GET) remoteAddress(/127.0.0.1:57632) 
+22-04-2025 22:31:16: Path: /v2xConverter.js
+22-04-2025 22:31:16: 
+22-04-2025 22:31:16: --------------------------------------------------------------------------------------------
+22-04-2025 22:31:16: New request: method(GET) remoteAddress(/127.0.0.1:57632) 
+22-04-2025 22:31:16: Path: /dlr_logo.jpeg
+22-04-2025 22:31:37: 
+22-04-2025 22:31:37: --------------------------------------------------------------------------------------------
+22-04-2025 22:31:37: New request: method(POST) remoteAddress(/127.0.0.1:57632) 
+22-04-2025 22:31:37: Path: /localhost
+22-04-2025 22:31:37: Processing POST request: application/json
+22-04-2025 22:31:37: Received data from frontend: {"textData":"uper:0202000000000000000d693a403ad274803ffffffc23b7742000e11fdffffe3fe1ed0737fe03fff400","sendFormat":"UPER","receiveFormat":"XML"}
+22-04-2025 22:31:37: Received data from frontend: {"textData":"uper:0202000000000000000d693a403ad274803ffffffc23b7742000e11fdffffe3fe1ed0737fe03fff400","sendFormat":"UPER","receiveFormat":"XML"}
+22-04-2025 22:31:37: Decoding: Payload: mid(MADCAM(2:2)) encoding(UPER) len(41)
+22-04-2025 22:31:37: Encoding to XML
+22-04-2025 22:31:37: Responding: <?xml version="1.0" encoding="UTF-8"?><mADCAM>    <header>        <protocolVersion>2</protocolVersion>        <messageID>2</messageID>        <stationID>0</stationID>    </header>    <cam>        <generationDeltaTime>0</generationDeltaTime>        <camParameters>            <basicContainer>                <stationType>0</stationType>                <referencePosition>                    <latitude>900000001</latitude>                    <longitude>1800000001</longitude>                    <positionConfidenceEllipse>                        <semiMajorConfidence>4095</semiMajorConfidence>                        <semiMinorConfidence>4095</semiMinorConfidence>                        <semiMajorOrientation>3601</semiMajorOrientation>                    </positionConfidenceEllipse>                    <altitude>                        <altitudeValue>800001</altitudeValue>                        <altitudeConfidence>alt-000-01</altitudeConfidence>                    </altitude>                </referencePosition>            </basicContainer>            <highFrequencyContainer>                <basicVehicleContainerHighFrequency>                    <heading>                        <headingValue>3601</headingValue>                        <headingConfidence>127</headingConfidence>                    </heading>                    <speed>                        <speedValue>16383</speedValue>                        <speedConfidence>127</speedConfidence>                    </speed>                    <driveDirection>forward</driveDirection>                    <vehicleLength>                        <vehicleLengthValue>1023</vehicleLengthValue>                        <vehicleLengthConfidenceIndication>noTrailerPresent</vehicleLengthConfidenceIndication>                    </vehicleLength>                    <vehicleWidth>62</vehicleWidth>                    <longitudinalAcceleration>                        <longitudinalAccelerationValue>161</longitudinalAccelerationValue>                        <longitudinalAccelerationConfidence>102</longitudinalAccelerationConfidence>                    </longitudinalAcceleration>                    <curvature>                        <curvatureValue>1023</curvatureValue>                        <curvatureConfidence>onePerMeter-0-00002</curvatureConfidence>                    </curvature>                    <curvatureCalculationMode>yawRateUsed</curvatureCalculationMode>                    <yawRate>                        <yawRateValue>32767</yawRateValue>                        <yawRateConfidence>degSec-000-01</yawRateConfidence>                    </yawRate>                </basicVehicleContainerHighFrequency>            </highFrequencyContainer>        </camParameters>    </cam></mADCAM>
+22-04-2025 22:47:07: 
+22-04-2025 22:47:07: --------------------------------------------------------------------------------------------
+22-04-2025 22:47:07: New request: method(GET) remoteAddress(/127.0.0.1:50390) 
+22-04-2025 22:47:07: Path: /
+22-04-2025 22:47:07: 
+22-04-2025 22:47:07: --------------------------------------------------------------------------------------------
+22-04-2025 22:47:07: New request: method(GET) remoteAddress(/127.0.0.1:50390) 
+22-04-2025 22:47:07: Path: /styles.css
+22-04-2025 22:47:07: 
+22-04-2025 22:47:07: --------------------------------------------------------------------------------------------
+22-04-2025 22:47:07: New request: method(GET) remoteAddress(/127.0.0.1:50394) 
+22-04-2025 22:47:07: Path: /v2xConverter.js
+22-04-2025 22:47:07: 
+22-04-2025 22:47:07: --------------------------------------------------------------------------------------------
+22-04-2025 22:47:07: New request: method(GET) remoteAddress(/127.0.0.1:50394) 
+22-04-2025 22:47:07: Path: /dlr_logo.jpeg
+22-04-2025 22:47:16: 
+22-04-2025 22:47:16: --------------------------------------------------------------------------------------------
+22-04-2025 22:47:16: New request: method(POST) remoteAddress(/127.0.0.1:50394) 
+22-04-2025 22:47:16: Path: /localhost
+22-04-2025 22:47:16: Processing POST request: application/json
+22-04-2025 22:47:16: Received data from frontend: {"textData":"uper:0202000000000000000d693a403ad274803ffffffc23b7742000e11fdffffe3fe1ed0737fe03fff400","sendFormat":"UPER","receiveFormat":"XML"}
+22-04-2025 22:47:16: Received data from frontend: {"textData":"uper:0202000000000000000d693a403ad274803ffffffc23b7742000e11fdffffe3fe1ed0737fe03fff400","sendFormat":"UPER","receiveFormat":"XML"}
+22-04-2025 22:47:16: Decoding: Payload: mid(MADCAM(2:2)) encoding(UPER) len(41)
+22-04-2025 22:47:16: Encoding to XML
+22-04-2025 22:47:16: Responding: <?xml version="1.0" encoding="UTF-8"?><mADCAM>    <header>        <protocolVersion>2</protocolVersion>        <messageID>2</messageID>        <stationID>0</stationID>    </header>    <cam>        <generationDeltaTime>0</generationDeltaTime>        <camParameters>            <basicContainer>                <stationType>0</stationType>                <referencePosition>                    <latitude>900000001</latitude>                    <longitude>1800000001</longitude>                    <positionConfidenceEllipse>                        <semiMajorConfidence>4095</semiMajorConfidence>                        <semiMinorConfidence>4095</semiMinorConfidence>                        <semiMajorOrientation>3601</semiMajorOrientation>                    </positionConfidenceEllipse>                    <altitude>                        <altitudeValue>800001</altitudeValue>                        <altitudeConfidence>alt-000-01</altitudeConfidence>                    </altitude>                </referencePosition>            </basicContainer>            <highFrequencyContainer>                <basicVehicleContainerHighFrequency>                    <heading>                        <headingValue>3601</headingValue>                        <headingConfidence>127</headingConfidence>                    </heading>                    <speed>                        <speedValue>16383</speedValue>                        <speedConfidence>127</speedConfidence>                    </speed>                    <driveDirection>forward</driveDirection>                    <vehicleLength>                        <vehicleLengthValue>1023</vehicleLengthValue>                        <vehicleLengthConfidenceIndication>noTrailerPresent</vehicleLengthConfidenceIndication>                    </vehicleLength>                    <vehicleWidth>62</vehicleWidth>                    <longitudinalAcceleration>                        <longitudinalAccelerationValue>161</longitudinalAccelerationValue>                        <longitudinalAccelerationConfidence>102</longitudinalAccelerationConfidence>                    </longitudinalAcceleration>                    <curvature>                        <curvatureValue>1023</curvatureValue>                        <curvatureConfidence>onePerMeter-0-00002</curvatureConfidence>                    </curvature>                    <curvatureCalculationMode>yawRateUsed</curvatureCalculationMode>                    <yawRate>                        <yawRateValue>32767</yawRateValue>                        <yawRateConfidence>degSec-000-01</yawRateConfidence>                    </yawRate>                </basicVehicleContainerHighFrequency>            </highFrequencyContainer>        </camParameters>    </cam></mADCAM>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo - Sin Estilos de Botones en CSS</title>
+    <link href="styles-no-button-colors.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3498db',
+                        secondary: '#2c3e50',
+                        background: '#ecf0f1',
+                        textColor: '#333',
+                        border: '#bdc3c7',
+                        success: '#2ecc71',
+                        error: '#e74c3c',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="p-8 bg-gray-100">
+    <div class="max-w-6xl mx-auto space-y-8">
+        <h1 class="text-3xl font-bold mb-8 text-center">Botones Sin Estilos CSS - Solo Clases Tailwind del HTML</h1>
+        
+        <!-- Explicación -->
+        <section class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-2xl font-semibold mb-4">¿Qué está pasando?</h2>
+            <p class="mb-4">Estos botones NO tienen estilos en el CSS. Cada uno toma su color de las clases Tailwind que tiene en el HTML:</p>
+            <ul class="list-disc ml-6 space-y-2 text-sm">
+                <li><code class="bg-gray-200 px-1">bg-primary</code> = #3498db (azul)</li>
+                <li><code class="bg-gray-200 px-1">bg-error</code> = #e74c3c (rojo)</li>
+                <li><code class="bg-gray-200 px-1">bg-success</code> = #2ecc71 (verde)</li>
+                <li><code class="bg-gray-200 px-1">bg-purple-400</code> = #c084fc (púrpura Tailwind)</li>
+                <li><code class="bg-gray-200 px-1">bg-green-400</code> = #4ade80 (verde Tailwind)</li>
+            </ul>
+        </section>
+        
+        <!-- Ejemplos de botones como están en el HTML -->
+        <section class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-2xl font-semibold mb-4">Botones como aparecerían en la página</h2>
+            
+            <div class="space-y-6">
+                <!-- Botones principales -->
+                <div>
+                    <h3 class="font-semibold mb-3">Botones principales (azules por bg-primary)</h3>
+                    <div class="flex gap-3 flex-wrap">
+                        <button class="p-2 bg-primary text-white font-medium rounded">Convert to V2X</button>
+                        <button class="p-2 bg-primary hover:bg-blue-500 text-white rounded">Copy</button>
+                        <button class="p-2 bg-primary text-white rounded" disabled>Copy (disabled)</button>
+                    </div>
+                </div>
+                
+                <!-- Botones Clear -->
+                <div>
+                    <h3 class="font-semibold mb-3">Botones Clear (rojos por bg-error)</h3>
+                    <div class="flex gap-3 flex-wrap">
+                        <button class="p-1 bg-error hover:bg-red-600 text-white text-xs rounded">Clear</button>
+                        <button class="p-1 bg-error hover:bg-red-600 text-white text-xs rounded disabled:bg-gray-300" disabled>Clear (disabled)</button>
+                    </div>
+                </div>
+                
+                <!-- Botones especiales -->
+                <div>
+                    <h3 class="font-semibold mb-3">Botones especiales (colores variados)</h3>
+                    <div class="flex gap-3 flex-wrap">
+                        <button class="p-1 bg-purple-400 text-white rounded">Share (púrpura)</button>
+                        <button class="p-1 bg-green-400 text-white rounded">Expand (verde claro)</button>
+                        <button style="background-color: #5DADE2" class="p-1 text-white rounded">A+ (celeste inline)</button>
+                    </div>
+                </div>
+                
+                <!-- Comparación visual -->
+                <div class="border-t pt-4">
+                    <h3 class="font-semibold mb-3">Resumen de colores:</h3>
+                    <div class="grid grid-cols-5 gap-4">
+                        <div class="text-center">
+                            <div class="w-20 h-20 mx-auto rounded" style="background-color: #3498db;"></div>
+                            <p class="text-xs mt-1">Primary<br/>#3498db</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-20 h-20 mx-auto rounded" style="background-color: #e74c3c;"></div>
+                            <p class="text-xs mt-1">Error<br/>#e74c3c</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-20 h-20 mx-auto rounded" style="background-color: #c084fc;"></div>
+                            <p class="text-xs mt-1">Purple-400<br/>#c084fc</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-20 h-20 mx-auto rounded" style="background-color: #4ade80;"></div>
+                            <p class="text-xs mt-1">Green-400<br/>#4ade80</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-20 h-20 mx-auto rounded" style="background-color: #5DADE2;"></div>
+                            <p class="text-xs mt-1">A+/A-<br/>#5DADE2</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Comparación -->
+        <section class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-2xl font-semibold mb-4">Sin CSS vs Con CSS actual</h2>
+            
+            <div class="grid grid-cols-2 gap-8">
+                <div>
+                    <h3 class="font-semibold mb-3 text-red-600">Sin estilos CSS (multicolor)</h3>
+                    <div class="space-y-2">
+                        <button class="p-2 bg-primary text-white rounded mr-2">Copy</button>
+                        <button class="p-1 bg-error text-white rounded mr-2">Clear</button>
+                        <button class="p-1 bg-purple-400 text-white rounded mr-2">Share</button>
+                        <button class="p-1 bg-green-400 text-white rounded">Expand</button>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-2">Cada botón con su color original</p>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-3 text-green-600">Tu propuesta (todos azul)</h3>
+                    <div class="space-y-2">
+                        <button class="p-2 text-white rounded mr-2" style="background-color: #3498db;">Copy</button>
+                        <button class="p-1 text-white rounded mr-2" style="background-color: #3498db;">Clear</button>
+                        <button class="p-1 text-white rounded mr-2" style="background-color: #3498db;">Share</button>
+                        <button class="p-1 text-white rounded" style="background-color: #3498db;">Expand</button>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-2">Todos con el mismo azul #3498db</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

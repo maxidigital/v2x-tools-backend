@@ -1,0 +1,31 @@
+# robots.txt for v2x.tools
+# Allow search engines to index the site
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://v2x.tools/sitemap.xml
+
+# Block AI training bots to save bandwidth
+User-agent: GPTBot
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+# Block aggressive SEO crawlers
+User-agent: Semrush
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /

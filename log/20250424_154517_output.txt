@@ -1,0 +1,442 @@
+24-04-2025 15:45:17: Server started on port 8080
+24-04-2025 15:45:34: 
+24-04-2025 15:45:34: --------------------------------------------------------------------------------------------
+24-04-2025 15:45:34: New request: method(GET) remoteAddress(/127.0.0.1:57938) 
+24-04-2025 15:45:34: Path: /
+24-04-2025 15:45:34: 
+24-04-2025 15:45:34: --------------------------------------------------------------------------------------------
+24-04-2025 15:45:34: New request: method(GET) remoteAddress(/127.0.0.1:57938) 
+24-04-2025 15:45:34: Path: /styles.css
+24-04-2025 15:45:34: 
+24-04-2025 15:45:34: --------------------------------------------------------------------------------------------
+24-04-2025 15:45:34: New request: method(GET) remoteAddress(/127.0.0.1:57946) 
+24-04-2025 15:45:34: Path: /v2xConverter.js
+24-04-2025 15:45:34: 
+24-04-2025 15:45:34: --------------------------------------------------------------------------------------------
+24-04-2025 15:45:34: New request: method(GET) remoteAddress(/127.0.0.1:57946) 
+24-04-2025 15:45:34: Path: /dlr_logo.jpeg
+24-04-2025 15:45:36: 
+24-04-2025 15:45:36: --------------------------------------------------------------------------------------------
+24-04-2025 15:45:36: New request: method(GET) remoteAddress(/127.0.0.1:57946) 
+24-04-2025 15:45:36: Path: /command/random
+24-04-2025 15:45:36: Random message request: null(2:2) in format: UPER
+24-04-2025 15:45:37: Responding random: uper:020203a1828119ae0c3701713022d11372568d2cea7c6e1fd44bbfb2db2edcbbc7c23631c865c2f4f59d5e621759eedccdf11a20
+24-04-2025 15:45:44: 
+24-04-2025 15:45:44: --------------------------------------------------------------------------------------------
+24-04-2025 15:45:44: New request: method(GET) remoteAddress(/127.0.0.1:57946) 
+24-04-2025 15:45:44: Path: /command/random
+24-04-2025 15:45:44: Random message request: MADCAM(2:2) in format: JSON
+24-04-2025 15:45:44: Responding random: {
+    "header":{
+        "protocolVersion":2,
+        "messageID":2,
+        "stationID":175405011
+    },
+    "cam":{
+        "generationDeltaTime":14307,
+        "camParameters":{
+            "basicContainer":{
+                "stationType":219,
+                "referencePosition":{
+                    "latitude":181589990,
+                    "longitude":-1462774920,
+                    "positionConfidenceEllipse":{
+                        "semiMajorConfidence":1350,
+                        "semiMinorConfidence":3384,
+                        "semiMajorOrientation":2243
+                    },
+                    "altitude":{
+                        "altitudeValue":545897,
+                        "altitudeConfidence":2
+                    }
+                }
+            },
+            "highFrequencyContainer":{
+                "rsuContainerHighFrequency":{
+                }
+            },
+            "lowFrequencyContainer":{
+                "basicVehicleContainerLowFrequency":{
+                    "vehicleRole":11,
+                    "exteriorLights":"11001111",
+                    "pathHistory":[
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":-9152,
+                                "deltaLongitude":120030,
+                                "deltaAltitude":-5231
+                            },
+                            "pathDeltaTime":2823
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":-127098,
+                                "deltaLongitude":22845,
+                                "deltaAltitude":-2145
+                            }
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":-53977,
+                                "deltaLongitude":-52277,
+                                "deltaAltitude":-5209
+                            },
+                            "pathDeltaTime":35542
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":2573,
+                                "deltaLongitude":26073,
+                                "deltaAltitude":2505
+                            }
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":47104,
+                                "deltaLongitude":58027,
+                                "deltaAltitude":-6851
+                            },
+                            "pathDeltaTime":22576
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":-73447,
+                                "deltaLongitude":-115498,
+                                "deltaAltitude":7742
+                            },
+                            "pathDeltaTime":51181
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":-105285,
+                                "deltaLongitude":45111,
+                                "deltaAltitude":-3707
+                            }
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":-56700,
+                                "deltaLongitude":65831,
+                                "deltaAltitude":6630
+                            }
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":40060,
+                                "deltaLongitude":75274,
+                                "deltaAltitude":6883
+                            },
+                            "pathDeltaTime":58402
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":109636,
+                                "deltaLongitude":63903,
+                                "deltaAltitude":-4832
+                            }
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":-5077,
+                                "deltaLongitude":-67102,
+                                "deltaAltitude":-3780
+                            }
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":55024,
+                                "deltaLongitude":48957,
+                                "deltaAltitude":8448
+                            }
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":-101936,
+                                "deltaLongitude":-9806,
+                                "deltaAltitude":-5150
+                            }
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":106822,
+                                "deltaLongitude":47221,
+                                "deltaAltitude":2580
+                            }
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":118316,
+                                "deltaLongitude":35555,
+                                "deltaAltitude":-9051
+                            }
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":86099,
+                                "deltaLongitude":-114599,
+                                "deltaAltitude":-7476
+                            }
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":-18801,
+                                "deltaLongitude":-69223,
+                                "deltaAltitude":-4389
+                            }
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":-70493,
+                                "deltaLongitude":58201,
+                                "deltaAltitude":-2864
+                            },
+                            "pathDeltaTime":12333
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":-92165,
+                                "deltaLongitude":-40414,
+                                "deltaAltitude":-3857
+                            },
+                            "pathDeltaTime":17619
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":-56810,
+                                "deltaLongitude":-31403,
+                                "deltaAltitude":857
+                            },
+                            "pathDeltaTime":42189
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":-1163,
+                                "deltaLongitude":127048,
+                                "deltaAltitude":5002
+                            },
+                            "pathDeltaTime":60583
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":7202,
+                                "deltaLongitude":-36842,
+                                "deltaAltitude":4529
+                            }
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":38897,
+                                "deltaLongitude":-26702,
+                                "deltaAltitude":-8016
+                            }
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":-109981,
+                                "deltaLongitude":118612,
+                                "deltaAltitude":-4844
+                            }
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":-83883,
+                                "deltaLongitude":-94910,
+                                "deltaAltitude":1021
+                            }
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":-11079,
+                                "deltaLongitude":-126748,
+                                "deltaAltitude":-5071
+                            },
+                            "pathDeltaTime":10719
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":-104352,
+                                "deltaLongitude":74090,
+                                "deltaAltitude":-5954
+                            }
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":-29848,
+                                "deltaLongitude":-12510,
+                                "deltaAltitude":-8345
+                            }
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":109428,
+                                "deltaLongitude":-65570,
+                                "deltaAltitude":11737
+                            }
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":64014,
+                                "deltaLongitude":116668,
+                                "deltaAltitude":5955
+                            },
+                            "pathDeltaTime":48119
+                        },
+                        {
+                            "pathPosition":{
+                                "deltaLatitude":-26372,
+                                "deltaLongitude":-155,
+                                "deltaAltitude":-2752
+                            }
+                        }
+                    ]
+                }
+            },
+            "specialVehicleContainer":{
+                "roadWorksContainerBasic":{
+                    "lightBarSirenInUse":"01",
+                    "closedLanes":{
+                        "drivingLaneStatus":"1"
+                    }
+                }
+            }
+        }
+    }
+}
+24-04-2025 15:46:00: 
+24-04-2025 15:46:00: --------------------------------------------------------------------------------------------
+24-04-2025 15:46:00: New request: method(GET) remoteAddress(/127.0.0.1:57946) 
+24-04-2025 15:46:00: Path: /command/random
+24-04-2025 15:46:00: Random message request: MADCAM(2:2) in format: XML
+24-04-2025 15:46:00: Responding random: <?xml version="1.0" encoding="UTF-8"?>
+<mADCAM>
+    <header>
+        <protocolVersion>2</protocolVersion>
+        <messageID>2</messageID>
+        <stationID>2440628918</stationID>
+    </header>
+    <cam>
+        <generationDeltaTime>4125</generationDeltaTime>
+        <camParameters>
+            <basicContainer>
+                <stationType>141</stationType>
+                <referencePosition>
+                    <latitude>246949096</latitude>
+                    <longitude>-993300700</longitude>
+                    <positionConfidenceEllipse>
+                        <semiMajorConfidence>2745</semiMajorConfidence>
+                        <semiMinorConfidence>2379</semiMinorConfidence>
+                        <semiMajorOrientation>2199</semiMajorOrientation>
+                    </positionConfidenceEllipse>
+                    <altitude>
+                        <altitudeValue>590007</altitudeValue>
+                        <altitudeConfidence>alt-000-10</altitudeConfidence>
+                    </altitude>
+                </referencePosition>
+            </basicContainer>
+            <highFrequencyContainer>
+                <madVehicleContainerHighFrequency>
+                    <basicVehicleContainerHighFrequency>
+                        <heading>
+                            <headingValue>2325</headingValue>
+                            <headingConfidence>88</headingConfidence>
+                        </heading>
+                        <speed>
+                            <speedValue>11657</speedValue>
+                            <speedConfidence>113</speedConfidence>
+                        </speed>
+                        <driveDirection>forward</driveDirection>
+                        <vehicleLength>
+                            <vehicleLengthValue>462</vehicleLengthValue>
+                            <vehicleLengthConfidenceIndication>noTrailerPresent</vehicleLengthConfidenceIndication>
+                        </vehicleLength>
+                        <vehicleWidth>23</vehicleWidth>
+                        <longitudinalAcceleration>
+                            <longitudinalAccelerationValue>-62</longitudinalAccelerationValue>
+                            <longitudinalAccelerationConfidence>50</longitudinalAccelerationConfidence>
+                        </longitudinalAcceleration>
+                        <curvature>
+                            <curvatureValue>507</curvatureValue>
+                            <curvatureConfidence>onePerMeter-0-002</curvatureConfidence>
+                        </curvature>
+                        <curvatureCalculationMode>yawRateNotUsed</curvatureCalculationMode>
+                        <yawRate>
+                            <yawRateValue>-27170</yawRateValue>
+                            <yawRateConfidence>degSec-000-01</yawRateConfidence>
+                        </yawRate>
+                        <accelerationControl>emergencyBrakeEngaged collisionWarningEngaged speedLimiterEngaged</accelerationControl>
+                        <performanceClass>4</performanceClass>
+                        <cenDsrcTollingZone>
+                            <protectedZoneLatitude>-896863752</protectedZoneLatitude>
+                            <protectedZoneLongitude>-1371155185</protectedZoneLongitude>
+                        </cenDsrcTollingZone>
+                    </basicVehicleContainerHighFrequency>
+                    <madControlModeState>
+                        <madControlMode>controlledByEPUManeuver</madControlMode>
+                        <madDrivingMode>mrm_calc_path</madDrivingMode>
+                    </madControlModeState>
+                </madVehicleContainerHighFrequency>
+            </highFrequencyContainer>
+            <lowFrequencyContainer>
+                <madVehicleContainerLowFrequency>
+                    <vehicleDimensions>
+                        <posCentMass>17</posCentMass>
+                        <posFrontAx>12</posFrontAx>
+                        <wheelBase>18</wheelBase>
+                        <vehicleMass>359</vehicleMass>
+                    </vehicleDimensions>
+                    <vehicleCapabilities>
+                        <curvatureValueMin>58</curvatureValueMin>
+                        <curvatureValueMax>-491</curvatureValueMax>
+                        <accelerationValueMin>-3</accelerationValueMin>
+                        <accelerationValueMax>87</accelerationValueMax>
+                        <possibleLevelOfInput>000</possibleLevelOfInput>
+                    </vehicleCapabilities>
+                    <localDestination>
+                        <deltaReferencePosition>
+                            <deltaLatitude>72584</deltaLatitude>
+                            <deltaLongitude>119636</deltaLongitude>
+                            <deltaAltitude>12473</deltaAltitude>
+                        </deltaReferencePosition>
+                        <speedValue>14764</speedValue>
+                    </localDestination>
+                </madVehicleContainerLowFrequency>
+            </lowFrequencyContainer>
+        </camParameters>
+    </cam>
+</mADCAM>
+24-04-2025 15:46:27: 
+24-04-2025 15:46:27: --------------------------------------------------------------------------------------------
+24-04-2025 15:46:27: New request: method(GET) remoteAddress(/127.0.0.1:57946) 
+24-04-2025 15:46:27: Path: /command/random
+24-04-2025 15:46:27: Random message request: MADCAM(2:2) in format: WER
+24-04-2025 15:46:27: Responding random: wer:0202d4828ba46bfb00000000291035c45d1d2653bb8304e90192063cab09000400010000
+24-04-2025 15:46:28: 
+24-04-2025 15:46:28: --------------------------------------------------------------------------------------------
+24-04-2025 15:46:28: New request: method(GET) remoteAddress(/127.0.0.1:57946) 
+24-04-2025 15:46:28: Path: /command/random
+24-04-2025 15:46:28: Random message request: MADCAM(2:2) in format: WER
+24-04-2025 15:46:28: Responding random: wer:020242b79c1ab77a00010100c4ac653514389a936cda0d190de9099aee03000a00010000010022000c0e4197017d048b005f00a7000000000001010108470100685e0300334f0c16d00900030000000000
+24-04-2025 15:46:29: 
+24-04-2025 15:46:29: --------------------------------------------------------------------------------------------
+24-04-2025 15:46:29: New request: method(GET) remoteAddress(/127.0.0.1:57946) 
+24-04-2025 15:46:29: Path: /command/random
+24-04-2025 15:46:29: Random message request: MADCAM(2:2) in format: WER
+24-04-2025 15:46:29: Responding random: wer:0202b8e3e853a47a00010000aa17d8993099b4ce9fe7000601140b802f04000d000001000101000100720251f02b060194010028b20045f8040500004d7d020000010100010000240343cb004d000000020001010001010100010100015d71000024860100e31100d365
+24-04-2025 15:46:30: 
+24-04-2025 15:46:30: --------------------------------------------------------------------------------------------
+24-04-2025 15:46:30: New request: method(GET) remoteAddress(/127.0.0.1:57946) 
+24-04-2025 15:46:30: Path: /command/random
+24-04-2025 15:46:30: Random message request: MADCAM(2:2) in format: WER
+24-04-2025 15:46:30: Responding random: wer:02021bc514726363000000009b92645131fb7c1369260184053a08ec7509000c000100010500000000010000d060341e3f39a119d91fed01000100010101f4ab282acd03000076272966b53be011ac880201000101000000891bf6768a0100003f923e66824678be004900010101000042defc4c520300008a817228d161c19900b99697d107000101000101277b338e510200000615c94a3b7f3fc0009e0000000000006282650f7b231b5e
+24-04-2025 15:46:31: 
+24-04-2025 15:46:31: --------------------------------------------------------------------------------------------
+24-04-2025 15:46:31: New request: method(GET) remoteAddress(/127.0.0.1:57946) 
+24-04-2025 15:46:31: Path: /command/random
+24-04-2025 15:46:31: Random message request: MADCAM(2:2) in format: WER
+24-04-2025 15:46:31: Responding random: wer:020265e842195fc00000000008c5fd553277859a514f00c005bf0353d40a000e000001010000000100fa0c23cf2515015f01032078003e690705000287510700000001010001010105
+24-04-2025 15:46:32: 
+24-04-2025 15:46:32: --------------------------------------------------------------------------------------------
+24-04-2025 15:46:32: New request: method(GET) remoteAddress(/127.0.0.1:57946) 
+24-04-2025 15:46:32: Path: /command/random
+24-04-2025 15:46:32: Random message request: MADCAM(2:2) in format: WER
+24-04-2025 15:46:32: Responding random: wer:0202d62519f3b4d50000000023409f3d394f47bbc65804f7000402662301000b0100300000000001000001d40961680a7301920002178f002956070700027652058d00550000455ef928af2aac4c01000001e167

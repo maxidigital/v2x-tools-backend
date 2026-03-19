@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V2X.tools</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+		  --primary-color: #3498db;
+		  --secondary-color: #2c3e50;
+		  --background-color: #ecf0f1;
+		  --text-color: #333;
+		  --border-color: #bdc3c7;
+		  --success-color: #2ecc71;
+		  --error-color: #e74c3c;
+		}
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--secondary-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 95%;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            width: 100px;
+            height: auto;
+            margin-right: 20px;
+        }
+
+        h1, h2, h3 {
+            color: var(--primary-color);
+        }
+
+        h1 {
+            margin: 0;
+        }
+        
+        /* Two-column layout */
+        .step-container {
+            margin-bottom: 20px;
+        }
+        
+        .steps-row {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .step {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+        
+        #step1, #step2 {
+            flex: 1;
+            width: 50%;
+        }
+
+        .radio-group label {
+            display: inline-block;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        select, textarea, button {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover:not(:disabled) {
+            background-color: var(--primary-dark);
+        }
+
+        button:disabled {
+            background-color: var(--border-color);
+            cursor: not-allowed;
+        }
+
+        #textAreaInput.readonly {
+            background-color: #e8e8e8;
+            cursor: not-allowed;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #bytes-len {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        .output-section {
+            margin-top: 20px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+        }
+
+        #outputTextArea {
+            background-color: #f0f0f0;
+        }
+
+        .impressum {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #95a5a6;
+            text-align: center;
+        }
+
+        .disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .toast.hidden {
+            opacity: 0;
+        }
+        .toast.visible {
+            opacity: 1;
+        }
+
+        .api-doc-link {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .api-doc-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .api-doc-link a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Specific button styling */
+        .convert-button {
+            background-color: var(--success-color);
+        }
+        
+        .convert-button:hover:not(:disabled) {
+            background-color: #27ae60;
+        }
+        
+        /* Media queries */
+        @media screen and (max-width: 1200px) {
+            .steps-row {
+                flex-direction: column;
+            }
+            
+            #step1, #step2 {
+                width: 100%;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="dlr_logo.jpeg" alt="DLR Logo" class="logo">
+            <h1>V2X.tools</h1>
+        </div>
+        
+        <div class="step-container">
+            <div class="steps-row">
+                <div class="step" id="step1">
+                    <h2>Step 1: Choose Payload Source</h2>
+					
+                    <div class="radio-group vertical-radio">
+                      <label><input type="radio" name="payloadSource" value="manual" checked> Enter my own payload</label>
+                      <label><input type="radio" name="payloadSource" value="minimal"> Generate a minimal valid message</label>
+                      <label><input type="radio" name="payloadSource" value="random"> Generate a random message</label>
+                    </div>
+                    
+                    <div id="inputFormatSelect" class="format-group">
+                        <h3>Input Format:</h3>
+                        <div class="radio-group">
+                            <label><input type="radio" name="sendFormat" value="UPER" checked> UPER</label>
+                            <label><input type="radio" name="sendFormat" value="WER"> WER</label>
+                            <label><input type="radio" name="sendFormat" value="XML"> XML</label>
+                            <label><input type="radio" name="sendFormat" value="JSON"> JSON</label>
+                        </div>
+                    </div>
+
+                    <div id="messageTypeSelect" class="hidden">
+                        <label for="messageType">Select message type:</label>
+                        <select id="messageType">
+                            <option value="">Select a message type</option>
+                            <option value="cam_v2">CAM v2</option>
+                            <option value="denm_v2">DENM v2</option>
+                            <option value="spat_v2">SPATem v2</option>
+                            <option value="cpm_v1">CPM v1</option>
+                            <option value="ivi_v2">IVIM v2</option>
+                            <option value="srem_v2">SREM v2</option>
+                            <option value="ssem_v2">SSEM v2</option>
+                        </select>
+                    </div>
+                    
+                    <div id="payloadInput">
+                        <label for="textAreaInput">V2X Payload:</label>
+                        <textarea id="textAreaInput" rows="5" placeholder="Enter or paste your V2X payload here..."></textarea>
+						<button id="copyButton1">Copy to Clipboard</button>
+                    </div>
+                    
+                    <div id="bytes-len">0 bytes</div>
+                </div>
+
+                <div class="step" id="step2">
+                    <h2>Step 2: Choose Output Format</h2>
+                    <div class="format-group">
+                        <h3>Output Format:</h3>
+                        <div class="radio-group">
+                            <label><input type="radio" name="receiveFormat" value="UPER"> UPER</label>
+                            <label><input type="radio" name="receiveFormat" value="WER"> WER</label>
+                            <label><input type="radio" name="receiveFormat" value="XML" checked> XML</label>
+                            <label><input type="radio" name="receiveFormat" value="JSON"> JSON</label>
+                        </div>
+                    </div>
+                    
+                    <div class="output-section">
+                        <h2>Converted Payload</h2>
+                        <textarea id="outputTextArea" rows="10" readonly></textarea>
+                        <button id="copyButton">Copy to Clipboard</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <button id="convertButton" class="convert-button">Convert</button>
+            <button id="clearButton">Clear All</button>					
+        </div>
+
+        <footer class="impressum">
+            &copy; 2023 DLR German Aerospace Agency. All rights reserved.
+            <div class="api-doc-link">
+                <a href="doc/index.html" target="_blank">API Documentation</a>
+            </div>
+        </footer>
+    </div>
+
+    <div id="toast" class="toast hidden">Copied to clipboard</div>
+
+    <script src="v2xConverter.js"></script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todos los Botones Azul Claro</title>
+    <link href="styles-unified-blue.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-8 bg-gray-100">
+    <div class="max-w-4xl mx-auto space-y-8">
+        <h1 class="text-3xl font-bold mb-8 text-center">Todos los Botones con el Mismo Azul Claro</h1>
+        
+        <!-- Vista previa del color -->
+        <section class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-2xl font-semibold mb-4">Esquema de Color Unificado</h2>
+            <div class="flex items-center gap-8">
+                <div>
+                    <div class="w-32 h-32 rounded-lg shadow-md" style="background-color: #3498db;"></div>
+                    <p class="text-center mt-2 font-mono">#3498db</p>
+                    <p class="text-center text-sm text-gray-600">Normal</p>
+                </div>
+                <div>
+                    <div class="w-32 h-32 rounded-lg shadow-md" style="background-color: #2980b9;"></div>
+                    <p class="text-center mt-2 font-mono">#2980b9</p>
+                    <p class="text-center text-sm text-gray-600">Hover</p>
+                </div>
+                <div>
+                    <div class="w-32 h-32 rounded-lg shadow-md" style="background-color: #4b5563;"></div>
+                    <p class="text-center mt-2 font-mono">#4b5563</p>
+                    <p class="text-center text-sm text-gray-600">Disabled</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Todos los botones -->
+        <section class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-2xl font-semibold mb-4">Ejemplos de Botones - Todos Azul Claro</h2>
+            
+            <div class="grid grid-cols-3 gap-4">
+                <!-- Primera fila -->
+                <button class="btn">Convert to V2X</button>
+                <button class="btn">Generate Payload</button>
+                <button class="btn">Copy</button>
+                
+                <!-- Segunda fila -->
+                <button class="btn">Expand</button>
+                <button class="btn">View Raw</button>
+                <button class="btn">Clear</button>
+                
+                <!-- Tercera fila -->
+                <button class="btn">Share</button>
+                <button class="btn">Send Email</button>
+                <button class="btn">Delete All</button>
+                
+                <!-- Cuarta fila - Estados -->
+                <button class="btn" disabled>Disabled Button</button>
+                <button class="btn">A-</button>
+                <button class="btn">A+</button>
+            </div>
+        </section>
+        
+        <!-- Comparación -->
+        <section class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-2xl font-semibold mb-4">Antes vs Después</h2>
+            
+            <div class="grid grid-cols-2 gap-8">
+                <div>
+                    <h3 class="font-semibold mb-3 text-red-600">❌ Antes (4 colores diferentes)</h3>
+                    <div class="space-y-2">
+                        <button style="background-color: #3498db; color: white; padding: 8px 16px; border-radius: 6px;">Primario (Azul)</button>
+                        <button style="background-color: #2ecc71; color: white; padding: 8px 16px; border-radius: 6px;">Secundario (Verde)</button>
+                        <button style="background-color: #e74c3c; color: white; padding: 8px 16px; border-radius: 6px;">Peligro (Rojo)</button>
+                        <button style="background-color: #9c3ae3; color: white; padding: 8px 16px; border-radius: 6px;">Especial (Púrpura)</button>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-3 text-green-600">✅ Después (Un solo color)</h3>
+                    <div class="space-y-2">
+                        <button class="btn">Todos los botones</button>
+                        <button class="btn">usan el mismo</button>
+                        <button class="btn">azul claro</button>
+                        <button class="btn">como Copy</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Código súper simple -->
+        <section class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-2xl font-semibold mb-4">Código Súper Simple</h2>
+            
+            <div class="bg-gray-100 p-4 rounded">
+                <pre><code>/* CSS - Solo necesitas esto: */
+.btn {
+  background-color: #3498db;
+  color: white;
+}
+
+.btn:hover {
+  background-color: #2980b9;
+}
+
+/* HTML - Para cualquier botón: */
+&lt;button class="btn"&gt;Mi Botón&lt;/button&gt;</code></pre>
+            </div>
+            
+            <p class="mt-4 text-green-600 font-semibold">
+                ✨ ¡Eso es todo! No más clases complicadas, no más !important, no más confusión.
+            </p>
+        </section>
+    </div>
+    
+    <!-- Script para mostrar el hover en acción -->
+    <script>
+        // Agregar indicador visual cuando se hace hover
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('mouseenter', function() {
+                this.title = 'Hover: #2980b9';
+            });
+            btn.addEventListener('mouseleave', function() {
+                this.title = '';
+            });
+        });
+    </script>
+</body>
+</html>

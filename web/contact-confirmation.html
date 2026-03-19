@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message Sent - V2X.tools</title>
+    
+    <!-- SEO Protection - Prevent indexing -->
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noodp, noimageindex, notranslate">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta name="bingbot" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: '#3498db',
+              secondary: '#2c3e50',
+              background: '#ecf0f1',
+              textColor: '#333',
+              border: '#bdc3c7',
+              success: '#2ecc71',
+              error: '#e74c3c',
+            },
+            fontFamily: {
+              'sans': ['Inter', 'sans-serif'],
+              'mono': ['Roboto Mono', 'monospace'],
+              'display': ['Montserrat', 'sans-serif']
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+        :root {
+          --primary-color: #3498db;
+          --secondary-color: #2c3e50;
+          --background-color: #ecf0f1;
+          --text-color: #333;
+          --border-color: #bdc3c7;
+          --success-color: #2ecc71;
+          --error-color: #e74c3c;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--secondary-color);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--success-color);
+            margin-top: 0;
+            margin-bottom: 24px;
+            font-size: 2rem;
+        }
+        
+        .success-icon {
+            font-size: 4rem;
+            color: var(--success-color);
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        
+        .subheading {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            color: #4b5563;
+            margin-bottom: 32px;
+            font-size: 1.1rem;
+        }
+        
+        .message-summary {
+            background-color: #f8fffe;
+            border: 1px solid #d1fae5;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .summary-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+        }
+        
+        .summary-item {
+            margin-bottom: 12px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .summary-label {
+            font-weight: 600;
+            color: var(--secondary-color);
+            min-width: 80px;
+            margin-right: 12px;
+        }
+        
+        .summary-value {
+            color: #4b5563;
+            flex: 1;
+            word-break: break-word;
+        }
+        
+        .message-content {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 8px;
+            white-space: pre-wrap;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 16px;
+            margin-top: 32px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-secondary {
+            background-color: #f8f9fa;
+            color: var(--secondary-color);
+            border: 1px solid var(--border-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e9ecef;
+        }
+        
+        .timestamp {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-top: 16px;
+            font-style: italic;
+        }
+
+        /* Dark mode styles */
+        .dark body {
+            background-color: #1a202c;
+            color: #e5e7eb;
+        }
+        
+        .dark .container {
+            background-color: #1f2937;
+        }
+        
+        .dark .summary-label {
+            color: #e5e7eb;
+        }
+        
+        .dark .summary-value {
+            color: #d1d5db;
+        }
+        
+        .dark .message-summary {
+            background-color: #065f46;
+            border-color: #047857;
+        }
+        
+        .dark .message-content {
+            background-color: #374151;
+            border-color: #4b5563;
+            color: #e5e7eb;
+        }
+        
+        .dark .summary-title {
+            color: #e5e7eb;
+        }
+        
+        .dark .subheading {
+            color: #d1d5db;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mx-auto">
+        <div class="success-icon">✅</div>
+        
+        <header>
+            <h1>Message Sent Successfully!</h1>
+            <p class="subheading">Your message has been sent successfully. We'll get back to you as soon as possible.</p>
+        </header>
+        
+        <div class="message-summary">
+            <div class="summary-title">Message Summary</div>
+            
+            <div class="summary-item">
+                <span class="summary-label">Name:</span>
+                <span class="summary-value" id="confirmName">-</span>
+            </div>
+            
+            <div class="summary-item">
+                <span class="summary-label">Email:</span>
+                <span class="summary-value" id="confirmEmail">-</span>
+            </div>
+            
+            <div class="summary-item">
+                <span class="summary-label">Subject:</span>
+                <span class="summary-value" id="confirmSubject">-</span>
+            </div>
+            
+            <div class="summary-item">
+                <span class="summary-label">Message:</span>
+                <div class="message-content" id="confirmMessage">-</div>
+            </div>
+            
+            <div class="timestamp" id="confirmTimestamp">-</div>
+        </div>
+        
+        <div class="actions">
+            <a href="/" class="btn btn-primary">Back to V2X Tools</a>
+            <a href="/contact.html" class="btn btn-secondary">Send Another Message</a>
+        </div>
+    </div>
+    
+    <script>
+        // Check for dark mode preference
+        if (localStorage.getItem('theme') === 'dark' || 
+            (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+        
+        // Load confirmation data from sessionStorage
+        function loadConfirmationData() {
+            const confirmationData = sessionStorage.getItem('contactConfirmation');
+            
+            if (confirmationData) {
+                try {
+                    const data = JSON.parse(confirmationData);
+                    
+                    document.getElementById('confirmName').textContent = data.name || '-';
+                    document.getElementById('confirmEmail').textContent = data.email || '-';
+                    document.getElementById('confirmSubject').textContent = data.subject || '-';
+                    document.getElementById('confirmMessage').textContent = data.message || '-';
+                    document.getElementById('confirmTimestamp').textContent = 'Sent on ' + (data.timestamp || '-');
+                    
+                    // Clear the data from sessionStorage after using it
+                    sessionStorage.removeItem('contactConfirmation');
+                    
+                } catch (error) {
+                    console.error('Error parsing confirmation data:', error);
+                    showErrorState();
+                }
+            } else {
+                // No confirmation data found - redirect back to contact form
+                console.log('No confirmation data found, redirecting to contact form');
+                window.location.href = '/contact.html';
+            }
+        }
+        
+        function showErrorState() {
+            document.querySelector('h1').textContent = 'Error Loading Confirmation';
+            document.querySelector('.subheading').textContent = 'There was an error loading your confirmation details.';
+            document.querySelector('.message-summary').style.display = 'none';
+        }
+        
+        // Load data when page loads
+        document.addEventListener('DOMContentLoaded', loadConfirmationData);
+    </script>
+</body>
+</html>

@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V2X.tools (Beta)</title>
+    
+    <!-- SEO Optimization -->
+    <meta name="description" content="V2X.tools - Free online UPER decoder and encoder for Vehicle-to-Everything communication. Decode, validate, and convert automotive messages for connected cars, smart traffic systems, and autonomous vehicles.">
+    <meta name="keywords" content="V2X, UPER decoder, UPER encoder, Unaligned Packed Encoding Rules, vehicle communication, connected cars, automotive messaging, smart traffic, autonomous vehicles, ITS, C-ITS, message decoder, traffic safety, ASN.1">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="V2X.tools - Vehicle Communication Made Simple">
+    <meta property="og:description" content="Free online tool for automotive engineers and researchers. Decode V2X messages from connected cars and smart traffic systems. No installation required.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://v2x.tools">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="V2X.tools - Vehicle Communication Tool">
+    <meta name="twitter:description" content="Decode and analyze messages from connected cars and smart traffic systems. Free online tool for automotive engineers.">
+    
+    <!-- Sitemap for SEO -->
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EGM7LYNG67"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-EGM7LYNG67');
+    </script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-xml-doc.min.js"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: '#3498db',
+              secondary: '#2c3e50',
+              background: '#ecf0f1',
+              textColor: '#333',
+              border: '#bdc3c7',
+              success: '#2ecc71',
+              error: '#e74c3c',
+            },
+            fontFamily: {
+              'sans': ['Inter', 'sans-serif'],
+              'mono': ['Roboto Mono', 'monospace'],
+              'display': ['Montserrat', 'sans-serif']
+            }
+          }
+        }
+      }
+    </script>
+	<link rel="stylesheet" href="styles.css">
+    <!-- 
+    DESIGN REQUIREMENTS:
+    1. Page must adapt to window size without vertical scrolling
+    2. Utility buttons (copy/expand) must always be positioned exactly 3px from their textareas
+    3. Layout should handle different screen sizes while preserving component proportions
+    -->
+    <style>
+        :root {
+		  --primary-color: #3498db;
+		  --primary-dark: #60a5fa;
+		  --secondary-color: #2c3e50;
+		  --background-color: #ecf0f1;
+		  --text-color: #333;
+		  --border-color: #bdc3c7;
+		  --success-color: #2ecc71;
+		  --error-color: #e74c3c;
+		}
+
+        body {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--secondary-color);
+            margin: 0;
+            padding: 20px;
+            height: 100vh;
+            /* Permitir scrolling en dispositivos móviles */
+            overflow-y: auto;
+            overflow-x: hidden;
+            
+            @media (min-width: 768px) {
+                /* En pantallas grandes mantener overflow hidden */
+                overflow: hidden;
+            }
+        }
+
+        .container {
+            max-width: 95%;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            height: calc(100vh - 40px);
+            overflow: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Layout horizontal */
+        .step-container {
+            flex: 1;
+            overflow: auto;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            min-height: 0; /* Critical for Firefox */
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+
+        .logo {
+            width: 100px;
+            height: auto;
+            margin-right: 20px;
+        }
+
+        h1, h2, h3 {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        h1 {
+            margin: 0;
+        }
+        
+        h2 {
+            margin-top: 5px;
+            margin-bottom: 5px;
+            font-size: 1.3em;
+        }
+
+        .step {
+            margin-bottom: 10px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .radio-group label {
+            display: inline-block;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        select, textarea, button {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+
+        button {
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover:not(:disabled) {
+            background-color: var(--primary-dark);
+        }
+        
+
+        button:disabled {
+            background-color: #d1d5db; /* gray-300 for light mode */
+            cursor: not-allowed;
+        }
+        
+        .dark button:disabled {
+            background-color: #4b5563; /* gray-600 for dark mode */
+        }
+
+        #textAreaInput.readonly {
+            background-color: #e8e8e8;
+            cursor: not-allowed;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* #bytes-len {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        } */
+
+        .output-section {
+            margin-top: 20px;
+        }
+
+        #outputTextArea {
+            background-color: #f0f0f0;
+        }
+
+        .impressum {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #95a5a6;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .toast.hidden {
+            opacity: 0;
+        }
+        .toast.visible {
+            opacity: 1;
+        }
+
+        .api-doc-link {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .api-doc-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .api-doc-link a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Estilos para los botones de payload */
+        .payload-button {
+            background-color: #e2e8f0;
+            color: #4a5568;
+            transition: background-color 0.3s;
+        }
+        
+        .payload-button:hover {
+            background-color: #cbd5e0;
+        }
+        
+        .payload-button.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .payload-button.active:hover {
+            background-color: var(--primary-color);
+        }
+        
+        /* Tab Panel Styles */
+        .tab-button {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-button:hover {
+            color: var(--primary-color);
+        }
+        
+        .tab-button.active {
+            color: var(--primary-color);
+        }
+        
+        .tab-button.active:after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary-color);
+        }
+        
+        .tab-pane {
+            display: none;
+        }
+        
+        .tab-pane.active {
+            display: block;
+        }
+        
+        /* Clases de utilidad para colores */
+        .text-warning {
+            color: #f39c12 !important;
+        }
+        
+        /* Tooltip styles */
+        .tooltip {
+            position: absolute;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 4px;
+            border-style: solid;
+            border-color: #1f2937 transparent transparent transparent;
+        }
+        
+        .group:hover .tooltip {
+            opacity: 1;
+        }
+        
+        .dark .tooltip {
+            background-color: #4B5563;
+        }
+        
+        .dark .tooltip::after {
+            border-color: #4B5563 transparent transparent transparent;
+        }
+        
+        /* Syntax highlighting styles */
+        #highlightedOutput {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        #highlightedOutput code {
+            background: none !important;
+            padding: 0 !important;
+        }
+        
+        /* Light mode syntax colors */
+        .token.property,
+        .token.tag,
+        .token.boolean,
+        .token.number,
+        .token.constant,
+        .token.symbol,
+        .token.deleted {
+            color: #e74c3c;
+        }
+        
+        .token.selector,
+        .token.attr-name,
+        .token.string,
+        .token.char,
+        .token.builtin,
+        .token.inserted {
+            color: #27ae60;
+        }
+        
+        .token.operator,
+        .token.entity,
+        .token.url,
+        .language-css .token.string,
+        .style .token.string {
+            color: #9a6e3a;
+        }
+        
+        .token.atrule,
+        .token.attr-value,
+        .token.keyword {
+            color: #2980b9;
+        }
+        
+        /* Dark mode syntax colors */
+        .dark .token.property,
+        .dark .token.tag,
+        .dark .token.boolean,
+        .dark .token.number {
+            color: #f39c12;
+        }
+        
+        .dark .token.selector,
+        .dark .token.attr-name,
+        .dark .token.string,
+        .dark .token.char {
+            color: #2ecc71;
+        }
+        
+        .dark .token.operator,
+        .dark .token.entity,
+        .dark .token.url {
+            color: #e67e22;
+        }
+        
+        .dark .token.atrule,
+        .dark .token.attr-value,
+        .dark .token.keyword {
+            color: #3498db;
+        }
+
+        /* Context menu styles */
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+            min-width: 120px;
+            padding: 4px 0;
+            display: none;
+        }
+
+        .dark .context-menu {
+            background: #374151;
+            border-color: #4b5563;
+        }
+
+        .context-menu-item {
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #374151;
+            transition: background-color 0.2s;
+        }
+
+        .context-menu-item:hover {
+            background-color: #f3f4f6;
+        }
+
+        .dark .context-menu-item {
+            color: #d1d5db;
+        }
+
+        .dark .context-menu-item:hover {
+            background-color: #4b5563;
+        }
+
+        .context-menu-separator {
+            height: 1px;
+            background-color: #e5e7eb;
+            margin: 4px 0;
+        }
+
+        .dark .context-menu-separator {
+            background-color: #4b5563;
+        }
+
+        /* Resizable divider styles */
+        .resizable-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        .resizable-panel {
+            overflow: hidden;
+            min-width: 200px;
+        }
+
+        .resizable-divider {
+            width: 8px;
+            background: linear-gradient(to right, transparent 2px, #e5e7eb 2px, #e5e7eb 6px, transparent 6px);
+            cursor: ew-resize;
+            position: relative;
+            flex-shrink: 0;
+            transition: background 0.2s ease;
+        }
+
+        .resizable-divider:hover {
+            background: linear-gradient(to right, transparent 1px, #3b82f6 1px, #3b82f6 7px, transparent 7px);
+        }
+
+        .dark .resizable-divider {
+            background: linear-gradient(to right, transparent 2px, #4b5563 2px, #4b5563 6px, transparent 6px);
+        }
+
+        .dark .resizable-divider:hover {
+            background: linear-gradient(to right, transparent 1px, #3b82f6 1px, #3b82f6 7px, transparent 7px);
+        }
+
+        .resizable-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 4px;
+            height: 20px;
+            background: repeating-linear-gradient(
+                to bottom,
+                #9ca3af 0px,
+                #9ca3af 2px,
+                transparent 2px,
+                transparent 4px
+            );
+            opacity: 0.5;
+        }
+
+        .dark .resizable-divider::before {
+            background: repeating-linear-gradient(
+                to bottom,
+                #6b7280 0px,
+                #6b7280 2px,
+                transparent 2px,
+                transparent 4px
+            );
+        }
+
+        /* Hide divider on mobile */
+        @media (max-width: 767px) {
+            .resizable-container {
+                flex-direction: column;
+            }
+            
+            .resizable-divider {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-background dark:bg-gray-900 p-2 h-screen md:overflow-hidden overflow-y-auto font-sans text-textColor dark:text-gray-100">
+    <div class="w-[99%] mx-auto bg-white dark:bg-gray-800 p-2 rounded-lg shadow-md min-h-[calc(100vh-14px)] md:h-[calc(100vh-14px)] overflow-auto flex flex-col border-[0.5px] border-gray-600" id="main-container">
+        <div class="flex items-center justify-between mb-2.5 flex-shrink-0 relative">
+            <h1 class="text-primary text-3xl m-0" style="font-family: 'Montserrat', sans-serif; font-weight: 700;">V2X<span style="color: #4b5563; font-weight: 600;">.tools</span><span class="ml-2 text-sm bg-orange-500 text-white px-2 py-1 rounded-full font-normal">BETA</span></h1>
+            <span id="rotatingHeadline" class="hidden sm:block text-sm md:text-lg text-gray-600 dark:text-gray-300 absolute left-1/2 transform -translate-x-1/2 transition-opacity duration-500 whitespace-nowrap px-2">Convert V2X Payloads Instantly</span>
+            <button id="darkModeToggle" class="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600" title="Toggle dark mode">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon-light w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon-dark w-5 h-5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
+        </div>
+        
+        <div class="flex-1 overflow-auto mb-1 flex flex-col min-h-0 w-full">
+            <!-- Contenedor principal - cambia a columna en dispositivos móviles (< 768px) -->
+            <div class="flex flex-col md:flex-row gap-2 md:gap-0 flex-1 overflow-hidden w-full max-w-full">
+                <div class="resizable-container flex-1 overflow-hidden">
+                    <div id="left-panel" class="resizable-panel bg-gray-50 dark:bg-gray-700 p-2 rounded-lg border border-border dark:border-gray-600 shadow-sm flex flex-col overflow-hidden mb-3 md:mb-0" style="width: 50%">
+                <h2 class="text-primary text-xl font-medium my-1">V2X Payload Source</h2>
+                
+                <!-- Tabs Navigation with Tooltips -->
+                <div class="flex border-b border-border dark:border-gray-600 mt-3">
+                    <button id="pasteTabButton" class="tab-button active py-2 px-4 font-medium border-b-2 border-primary dark:border-primary group relative" title="Paste your own V2X payload">
+                        Paste
+                        <span class="tooltip absolute invisible group-hover:visible bg-gray-800 text-white text-xs rounded py-1 px-2 -mt-12 mx-auto left-1/2 transform -translate-x-1/2 w-40 z-10">Paste your own V2X payload</span>
+                    </button>
+                    <button id="generateTabButton" class="tab-button py-2 px-4 font-medium border-b-2 border-transparent group relative" title="Generate a random payload for testing">
+                        Generate
+                        <span class="tooltip absolute invisible group-hover:visible bg-gray-800 text-white text-xs rounded py-1 px-2 -mt-12 mx-auto left-1/2 transform -translate-x-1/2 w-40 z-10">Generate a random or minimal payload</span>
+                    </button>
+                </div>
+                
+                <!-- Tab Content -->
+                <div class="tab-content mt-4">
+                    <!-- Paste Tab (without controls) -->
+                    <div id="pasteTabContent" class="tab-pane active">
+                        <!-- No controls in Paste tab -->
+                    </div>
+                    
+                    <!-- Generate Tab (Message Type, Format y Minimal Checkbox) -->
+                    <div id="generateTabContent" class="tab-pane hidden">
+                        <div class="flex flex-col md:flex-row gap-4">
+                            <!-- Message Type (100% en móvil, 50% en escritorio) -->
+                            <div id="generateMessageTypeSelectorContainer" class="w-full md:w-1/2">
+                                <label for="generateMessageTypeSelector" class="block mb-2 font-medium">Message Type:</label>
+                                <select id="generateMessageTypeSelector" class="w-full p-2 border border-border dark:border-gray-600 rounded focus:outline-none focus:ring focus:ring-primary/30 dark:bg-gray-800 dark:text-gray-200">
+                                    <option value="cam_v2">CAM v2</option>
+                                    <option value="denm_v2">DENM v2</option>
+                                    <option value="spat_v2">SPATem v2</option>
+                                    <option value="cpm_v1">CPM v1</option>
+                                    <option value="ivi_v2">IVIM v2</option>
+                                    <option value="srem_v2">SREM v2</option>
+                                    <option value="ssem_v2">SSEM v2</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Format (100% en móvil, 50% en escritorio) - ahora oculto -->
+                            <div id="generateInputFormatSelect" class="hidden">
+                                <!-- Format radios ocultos para mantener compatibilidad con JS existente -->
+                                <div class="flex space-x-4">
+                                    <label class="flex items-center cursor-pointer">
+                                        <input type="radio" name="generateSendFormat" value="UPER" checked class="mr-1">
+                                        <span>UPER</span>
+                                    </label>
+                                    <label class="flex items-center cursor-pointer">
+                                        <input type="radio" name="generateSendFormat" value="WER" class="mr-1">
+                                        <span>WER</span>
+                                    </label>
+                                    <label class="flex items-center cursor-pointer">
+                                        <input type="radio" name="generateSendFormat" value="XML" class="mr-1">
+                                        <span>XML</span>
+                                    </label>
+                                    <label class="flex items-center cursor-pointer">
+                                        <input type="radio" name="generateSendFormat" value="JSON" class="mr-1">
+                                        <span>JSON</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Minimal Payload Checkbox -->
+                        <div class="mt-4">
+                            <label class="flex items-center cursor-pointer group relative">
+                                <input type="checkbox" id="minimalPayloadCheckbox" class="mr-2 h-4 w-4 text-primary focus:ring-primary dark:bg-gray-800">
+                                <span>Generate minimal payload</span>
+                                <!-- Tooltip para la explicación -->
+                                <span class="tooltip absolute invisible group-hover:visible bg-gray-800 text-white text-xs rounded py-1 px-2 -mt-8 ml-2 z-10">
+                                    Empty optional fields, default values for mandatory fields
+                                </span>
+                            </label>
+                        </div>
+                        
+                        <!-- Generate Button with Format Dropdown -->
+                        <div class="mt-3 flex items-center gap-3">
+                            <div class="flex-1">
+                                <!-- Generate Button -->
+                                <!-- IMPORTANTE: Todos los botones de acción principal deben usar el mismo esquema de color que el botón "Convert to" -->
+                                <button id="generatePayloadButton" class="p-2 bg-primary text-white font-medium rounded transition-colors text-center cursor-pointer w-full">
+                                    Generate random payload
+                                </button>
+                                <!-- Quitamos hover:bg-blue-500 que está causando problemas y pondremos el hover via CSS específico -->
+                            </div>
+                            <!-- Format Dropdown -->
+                            <select id="generateFormatSelect" class="w-24 p-2 border border-border dark:border-gray-600 rounded focus:outline-none focus:ring focus:ring-primary/30 dark:bg-gray-800 dark:text-gray-200">
+                                <option value="UPER">UPER</option>
+                                <option value="WER">WER</option>
+                                <option value="XML">XML</option>
+                                <option value="JSON">JSON</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Input Format radios ocultos para mantener compatibilidad -->
+                        <div class="hidden">
+                            <input type="radio" name="minimalSendFormat" value="UPER" checked>
+                            <input type="radio" name="randomSendFormat" value="UPER" checked>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Hidden input format radios for Paste tab -->
+                <div class="hidden">
+                    <div id="inputFormatSelect">
+                        <div class="flex flex-wrap gap-4">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="sendFormat" value="UPER" checked class="mr-2">
+                                <span>UPER</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="sendFormat" value="WER" class="mr-2">
+                                <span>WER</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="sendFormat" value="XML" class="mr-2">
+                                <span>XML</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="sendFormat" value="JSON" class="mr-2">
+                                <span>JSON</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Container común para todos los textareas con label y botones -->
+                <div id="payloadInput" class="flex-1 flex flex-col min-h-0 mt-4">
+                    <div class="flex justify-between items-baseline mb-1">
+                        <label class="font-medium">V2X Payload:</label>
+                        <div class="flex items-center">
+                            <div id="format-auto-detected" class="hidden text-xs text-success mr-2.5 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                                <span id="format-auto-detected-text">Format detected: <strong id="detected-format-value">UPER</strong></span>
+                            </div>
+                            <div id="bytes-len" class="text-xs text-gray-500 font-medium">0 bytes</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Textarea para pestaña Paste -->
+                    <textarea id="pasteTextArea" class="flex-1 min-h-[180px] md:min-h-[100px] resize-none font-mono text-sm p-2 border border-border dark:border-gray-600 rounded-md focus:outline-none focus:ring focus:ring-primary/30 leading-snug dark:bg-gray-800 dark:text-gray-200 font-['Roboto_Mono'] font-normal" placeholder="Paste your V2X payload here & select output format"></textarea>
+                    
+                    <!-- Textarea para pestaña Generate (inicialmente oculto) -->
+                    <textarea id="generateTextArea" class="hidden flex-1 min-h-[180px] md:min-h-[100px] resize-none font-mono text-sm p-2 border border-border dark:border-gray-600 rounded-md focus:outline-none focus:ring focus:ring-primary/30 leading-snug dark:bg-gray-800 dark:text-gray-200 bg-gray-100 cursor-not-allowed font-['Roboto_Mono'] font-normal" placeholder="Generated payload will appear here..." readonly></textarea>
+                    
+                    <!-- Textareas ocultos para mantener compatibilidad con el código existente -->
+                    <textarea id="minimalTextArea" class="hidden flex-1 min-h-[180px] md:min-h-[100px] resize-none font-mono" readonly></textarea>
+                    <textarea id="randomTextArea" class="hidden flex-1 min-h-[180px] md:min-h-[100px] resize-none font-mono" readonly></textarea>
+                    
+                    <!-- IMPORTANT: Utility buttons must always be positioned exactly 3px from their textareas -->
+                    <div class="flex justify-between mt-[3px]">
+                        <button id="clearInputButton" class="w-16 p-1 bg-primary text-white text-xs rounded">
+                            Clear
+                        </button>
+                        <button id="copyButton1" class="w-16 p-1 bg-primary hover:bg-blue-500 text-white flex items-center justify-center rounded">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="mt-5 pt-1 border-t border-border flex items-center gap-3">
+                    <div id="convertButtonContainer" class="flex-1">
+                        <!-- IMPORTANTE: Todos los botones de acción principal deben usar este mismo esquema de color (bg-primary) -->
+                        <button id="convertButton" class="p-2 bg-primary text-white font-medium rounded transition-colors text-center cursor-pointer">
+                            Convert to
+                        </button>
+                        <!-- Quitamos hover:bg-blue-500 que está causando problemas y pondremos el hover via CSS específico -->
+                        <div id="convertButtonDisabled" class="hidden p-2 text-white font-medium rounded text-center cursor-not-allowed bg-gray-300 dark:bg-[#4b5563]">
+                            Convert to
+                        </div>
+                    </div>
+                    <select id="outputFormatSelect" class="w-24 p-2 border border-border dark:border-gray-600 rounded focus:outline-none focus:ring focus:ring-primary/30 dark:bg-gray-800 dark:text-gray-200">
+                        <option value="UPER">UPER</option>
+                        <option value="WER">WER</option>
+                        <option value="XML" selected>XML</option>
+                        <option value="JSON">JSON</option>
+                    </select>
+                </div>
+                    </div>
+
+                    <!-- Resizable divider -->
+                    <div id="resizable-divider" class="resizable-divider hidden md:block"></div>
+
+                    <div id="right-panel" class="resizable-panel bg-gray-50 dark:bg-gray-700 p-2 rounded-lg border border-border dark:border-gray-600 shadow-sm flex flex-col overflow-hidden" style="width: 50%">
+                
+                <!-- Tab navigation (populated dynamically by TabManager) -->
+                <div class="flex items-end border-b border-gray-300 dark:border-gray-600 overflow-x-auto overflow-y-hidden h-10">
+                    <div class="flex flex-nowrap whitespace-nowrap">
+                        <!-- Tabs will be created dynamically by TabManager -->
+                    </div>
+                </div>
+                
+                <div class="flex-1 flex flex-col min-h-0 mt-2">
+                    <div class="flex justify-end items-center mb-0.5 mt-0">
+                        <div id="conversion-status" class="text-[8px]"></div>
+                    </div>
+                    <div class="flex-1 min-h-[180px] md:min-h-[100px] relative">
+                        <!-- Tab content will be created dynamically by TabManager -->
+                        <!-- Original output (hidden) -->
+                        <textarea id="outputTextArea" class="absolute inset-0 resize-none font-mono p-2 border border-border dark:border-gray-600 rounded-md bg-gray-50 leading-snug font-['Roboto_Mono'] font-normal hidden" style="opacity: 0; pointer-events: none;" readonly></textarea>
+                        <pre id="highlightedOutput" class="absolute inset-0 overflow-auto font-mono p-2 border border-border dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-800 leading-snug font-['Roboto_Mono'] font-normal m-0 hidden"><code class="language-none"></code></pre>
+                    </div>
+                    <!-- 
+                    IMPORTANT: Utility buttons must always be positioned exactly 3px from their textareas
+                    
+                    BUTTON STYLE GUIDE:
+                    1. Primary buttons (like Convert): bg-primary hover:bg-blue-500
+                    2. Destructive buttons (like Clear): bg-error hover:bg-red-600 
+                    3. Success buttons (like Expand): bg-success hover:bg-green-600
+                    4. Utility buttons (like font size): bg-gray-400 hover:bg-gray-500
+                    
+                    DISABLED STATE:
+                    - All disabled buttons:
+                    - Do NOT use different text colors in disabled state
+                    - IMPORTANT: Always include to prevent hover effect when disabled
+                    
+                    PADDING & SIZE:
+                    - Standard size: w-16 p-1
+                    - Small size: w-8 p-1
+                    - Margins: mr-1.5 between buttons
+                    -->
+                    <div class="flex justify-between mt-[3px]">
+                        <div class="flex">
+                            <!-- Font size buttons - use standard utility button styling (gray-500) with -->
+                            <button id="fontSizeDecreaseButton" class="w-8 p-1 enabled:bg-primary text-white text-xs rounded flex items-center justify-center mr-1 relative z-20" style="min-height: 32px; line-height: 1;">
+                                A-
+                            </button>
+                            <button id="fontSizeIncreaseButton" class="w-8 p-1 enabled:bg-primary text-white text-xs rounded flex items-center justify-center relative z-20" style="min-height: 32px; line-height: 1;">
+                                A+
+                            </button>
+                        </div>
+                        <div class="flex">
+                            <div class="relative">
+                                <button id="shareButton" class="w-16 h-8 p-1 bg-primary hover:bg-blue-500 text-white flex items-center justify-center rounded mr-1.5 group relative">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                                      <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+                                    </svg>
+                                    <span class="tooltip absolute invisible group-hover:visible bg-gray-800 text-white text-xs rounded py-1 px-2 -mt-12 mx-auto left-1/2 transform -translate-x-1/2 w-40 z-10">Share via email</span>
+                                </button>
+                                <div id="shareDropdown" class="absolute bottom-full left-0 mb-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded shadow-lg z-20 hidden min-w-[140px]">
+                                    <button id="shareCurrent" class="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200">Share Current Tab</button>
+                                    <button id="shareAll" class="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200">Share All Tabs</button>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <button id="downloadButton" class="w-16 h-8 p-1 bg-primary hover:bg-blue-500 text-white flex items-center justify-center rounded mr-1.5 group relative">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                                      <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                                    </svg>
+                                    <span class="tooltip absolute invisible group-hover:visible bg-gray-800 text-white text-xs rounded py-1 px-2 -mt-12 mx-auto left-1/2 transform -translate-x-1/2 w-40 z-10">Download</span>
+                                </button>
+                                <div id="downloadDropdown" class="absolute bottom-full left-0 mb-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded shadow-lg z-20 hidden min-w-[160px]">
+                                    <div class="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-600">Current Tab</div>
+                                    <button id="downloadCurrentHTML" class="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200">Download as HTML</button>
+                                    <button id="downloadCurrentCSV" class="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200">Download as CSV</button>
+                                    <div class="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 border-b border-t border-gray-200 dark:border-gray-600">All Tabs</div>
+                                    <button id="downloadAllHTML" class="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200">Download as HTML</button>
+                                    <button id="downloadAllCSV" class="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200">Download as CSV</button>
+                                </div>
+                            </div>
+                            <button id="expandButton" class="w-16 p-1 bg-primary text-white flex items-center justify-center rounded mr-1.5 group relative">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M15 3l2.3 2.3-2.89 2.87 1.42 1.42L18.7 6.7 21 9V3h-6zM3 9l2.3-2.3 2.87 2.89 1.42-1.42L6.7 5.3 9 3H3v6zm6 12l-2.3-2.3 2.89-2.87-1.42-1.42L5.3 17.3 3 15v6h6zm12-6l-2.3 2.3-2.87-2.89-1.42 1.42 2.89 2.87L15 21h6v-6z"/>
+                                </svg>
+                                <span class="tooltip absolute invisible group-hover:visible bg-gray-800 text-white text-xs rounded py-1 px-2 -mt-12 mx-auto left-1/2 transform -translate-x-1/2 w-40 z-10">Open in new window</span>
+                            </button>
+                            <button id="copyButton" class="w-16 p-1 bg-primary text-white flex items-center justify-center rounded">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="mt-1 text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">
+            <div class="w-full flex justify-between items-center">
+                <div class="text-left">
+                    A Product of v2xnow.de - We speak the language of vehicles
+                </div>
+                <div class="flex justify-center items-center gap-x-2">
+                    <a href="/swagger-ui" target="_blank" class="text-primary hover:underline whitespace-nowrap" onclick="if(typeof gtag !== 'undefined') gtag('event', 'api_docs_click', {'value': 1});">API Documentation</a>
+                    <span>|</span>
+                    <a href="contact.html" target="_blank" class="text-primary hover:underline whitespace-nowrap">Contact</a>
+                    <span>|</span>
+                    <button onclick="openTermsDisclaimer()" class="text-primary hover:underline focus:outline-none whitespace-nowrap">Terms of Use & Disclaimer</button>
+                    <span>|</span>
+                    <button onclick="openPrivacyPolicy()" class="text-primary hover:underline focus:outline-none whitespace-nowrap">Privacy Policy</button>
+                    <span>|</span>
+                    <button onclick="openImpressum()" class="text-primary hover:underline focus:outline-none whitespace-nowrap">Impressum</button>
+                </div>
+                <div class="text-right">
+                    Trusted by Engineers at the German Aerospace Center
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <div id="toast" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-black/80 text-white px-5 py-2.5 rounded transition-opacity duration-300 opacity-0">Copied to clipboard</div>
+
+    <!-- Modal para compartir por email -->
+    <div id="shareModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white whitespace-nowrap">Share Conversion</h3>
+                <button id="closeShareModal" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <form id="shareForm">
+                <div class="mb-4">
+                    <label for="emailInput" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
+                    <input type="email" id="emailInput" name="email" required
+                        class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring focus:ring-primary/30 dark:bg-gray-700 dark:text-white"
+                        placeholder="Enter recipient's email">
+                </div>
+                <div id="shareError" class="text-red-500 text-sm mb-4 hidden"></div>
+                <div id="shareSuccess" class="text-green-500 text-sm mb-4 hidden">Email sent successfully!</div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" id="cancelShareBtn" 
+                        class="px-4 py-2 bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white rounded">
+                        Cancel
+                    </button>
+                    <button type="submit" id="sendEmailBtn"
+                        class="px-4 py-2 bg-primary hover:bg-blue-500 text-white rounded transition-colors">
+                        Send
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Impressum Modal -->
+    <div id="impressumModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full mx-4 max-h-96 overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Impressum</h3>
+                <button onclick="closeImpressum()" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="text-sm text-gray-700 dark:text-gray-300 space-y-3">
+                <div>
+                    <strong>Maximiliano Bottazzi</strong><br>
+                    Lichtenrader Str. 47<br>
+                    12049 Berlin<br>
+                    Deutschland
+                </div>
+                <div>
+                    <strong>E-Mail:</strong> contact@v2xnow.de<br>
+                    <strong>Telefon:</strong> +49 176 78188784
+                </div>
+                <div>
+                    <strong>Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV:</strong><br>
+                    Maximiliano Bottazzi<br>
+                    Lichtenrader Str. 47, 12049 Berlin
+                </div>
+                <div>
+                    <strong>Hinweis:</strong> Diese Website dient ausschließlich zu Informationszwecken 
+                    und stellt derzeit kein kommerzielles Angebot dar.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div id="privacyPolicyModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-lg w-full mx-4 max-h-96 overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Privacy Policy</h3>
+                <button onclick="closePrivacyPolicy()" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="text-sm text-gray-700 dark:text-gray-300 space-y-4">
+                <div>
+                    <strong>Last updated:</strong> January 2025
+                </div>
+                <div>
+                    <strong>Data Processing:</strong><br>
+                    V2X payloads are processed on our servers for decoding purposes only.
+                </div>
+                <div>
+                    <strong>What We Do:</strong>
+                    <ul class="list-disc list-inside mt-2 space-y-1">
+                        <li>Process submitted payloads to provide decoding results</li>
+                        <li>Temporarily store data in memory during processing</li>
+                        <li>Return decoded results to your browser</li>
+                    </ul>
+                </div>
+                <div>
+                    <strong>What We DON'T Do:</strong>
+                    <ul class="list-disc list-inside mt-2 space-y-1">
+                        <li>Store payloads permanently on our servers</li>
+                        <li>Share data with third parties</li>
+                        <li>Use data for any purpose other than decoding</li>
+                        <li>Retain data after processing is complete</li>
+                    </ul>
+                </div>
+                <div>
+                    <strong>Data Retention:</strong><br>
+                    Payload data is automatically deleted after processing. 
+                    No long-term storage or logging of user inputs.
+                </div>
+                <div>
+                    <strong>Security:</strong><br>
+                    Data transmission is encrypted via HTTPS.
+                    Processing occurs in isolated server environments.
+                </div>
+                <div>
+                    <strong>Contact:</strong><br>
+                    For questions: contact@v2xnow.de
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms of Use & Disclaimer Modal -->
+    <div id="termsDisclaimerModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-2xl w-full mx-4 max-h-96 overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Terms of Use & Disclaimer</h3>
+                <button onclick="closeTermsDisclaimer()" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="text-sm text-gray-700 dark:text-gray-300 space-y-4">
+                <div class="text-center text-red-600 dark:text-red-400 font-bold text-lg">
+                    USE AT YOUR OWN RISK
+                </div>
+                <div>
+                    This tool is provided "as is" without any warranties or guarantees.
+                </div>
+                <div>
+                    <strong>NO LIABILITY:</strong>
+                    <ul class="list-disc list-inside mt-2 space-y-1">
+                        <li>We are not responsible for any consequences arising from the use of decoded data</li>
+                        <li>Users assume full responsibility for any decisions made based on our results</li>
+                        <li>No liability for damages, losses, or issues caused by using this service</li>
+                    </ul>
+                </div>
+                <div>
+                    <strong>ACCURACY:</strong>
+                    <ul class="list-disc list-inside mt-2 space-y-1">
+                        <li>While we strive for accuracy, decoding results may contain errors</li>
+                        <li>Always verify critical data through additional means</li>
+                        <li>This tool is for informational purposes only</li>
+                    </ul>
+                </div>
+                <div>
+                    <strong>PROFESSIONAL USE:</strong>
+                    <ul class="list-disc list-inside mt-2 space-y-1">
+                        <li>Not intended for safety-critical applications</li>
+                        <li>Users must validate results independently</li>
+                        <li>Consult qualified professionals for mission-critical implementations</li>
+                    </ul>
+                </div>
+                <div class="text-center font-semibold pt-2 border-t border-gray-200 dark:border-gray-600">
+                    By using this website, you acknowledge and accept these terms.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="tabManager.js"></script>
+    <script src="v2xConverter.js"></script>
+    
+
+    <!-- Context menu -->
+    <div id="tab-context-menu" class="context-menu">
+        <div class="context-menu-item" data-action="close">Close</div>
+        <div class="context-menu-item" data-action="close-all">Close All</div>
+        <div class="context-menu-item" data-action="close-others">Close Others</div>
+        <div class="context-menu-separator"></div>
+        <div class="context-menu-item" data-action="rename">Rename</div>
+    </div>
+
+    <!-- Resizable panels script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const divider = document.getElementById('resizable-divider');
+            const leftPanel = document.getElementById('left-panel');
+            const rightPanel = document.getElementById('right-panel');
+            const container = document.querySelector('.resizable-container');
+            
+            if (!divider || !leftPanel || !rightPanel || !container) {
+                console.warn('Resizable elements not found');
+                return;
+            }
+            
+            let isResizing = false;
+            let startX = 0;
+            let startLeftWidth = 0;
+            let startRightWidth = 0;
+            
+            // Load saved widths from localStorage
+            const savedLeftWidth = localStorage.getItem('v2x-left-panel-width');
+            const savedRightWidth = localStorage.getItem('v2x-right-panel-width');
+            
+            if (savedLeftWidth && savedRightWidth) {
+                leftPanel.style.width = savedLeftWidth;
+                rightPanel.style.width = savedRightWidth;
+            }
+            
+            divider.addEventListener('mousedown', function(e) {
+                isResizing = true;
+                startX = e.clientX;
+                
+                const containerRect = container.getBoundingClientRect();
+                const leftRect = leftPanel.getBoundingClientRect();
+                const rightRect = rightPanel.getBoundingClientRect();
+                
+                startLeftWidth = leftRect.width;
+                startRightWidth = rightRect.width;
+                
+                document.body.style.cursor = 'ew-resize';
+                document.body.style.userSelect = 'none';
+                
+                e.preventDefault();
+            });
+            
+            document.addEventListener('mousemove', function(e) {
+                if (!isResizing) return;
+                
+                const containerRect = container.getBoundingClientRect();
+                const containerWidth = containerRect.width - 8; // Subtract divider width
+                const deltaX = e.clientX - startX;
+                
+                const newLeftWidth = startLeftWidth + deltaX;
+                const newRightWidth = startRightWidth - deltaX;
+                
+                // Set minimum widths
+                const minWidth = 200;
+                if (newLeftWidth >= minWidth && newRightWidth >= minWidth) {
+                    const leftPercentage = (newLeftWidth / containerWidth) * 100;
+                    const rightPercentage = (newRightWidth / containerWidth) * 100;
+                    
+                    leftPanel.style.width = leftPercentage + '%';
+                    rightPanel.style.width = rightPercentage + '%';
+                }
+            });
+            
+            document.addEventListener('mouseup', function() {
+                if (isResizing) {
+                    isResizing = false;
+                    document.body.style.cursor = '';
+                    document.body.style.userSelect = '';
+                    
+                    // Save widths to localStorage
+                    localStorage.setItem('v2x-left-panel-width', leftPanel.style.width);
+                    localStorage.setItem('v2x-right-panel-width', rightPanel.style.width);
+                }
+            });
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                // Recalculate percentages on window resize if needed
+                if (window.innerWidth >= 768) { // Only on desktop
+                    const leftWidth = parseFloat(leftPanel.style.width) || 50;
+                    const rightWidth = 100 - leftWidth;
+                    rightPanel.style.width = rightWidth + '%';
+                }
+            });
+        });
+    </script>
+    
+    <!-- Dropdown handlers -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Share dropdown
+            const shareButton = document.getElementById('shareButton');
+            const shareDropdown = document.getElementById('shareDropdown');
+            const shareCurrent = document.getElementById('shareCurrent');
+            const shareAll = document.getElementById('shareAll');
+            
+            shareButton?.addEventListener('click', function(e) {
+                e.stopPropagation();
+                shareDropdown.classList.toggle('hidden');
+                // Close other dropdowns
+                document.getElementById('downloadDropdown')?.classList.add('hidden');
+                document.getElementById('feedbackDropdown')?.classList.add('hidden');
+            });
+            
+            shareCurrent?.addEventListener('click', function() {
+                shareDropdown.classList.add('hidden');
+                if (typeof shareCurrentTab === 'function') {
+                    shareCurrentTab();
+                }
+            });
+            
+            shareAll?.addEventListener('click', function() {
+                shareDropdown.classList.add('hidden');
+                if (typeof shareAllTabs === 'function') {
+                    shareAllTabs();
+                }
+            });
+            
+            // Download dropdown
+            const downloadButton = document.getElementById('downloadButton');
+            const downloadDropdown = document.getElementById('downloadDropdown');
+            const downloadCurrentHTML = document.getElementById('downloadCurrentHTML');
+            const downloadCurrentCSV = document.getElementById('downloadCurrentCSV');
+            const downloadAllHTML = document.getElementById('downloadAllHTML');
+            const downloadAllCSV = document.getElementById('downloadAllCSV');
+            
+            downloadButton?.addEventListener('click', function(e) {
+                e.stopPropagation();
+                downloadDropdown.classList.toggle('hidden');
+                // Close other dropdowns
+                document.getElementById('shareDropdown')?.classList.add('hidden');
+                document.getElementById('feedbackDropdown')?.classList.add('hidden');
+            });
+            
+            downloadCurrentHTML?.addEventListener('click', function() {
+                downloadDropdown.classList.add('hidden');
+                if (typeof downloadCurrentTab === 'function') {
+                    downloadCurrentTab('html');
+                }
+            });
+            
+            downloadCurrentCSV?.addEventListener('click', function() {
+                downloadDropdown.classList.add('hidden');
+                if (typeof downloadCurrentTab === 'function') {
+                    downloadCurrentTab('csv');
+                }
+            });
+            
+            downloadAllHTML?.addEventListener('click', function() {
+                downloadDropdown.classList.add('hidden');
+                if (typeof downloadAllTabs === 'function') {
+                    downloadAllTabs('html');
+                }
+            });
+            
+            downloadAllCSV?.addEventListener('click', function() {
+                downloadDropdown.classList.add('hidden');
+                if (typeof downloadAllTabs === 'function') {
+                    downloadAllTabs('csv');
+                }
+            });
+            
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!shareButton?.contains(e.target) && !shareDropdown?.contains(e.target)) {
+                    shareDropdown?.classList.add('hidden');
+                }
+                if (!downloadButton?.contains(e.target) && !downloadDropdown?.contains(e.target)) {
+                    downloadDropdown?.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

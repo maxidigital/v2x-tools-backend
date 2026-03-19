@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Statistics</title>
+    
+    <!-- SEO Protection - Prevent indexing -->
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noodp, noimageindex, notranslate">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta name="bingbot" content="noindex, nofollow">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.development.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.development.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // Configuration object
+        const config = {
+            apiPath: '/v2xtools/api/access-stats' // Adjust this to match your actual API path
+        };
+
+        const AccessStats = ({ apiPath }) => {
+            const [accessData, setAccessData] = useState([]);
+            const [loading, setLoading] = useState(true);
+            const [error, setError] = useState(null);
+            const [expandedItems, setExpandedItems] = useState({});
+            const [groupBy, setGroupBy] = useState('ip');
+            const [showGraph, setShowGraph] = useState(false);
+            const chartRef = useRef(null);
+            const chartInstance = useRef(null);
+
+            useEffect(() => {
+                fetchData();
+            }, []);
+
+            useEffect(() => {
+                if (showGraph && accessData.length > 0) {
+                    const ctx = chartRef.current.getContext('2d');
+                    const graphData = prepareGraphData(accessData);
+
+                    if (chartInstance.current) {
+                        chartInstance.current.destroy();
+                    }
+
+                    chartInstance.current = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: graphData.map(d => d.date),
+                            datasets: [{
+                                label: 'Page Accesses',
+                                data: graphData.map(d => d.count),
+                                borderColor: 'rgb(75, 192, 192)',
+                                tension: 0.1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                }
+            }, [showGraph, accessData]);
+
+            const fetchData = async () => {
+                try {
+                    // Construct the full URL
+                    const fullUrl = new URL(apiPath, window.location.origin);
+                    console.log('Attempting to fetch data from:', fullUrl.toString());
+
+                    const response = await fetch(fullUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({}),
+                        credentials: 'include' // This includes cookies in the request
+                    });
+
+                    console.log('Response status:', response.status);
+                    console.log('Response headers:', response.headers);
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    console.log('Received data:', data);
+                    setAccessData(data);
+                    setLoading(false);
+                } catch (error) {
+                    console.error('Error in fetchData:', error);
+                    setError(`Error loading data: ${error.message}. API path: ${apiPath}`);
+                    setLoading(false);
+                }
+            };
+
+            const toggleItem = (id) => {
+                setExpandedItems(prev => ({
+                    ...prev,
+                    [id]: !prev[id]
+                }));
+            };
+
+            const groupData = (data, key) => {
+                return data.reduce((acc, item) => {
+                    const groupKey = item[key];
+                    if (!acc[groupKey]) {
+                        acc[groupKey] = [];
+                    }
+                    acc[groupKey].push(item);
+                    return acc;
+                }, {});
+            };
+
+            const prepareGraphData = (data) => {
+                const countsByDate = data.reduce((acc, item) => {
+                    const date = item.date;
+                    acc[date] = (acc[date] || 0) + 1;
+                    return acc;
+                }, {});
+
+                return Object.entries(countsByDate).map(([date, count]) => ({ date, count }));
+            };
+
+            const groupedData = groupData(accessData, groupBy);
+
+            if (loading) return <div>Loading...</div>;
+            if (error) return <div className="text-red-500">{error}</div>;
+
+            return (
+                <div className="p-4">
+                    <h1 className="text-2xl font-bold mb-4">Access Statistics</h1>
+                    <div className="mb-4">
+                        <button 
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
+                            onClick={() => setGroupBy('ip')}
+                        >
+                            Group by IP
+                        </button>
+                        <button 
+                            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2"
+                            onClick={() => setGroupBy('date')}
+                        >
+                            Group by Date
+                        </button>
+                        <button 
+                            className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
+                            onClick={() => setShowGraph(!showGraph)}
+                        >
+                            {showGraph ? 'Hide' : 'Show'} Graph
+                        </button>
+                    </div>
+                    
+                    {showGraph && (
+                        <div className="mb-4">
+                            <canvas ref={chartRef} width="600" height="300"></canvas>
+                        </div>
+                    )}
+
+                    <p className="text-lg mb-4">Total accesses: {accessData.length}</p>
+                    
+                    {Object.entries(groupedData).map(([key, entries]) => (
+                        <div key={key} className="mb-4 border rounded p-2">
+                            <h2 className="text-xl font-semibold">{groupBy === 'ip' ? 'IP' : 'Date'}: {key} ({entries.length} accesses)</h2>
+                            {entries.map((entry, index) => (
+                                <div key={index} className="mt-2">
+                                    <button 
+                                        className="flex items-center text-left w-full"
+                                        onClick={() => toggleItem(`${key}-${index}`)}
+                                    >
+                                        {expandedItems[`${key}-${index}`] ? "▼" : "▶"}
+                                        <span className="ml-2">{groupBy === 'ip' ? `${entry.date} - ${entry.time}` : `${entry.ip} - ${entry.time}`}</span>
+                                    </button>
+                                    {expandedItems[`${key}-${index}`] && (
+                                        <div className="ml-6 mt-2">
+                                            <p><strong>Information sent:</strong> {entry.sent}</p>
+                                            <p><strong>Information received:</strong> {entry.received}</p>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    ))}
+                </div>
+            );
+        };
+
+        ReactDOM.render(<AccessStats apiPath={config.apiPath} />, document.getElementById('root'));
+    </script>
+</body>
+</html>

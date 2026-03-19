@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V2X.tools</title>
+    
+    <!-- SEO Protection - Prevent indexing -->
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noodp, noimageindex, notranslate">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta name="bingbot" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: '#3498db',
+              secondary: '#2c3e50',
+              background: '#ecf0f1',
+              textColor: '#333',
+              border: '#bdc3c7',
+              success: '#2ecc71',
+              error: '#e74c3c',
+            },
+            fontFamily: {
+              'sans': ['Inter', 'sans-serif'],
+              'mono': ['Roboto Mono', 'monospace'],
+              'display': ['Montserrat', 'sans-serif']
+            }
+          }
+        }
+      }
+    </script>
+	<link rel="stylesheet" href="styles.css">
+    <!-- 
+    DESIGN REQUIREMENTS:
+    1. Page must adapt to window size without vertical scrolling
+    2. Utility buttons (copy/expand) must always be positioned exactly 3px from their textareas
+    3. Layout should handle different screen sizes while preserving component proportions
+    -->
+    <style>
+        :root {
+		  --primary-color: #3498db;
+		  --secondary-color: #2c3e50;
+		  --background-color: #ecf0f1;
+		  --text-color: #333;
+		  --border-color: #bdc3c7;
+		  --success-color: #2ecc71;
+		  --error-color: #e74c3c;
+		}
+
+        body {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--secondary-color);
+            margin: 0;
+            padding: 20px;
+            height: 100vh;
+            /* Permitir scrolling en dispositivos móviles */
+            overflow-y: auto;
+            overflow-x: hidden;
+            
+            @media (min-width: 768px) {
+                /* En pantallas grandes mantener overflow hidden */
+                overflow: hidden;
+            }
+        }
+
+        .container {
+            max-width: 95%;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            height: calc(100vh - 40px);
+            overflow: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Layout horizontal */
+        .step-container {
+            flex: 1;
+            overflow: auto;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            min-height: 0; /* Critical for Firefox */
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+
+        .logo {
+            width: 100px;
+            height: auto;
+            margin-right: 20px;
+        }
+
+        h1, h2, h3 {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        h1 {
+            margin: 0;
+        }
+        
+        h2 {
+            margin-top: 5px;
+            margin-bottom: 5px;
+            font-size: 1.3em;
+        }
+
+        .step {
+            margin-bottom: 10px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .radio-group label {
+            display: inline-block;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        select, textarea, button {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover:not(:disabled) {
+            background-color: var(--primary-dark);
+        }
+        
+        #clearInputButton:hover:not(:disabled),
+        #clearButton:hover:not(:disabled) {
+            background-color: #c0392b;
+        }
+
+        button:disabled {
+            background-color: var(--border-color);
+            cursor: not-allowed;
+        }
+
+        #textAreaInput.readonly {
+            background-color: #e8e8e8;
+            cursor: not-allowed;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* #bytes-len {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        } */
+
+        .output-section {
+            margin-top: 20px;
+        }
+
+        #outputTextArea {
+            background-color: #f0f0f0;
+        }
+
+        .impressum {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #95a5a6;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .toast.hidden {
+            opacity: 0;
+        }
+        .toast.visible {
+            opacity: 1;
+        }
+
+        .api-doc-link {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .api-doc-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .api-doc-link a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Estilos para los botones de payload */
+        .payload-button {
+            background-color: #e2e8f0;
+            color: #4a5568;
+            transition: background-color 0.3s;
+        }
+        
+        .payload-button:hover {
+            background-color: #cbd5e0;
+        }
+        
+        .payload-button.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .payload-button.active:hover {
+            background-color: var(--primary-color);
+        }
+        
+        /* Tab Panel Styles */
+        .tab-button {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-button:hover {
+            color: var(--primary-color);
+        }
+        
+        .tab-button.active {
+            color: var(--primary-color);
+        }
+        
+        .tab-button.active:after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary-color);
+        }
+        
+        .tab-pane {
+            display: none;
+        }
+        
+        .tab-pane.active {
+            display: block;
+        }
+        
+        /* Clases de utilidad para colores */
+        .text-warning {
+            color: #f39c12 !important;
+        }
+        
+        /* Tooltip styles */
+        .tooltip {
+            position: absolute;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 4px;
+            border-style: solid;
+            border-color: #1f2937 transparent transparent transparent;
+        }
+        
+        .group:hover .tooltip {
+            opacity: 1;
+        }
+        
+        .dark .tooltip {
+            background-color: #4B5563;
+        }
+        
+        .dark .tooltip::after {
+            border-color: #4B5563 transparent transparent transparent;
+        }
+    </style>
+</head>
+<body class="bg-background dark:bg-gray-900 p-2 h-screen md:overflow-hidden overflow-y-auto font-sans text-textColor dark:text-gray-100">
+    <div class="w-[99%] mx-auto bg-white dark:bg-gray-800 p-2 rounded-lg shadow-md min-h-[calc(100vh-14px)] md:h-[calc(100vh-14px)] overflow-auto flex flex-col" id="main-container">
+        <div class="flex items-center justify-between mb-2.5 flex-shrink-0">
+            <div class="flex items-center">
+                <h1 class="text-primary text-3xl m-0" style="font-family: 'Montserrat', sans-serif; font-weight: 700;">V2X<span style="color: #4b5563; font-weight: 600;">.tools</span></h1>
+            </div>
+            <button id="darkModeToggle" class="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600" title="Toggle dark mode">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon-light w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon-dark w-5 h-5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
+        </div>
+        
+        <div class="flex-1 overflow-auto mb-1 flex flex-col min-h-0 w-full">
+            <!-- Contenedor principal - cambia a columna en dispositivos móviles (< 768px) -->
+            <div class="flex flex-col md:flex-row gap-2 flex-1 overflow-hidden w-full max-w-full">
+                <div class="bg-gray-50 dark:bg-gray-700 p-2 rounded-lg border border-border dark:border-gray-600 shadow-sm flex-1 md:h-auto min-h-[350px] md:min-h-0 flex flex-col overflow-hidden mb-3 md:mb-0">
+                <h2 class="text-primary text-xl font-medium my-1">V2X Payload Source</h2>
+                
+                <!-- Tabs Navigation with Tooltips -->
+                <div class="flex border-b border-border dark:border-gray-600 mt-3">
+                    <button id="pasteTabButton" class="tab-button active py-2 px-4 font-medium border-b-2 border-primary dark:border-primary group relative" title="Paste your own V2X payload">
+                        Paste
+                        <span class="tooltip absolute invisible group-hover:visible bg-gray-800 text-white text-xs rounded py-1 px-2 -mt-12 mx-auto left-1/2 transform -translate-x-1/2 w-40 z-10">Paste your own V2X payload</span>
+                    </button>
+                    <button id="generateTabButton" class="tab-button py-2 px-4 font-medium border-b-2 border-transparent group relative" title="Generate a random payload for testing">
+                        Generate
+                        <span class="tooltip absolute invisible group-hover:visible bg-gray-800 text-white text-xs rounded py-1 px-2 -mt-12 mx-auto left-1/2 transform -translate-x-1/2 w-40 z-10">Generate a random or minimal payload</span>
+                    </button>
+                </div>
+                
+                <!-- Tab Content -->
+                <div class="tab-content mt-4">
+                    <!-- Paste Tab (without controls) -->
+                    <div id="pasteTabContent" class="tab-pane active">
+                        <!-- No controls in Paste tab -->
+                    </div>
+                    
+                    <!-- Generate Tab (Message Type, Format y Minimal Checkbox) -->
+                    <div id="generateTabContent" class="tab-pane hidden">
+                        <div class="flex flex-col md:flex-row gap-4">
+                            <!-- Message Type (100% en móvil, 50% en escritorio) -->
+                            <div id="generateMessageTypeSelectorContainer" class="w-full md:w-1/2">
+                                <label for="generateMessageTypeSelector" class="block mb-2 font-medium">Message Type:</label>
+                                <select id="generateMessageTypeSelector" class="w-full p-2 border border-border dark:border-gray-600 rounded focus:outline-none focus:ring focus:ring-primary/30 dark:bg-gray-800 dark:text-gray-200">
+                                    <option value="cam_v2">CAM v2</option>
+                                    <option value="denm_v2">DENM v2</option>
+                                    <option value="spat_v2">SPATem v2</option>
+                                    <option value="cpm_v1">CPM v1</option>
+                                    <option value="ivi_v2">IVIM v2</option>
+                                    <option value="srem_v2">SREM v2</option>
+                                    <option value="ssem_v2">SSEM v2</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Format (100% en móvil, 50% en escritorio) - ahora oculto -->
+                            <div id="generateInputFormatSelect" class="hidden">
+                                <!-- Format radios ocultos para mantener compatibilidad con JS existente -->
+                                <div class="flex space-x-4">
+                                    <label class="flex items-center cursor-pointer">
+                                        <input type="radio" name="generateSendFormat" value="UPER" checked class="mr-1">
+                                        <span>UPER</span>
+                                    </label>
+                                    <label class="flex items-center cursor-pointer">
+                                        <input type="radio" name="generateSendFormat" value="WER" class="mr-1">
+                                        <span>WER</span>
+                                    </label>
+                                    <label class="flex items-center cursor-pointer">
+                                        <input type="radio" name="generateSendFormat" value="XML" class="mr-1">
+                                        <span>XML</span>
+                                    </label>
+                                    <label class="flex items-center cursor-pointer">
+                                        <input type="radio" name="generateSendFormat" value="JSON" class="mr-1">
+                                        <span>JSON</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Minimal Payload Checkbox -->
+                        <div class="mt-4">
+                            <label class="flex items-center cursor-pointer group relative">
+                                <input type="checkbox" id="minimalPayloadCheckbox" class="mr-2 h-4 w-4 text-primary focus:ring-primary dark:bg-gray-800">
+                                <span>Generate minimal payload</span>
+                                <!-- Tooltip para la explicación -->
+                                <span class="tooltip absolute invisible group-hover:visible bg-gray-800 text-white text-xs rounded py-1 px-2 -mt-8 ml-2 z-10">
+                                    Empty optional fields, default values for mandatory fields
+                                </span>
+                            </label>
+                        </div>
+                        
+                        <!-- Generate Button with Format Dropdown -->
+                        <div class="mt-3 flex items-center gap-3">
+                            <div class="flex-1">
+                                <!-- Generate Button -->
+                                <!-- IMPORTANTE: Todos los botones de acción principal deben usar el mismo esquema de color que el botón "Convert to" -->
+                                <button id="generatePayloadButton" class="p-2 bg-primary text-white font-medium rounded transition-colors text-center cursor-pointer w-full">
+                                    Generate
+                                </button>
+                                <!-- Quitamos hover:bg-blue-500 que está causando problemas y pondremos el hover via CSS específico -->
+                            </div>
+                            <!-- Format Dropdown -->
+                            <select id="generateFormatSelect" class="w-24 p-2 border border-border dark:border-gray-600 rounded focus:outline-none focus:ring focus:ring-primary/30 dark:bg-gray-800 dark:text-gray-200">
+                                <option value="UPER">UPER</option>
+                                <option value="WER">WER</option>
+                                <option value="XML">XML</option>
+                                <option value="JSON">JSON</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Input Format radios ocultos para mantener compatibilidad -->
+                        <div class="hidden">
+                            <input type="radio" name="minimalSendFormat" value="UPER" checked>
+                            <input type="radio" name="randomSendFormat" value="UPER" checked>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Hidden input format radios for Paste tab -->
+                <div class="hidden">
+                    <div id="inputFormatSelect">
+                        <div class="flex flex-wrap gap-4">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="sendFormat" value="UPER" checked class="mr-2">
+                                <span>UPER</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="sendFormat" value="WER" class="mr-2">
+                                <span>WER</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="sendFormat" value="XML" class="mr-2">
+                                <span>XML</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="sendFormat" value="JSON" class="mr-2">
+                                <span>JSON</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Container común para todos los textareas con label y botones -->
+                <div id="payloadInput" class="flex-1 flex flex-col min-h-0 mt-4">
+                    <div class="flex justify-between items-baseline mb-1">
+                        <label class="font-medium">V2X Payload:</label>
+                        <div class="flex items-center">
+                            <div id="format-auto-detected" class="hidden text-xs text-success mr-2.5 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                                <span id="format-auto-detected-text">Format detected: <strong id="detected-format-value">UPER</strong></span>
+                            </div>
+                            <div id="bytes-len" class="text-xs text-gray-500 font-medium">0 bytes</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Textarea para pestaña Paste -->
+                    <textarea id="pasteTextArea" class="flex-1 min-h-[180px] md:min-h-[100px] resize-none font-mono text-sm p-2 border border-border dark:border-gray-600 rounded-md focus:outline-none focus:ring focus:ring-primary/30 leading-snug dark:bg-gray-800 dark:text-gray-200 font-['Roboto_Mono'] font-normal" placeholder="Enter or paste your V2X payload here..."></textarea>
+                    
+                    <!-- Textarea para pestaña Generate (inicialmente oculto) -->
+                    <textarea id="generateTextArea" class="hidden flex-1 min-h-[180px] md:min-h-[100px] resize-none font-mono text-sm p-2 border border-border dark:border-gray-600 rounded-md focus:outline-none focus:ring focus:ring-primary/30 leading-snug dark:bg-gray-800 dark:text-gray-200 bg-gray-100 cursor-not-allowed font-['Roboto_Mono'] font-normal" placeholder="Generated payload will appear here..." readonly></textarea>
+                    
+                    <!-- Textareas ocultos para mantener compatibilidad con el código existente -->
+                    <textarea id="minimalTextArea" class="hidden flex-1 min-h-[180px] md:min-h-[100px] resize-none font-mono" readonly></textarea>
+                    <textarea id="randomTextArea" class="hidden flex-1 min-h-[180px] md:min-h-[100px] resize-none font-mono" readonly></textarea>
+                    
+                    <!-- IMPORTANT: Utility buttons must always be positioned exactly 3px from their textareas -->
+                    <div class="flex justify-between mt-[3px]">
+                        <button id="clearInputButton" class="w-16 p-1 bg-error hover:bg-red-600 text-white text-xs rounded disabled:bg-gray-300 disabled:cursor-not-allowed">
+                            Clear
+                        </button>
+                        <button id="copyButton1" class="w-16 p-1 bg-primary hover:bg-blue-500 text-white flex items-center justify-center rounded">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="mt-5 pt-1 border-t border-border flex items-center gap-3">
+                    <div id="convertButtonContainer" class="flex-1">
+                        <!-- IMPORTANTE: Todos los botones de acción principal deben usar este mismo esquema de color (bg-primary) -->
+                        <div id="convertButton" class="p-2 bg-primary text-white font-medium rounded transition-colors text-center cursor-pointer">
+                            Convert to
+                        </div>
+                        <!-- Quitamos hover:bg-blue-500 que está causando problemas y pondremos el hover via CSS específico -->
+                        <div id="convertButtonDisabled" class="hidden p-2 bg-gray-300 text-white font-medium rounded text-center cursor-not-allowed">
+                            Convert to
+                        </div>
+                    </div>
+                    <select id="outputFormatSelect" class="w-24 p-2 border border-border dark:border-gray-600 rounded focus:outline-none focus:ring focus:ring-primary/30 dark:bg-gray-800 dark:text-gray-200">
+                        <option value="UPER">UPER</option>
+                        <option value="WER">WER</option>
+                        <option value="XML" selected>XML</option>
+                        <option value="JSON">JSON</option>
+                    </select>
+                </div>
+            </div>
+
+                <div class="bg-gray-50 dark:bg-gray-700 p-2 rounded-lg border border-border dark:border-gray-600 shadow-sm flex-1 md:h-auto min-h-[350px] md:min-h-0 flex flex-col overflow-hidden">
+                
+                <div class="flex-1 flex flex-col min-h-0 mt-2">
+                    <div class="flex justify-end items-center mb-0.5 mt-0">
+                        <div id="conversion-status" class="text-[8px]"></div>
+                    </div>
+                    <textarea id="outputTextArea" class="flex-1 min-h-[180px] md:min-h-[100px] resize-none font-mono text-sm p-2 border border-border dark:border-gray-600 rounded-md bg-gray-50 leading-snug font-['Roboto_Mono'] font-normal" readonly></textarea>
+                    <!-- 
+                    IMPORTANT: Utility buttons must always be positioned exactly 3px from their textareas
+                    
+                    BUTTON STYLE GUIDE:
+                    1. Primary buttons (like Convert): bg-primary hover:bg-blue-500
+                    2. Destructive buttons (like Clear): bg-error hover:bg-red-600 
+                    3. Success buttons (like Expand): bg-success hover:bg-green-600
+                    4. Utility buttons (like font size): bg-gray-400 hover:bg-gray-500
+                    
+                    DISABLED STATE:
+                    - All disabled buttons: disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:cursor-not-allowed
+                    - Do NOT use different text colors in disabled state
+                    - IMPORTANT: Always include disabled:hover:bg-gray-300 to prevent hover effect when disabled
+                    
+                    PADDING & SIZE:
+                    - Standard size: w-16 p-1
+                    - Small size: w-8 p-1
+                    - Margins: mr-1.5 between buttons
+                    -->
+                    <div class="flex justify-between mt-[3px]">
+                        <div class="flex">
+                            <!-- Font size buttons - use standard utility button styling (gray-500) with disabled:bg-gray-300 -->
+                            <button id="fontSizeDecreaseButton" class="w-8 p-1 bg-gray-400 hover:bg-gray-500 text-white text-xs rounded flex items-center justify-center mr-1 disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:cursor-not-allowed">
+                                A-
+                            </button>
+                            <button id="clearAllButton" class="w-16 p-1 bg-error hover:bg-red-600 text-white text-xs rounded mr-1 disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:cursor-not-allowed">
+                                Clear All
+                            </button>
+                            <button id="fontSizeIncreaseButton" class="w-8 p-1 bg-gray-400 hover:bg-gray-500 text-white text-xs rounded flex items-center justify-center disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:cursor-not-allowed">
+                                A+
+                            </button>
+                        </div>
+                        <div class="flex">
+                            <button id="shareButton" class="w-16 p-1 bg-purple-500 hover:bg-purple-600 text-white flex items-center justify-center rounded mr-1.5 disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:cursor-not-allowed group relative">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+                                </svg>
+                                <span class="tooltip absolute invisible group-hover:visible bg-gray-800 text-white text-xs rounded py-1 px-2 -mt-12 mx-auto left-1/2 transform -translate-x-1/2 w-40 z-10">Share via email</span>
+                            </button>
+                            <button id="expandButton" class="w-16 p-1 bg-success hover:bg-green-600 text-white flex items-center justify-center rounded mr-1.5 disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:cursor-not-allowed group relative">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M15 3l2.3 2.3-2.89 2.87 1.42 1.42L18.7 6.7 21 9V3h-6zM3 9l2.3-2.3 2.87 2.89 1.42-1.42L6.7 5.3 9 3H3v6zm6 12l-2.3-2.3 2.89-2.87-1.42-1.42L5.3 17.3 3 15v6h6zm12-6l-2.3 2.3-2.87-2.89-1.42 1.42 2.89 2.87L15 21h6v-6z"/>
+                                </svg>
+                                <span class="tooltip absolute invisible group-hover:visible bg-gray-800 text-white text-xs rounded py-1 px-2 -mt-12 mx-auto left-1/2 transform -translate-x-1/2 w-40 z-10">Open in new window</span>
+                            </button>
+                            <button id="copyButton" class="w-16 p-1 bg-primary hover:bg-blue-500 text-white flex items-center justify-center rounded disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:cursor-not-allowed">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="mt-1 text-xs text-gray-500 dark:text-gray-400 text-center flex-shrink-0">
+            <a href="doc/index.html" target="_blank" class="text-primary hover:underline">API Documentation</a>
+            <span class="mx-2">|</span>
+            <a href="contact.html" target="_blank" class="text-primary hover:underline">Contact</a>
+        </footer>
+    </div>
+
+    <div id="toast" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-black/80 text-white px-5 py-2.5 rounded transition-opacity duration-300 opacity-0">Copied to clipboard</div>
+
+    <!-- Modal para compartir por email -->
+    <div id="shareModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white whitespace-nowrap">Share Conversion</h3>
+                <button id="closeShareModal" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <form id="shareForm">
+                <div class="mb-4">
+                    <label for="emailInput" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
+                    <input type="email" id="emailInput" name="email" required
+                        class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring focus:ring-primary/30 dark:bg-gray-700 dark:text-white"
+                        placeholder="Enter recipient's email">
+                </div>
+                <div id="shareError" class="text-red-500 text-sm mb-4 hidden"></div>
+                <div id="shareSuccess" class="text-green-500 text-sm mb-4 hidden">Email sent successfully!</div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" id="cancelShareBtn" 
+                        class="px-4 py-2 bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white rounded">
+                        Cancel
+                    </button>
+                    <button type="submit" id="sendEmailBtn"
+                        class="px-4 py-2 bg-purple-500 text-white rounded transition-colors">
+                        Send
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="v2xConverter.js"></script>
+</body>
+</html>

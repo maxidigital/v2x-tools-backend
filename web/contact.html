@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - V2X.tools</title>
+    
+    <!-- SEO Protection - Prevent indexing -->
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noodp, noimageindex, notranslate">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta name="bingbot" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Cloudflare Turnstile -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer onload="console.log('Turnstile script loaded successfully')" onerror="console.error('Failed to load Turnstile script')"></script>
+    
+    
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: '#3498db',
+              secondary: '#2c3e50',
+              background: '#ecf0f1',
+              textColor: '#333',
+              border: '#bdc3c7',
+              success: '#2ecc71',
+              error: '#e74c3c',
+            },
+            fontFamily: {
+              'sans': ['Inter', 'sans-serif'],
+              'mono': ['Roboto Mono', 'monospace'],
+              'display': ['Montserrat', 'sans-serif']
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+        :root {
+          --primary-color: #3498db;
+          --secondary-color: #2c3e50;
+          --background-color: #ecf0f1;
+          --text-color: #333;
+          --border-color: #bdc3c7;
+          --success-color: #2ecc71;
+          --error-color: #e74c3c;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--secondary-color);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 24px;
+            font-size: 2rem;
+        }
+        
+        .subheading {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            color: #4b5563;
+            margin-bottom: 32px;
+            max-width: 600px;
+        }
+        
+        form {
+            margin-top: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #1f2937;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 16px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        /* Security input styling */
+        input[type="number"].security-input {
+            width: 100px;
+            padding: 8px 12px;
+            font-size: 16px;
+            border: 2px solid #3498db;
+            border-radius: 4px;
+            background-color: #ffffff;
+            color: #333333;
+            font-weight: 500;
+        }
+        
+        input[type="number"].security-input:focus {
+            outline: none;
+            border-color: #2980b9;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .success-message,
+        .error-message {
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 24px;
+            display: none;
+        }
+        
+        .success-message {
+            background-color: rgba(46, 204, 113, 0.1);
+            border: 1px solid var(--success-color);
+            color: var(--success-color);
+        }
+        
+        .error-message {
+            background-color: rgba(231, 76, 60, 0.1);
+            border: 1px solid var(--error-color);
+            color: var(--error-color);
+        }
+        
+        /* Dark mode styles */
+        .dark body {
+            background-color: #1a202c;
+            color: #e5e7eb;
+        }
+        
+        .dark .container {
+            background-color: #1f2937;
+        }
+        
+        .dark label {
+            color: #e5e7eb;
+        }
+        
+        .dark .subheading {
+            color: #d1d5db;
+        }
+        
+        .dark input[type="text"],
+        .dark input[type="email"],
+        .dark textarea {
+            background-color: #374151;
+            border-color: #4b5563;
+            color: #e5e7eb;
+        }
+        
+        .dark input[type="text"]:focus,
+        .dark input[type="email"]:focus,
+        .dark textarea:focus {
+            border-color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mx-auto">
+        <header>
+            <h1>Contact <span style="color: #4b5563; font-weight: 600;">V2X.tools</span></h1>
+            <p class="subheading">Have a question or want to provide feedback? Fill out the form below and we'll get back to you as soon as possible.</p>
+        </header>
+        
+        <div id="successMessage" class="success-message">
+            Your message has been sent! We'll get back to you soon.
+        </div>
+        
+        <div id="errorMessage" class="error-message">
+            There was an error sending your message. Please try again.
+        </div>
+        
+        <form id="contactForm">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="subject">Subject</label>
+                <input type="text" id="subject" name="subject" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" required></textarea>
+            </div>
+            
+            <!-- Cloudflare Turnstile -->
+            <div class="form-group">
+                <div class="cf-turnstile"></div>
+            </div>
+            
+            <button type="submit" id="submitButton">Send Message</button>
+        </form>
+        
+    </div>
+    
+    <script>
+        // Check for dark mode preference
+        if (localStorage.getItem('theme') === 'dark' || 
+            (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+        
+        // Store Turnstile response
+        let turnstileToken = null;
+        let turnstileWidgetId = null;
+        
+        // Turnstile callback when user completes challenge
+        window.onTurnstileSuccess = function(token) {
+            console.log('Turnstile completed successfully:', token);
+            turnstileToken = token;
+        };
+        
+        // Turnstile callback when challenge expires
+        window.onTurnstileExpired = function() {
+            console.log('Turnstile expired');
+            turnstileToken = null;
+        };
+        
+        // Turnstile error callback
+        window.onTurnstileError = function(error) {
+            console.log('Turnstile error:', error);
+            turnstileToken = null;
+        };
+        
+        // Called when Turnstile script loads
+        window.onTurnstileLoad = function() {
+            console.log('Turnstile loaded, rendering widget...');
+            const container = document.querySelector('.cf-turnstile');
+            
+            if (container && !turnstileWidgetId) {
+                try {
+                    turnstileWidgetId = turnstile.render(container, {
+                        sitekey: '0x4AAAAAABf1s-Chz1peKbvF',
+                        callback: function(token) {
+                            console.log('Turnstile success callback triggered:', token);
+                            window.onTurnstileSuccess(token);
+                        },
+                        'expired-callback': function() {
+                            console.log('Turnstile expired callback triggered');
+                            window.onTurnstileExpired();
+                        },
+                        'error-callback': function(error) {
+                            console.log('Turnstile error callback triggered:', error);
+                            window.onTurnstileError(error);
+                        },
+                        theme: 'light'
+                    });
+                    console.log('Turnstile widget rendered with ID:', turnstileWidgetId);
+                } catch (error) {
+                    console.error('Error rendering Turnstile:', error);
+                }
+            }
+        };
+        
+        
+        
+        // Form handling with actual API call
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            console.log('Form submission started');
+            
+            const submitButton = document.getElementById('submitButton');
+            const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // Get form values
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const subject = document.getElementById('subject').value.trim();
+            const message = document.getElementById('message').value.trim();
+            
+            console.log('Form values:', {name, email, subject, message});
+            
+            // Basic validation (server will validate again)
+            if (!name || !email || !subject || !message) {
+                console.log('Validation failed: missing fields');
+                errorMessage.textContent = "Please fill in all fields";
+                errorMessage.style.display = 'block';
+                return;
+            }
+            
+            // Check Turnstile token
+            console.log('Checking Turnstile token:', turnstileToken);
+            
+            if (!turnstileToken) {
+                console.log('Turnstile verification not completed');
+                errorMessage.textContent = "Please complete the security verification.";
+                errorMessage.style.display = 'block';
+                return;
+            }
+            
+            // Disable the submit button to prevent double submissions
+            submitButton.disabled = true;
+            submitButton.textContent = 'Sending...';
+            
+            // Hide any previous messages
+            successMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+            
+            // Send the form data to the server
+            fetch('/api/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    subject: subject,
+                    message: message,
+                    verification: turnstileToken
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Store form data for confirmation page
+                const confirmationData = {
+                    name: name,
+                    email: email,
+                    subject: subject,
+                    message: message,
+                    timestamp: new Date().toLocaleString()
+                };
+                
+                // Store in sessionStorage so it's available on the confirmation page
+                sessionStorage.setItem('contactConfirmation', JSON.stringify(confirmationData));
+                
+                // Redirect to confirmation page
+                window.location.href = '/contact-confirmation.html';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                
+                // Show error message
+                errorMessage.textContent = "There was a problem sending your message. Please try again later.";
+                errorMessage.style.display = 'block';
+                
+                // Reset Turnstile on error
+                if (window.turnstile && turnstileWidgetId !== null) {
+                    turnstile.reset(turnstileWidgetId);
+                }
+                turnstileToken = null;
+            })
+            .finally(() => {
+                // Re-enable the submit button
+                submitButton.disabled = false;
+                submitButton.textContent = 'Send Message';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+16-07-2024 14:14:59: Server started on port 8080
+16-07-2024 14:15:12: 
+16-07-2024 14:15:12: --------------------------------------------------------------------------------------------
+16-07-2024 14:15:12: New request: method(GET) remoteAddress(/127.0.0.1:55253) 
+16-07-2024 14:15:12: Path: /
+16-07-2024 14:15:12: 
+16-07-2024 14:15:12: --------------------------------------------------------------------------------------------
+16-07-2024 14:15:12: New request: method(GET) remoteAddress(/127.0.0.1:55253) 
+16-07-2024 14:15:12: Path: /dlr_logo.jpeg
+16-07-2024 14:15:12: 
+16-07-2024 14:15:12: --------------------------------------------------------------------------------------------
+16-07-2024 14:15:12: New request: method(GET) remoteAddress(/127.0.0.1:55254) 
+16-07-2024 14:15:12: Path: /v2xConverter.js
+16-07-2024 14:15:20: 
+16-07-2024 14:15:20: --------------------------------------------------------------------------------------------
+16-07-2024 14:15:20: New request: method(POST) remoteAddress(/127.0.0.1:55253) 
+16-07-2024 14:15:20: Path: /localhost
+16-07-2024 14:15:20: Processing POST request: application/json
+16-07-2024 14:15:20: Received data from frontend: {"textData":"uper:020100000000010000000000000000000000000000000006b49d201d693a401ffffffe11dbba1000000000","sendFormat":"UPER","receiveFormat":"XML"}
+16-07-2024 14:15:20: Received data from frontend: {"textData":"uper:020100000000010000000000000000000000000000000006b49d201d693a401ffffffe11dbba1000000000","sendFormat":"UPER","receiveFormat":"XML"}
+16-07-2024 14:15:21: Decoding: Payload: mid(null(1:2)) encoding(UPER) len(43)
+16-07-2024 14:15:21: Encoding to XML
+16-07-2024 14:15:21: Responding: <?xml version="1.0" encoding="UTF-8"?><dENM>    <header>        <protocolVersion>2</protocolVersion>        <messageId>1</messageId>        <stationId>0</stationId>    </header>    <denm>        <management>            <actionId>                <originatingStationId>0</originatingStationId>                <sequenceNumber>0</sequenceNumber>            </actionId>            <detectionTime>0</detectionTime>            <referenceTime>0</referenceTime>            <eventPosition>                <latitude>900000001</latitude>                <longitude>1800000001</longitude>                <positionConfidenceEllipse>                    <semiMajorConfidence>4095</semiMajorConfidence>                    <semiMinorConfidence>4095</semiMinorConfidence>                    <semiMajorOrientation>3601</semiMajorOrientation>                </positionConfidenceEllipse>                <altitude>                    <altitudeValue>800001</altitudeValue>                    <altitudeConfidence>alt-000-01</altitudeConfidence>                </altitude>            </eventPosition>            <validityDuration>0</validityDuration>            <stationType>0</stationType>        </management>    </denm></dENM>
+16-07-2024 14:15:48: 
+16-07-2024 14:15:48: --------------------------------------------------------------------------------------------
+16-07-2024 14:15:48: New request: method(GET) remoteAddress(/127.0.0.1:55253) 
+16-07-2024 14:15:48: Path: /
+16-07-2024 14:15:48: 
+16-07-2024 14:15:48: --------------------------------------------------------------------------------------------
+16-07-2024 14:15:48: New request: method(GET) remoteAddress(/127.0.0.1:55253) 
+16-07-2024 14:15:48: Path: /v2xConverter.js
+16-07-2024 14:15:48: 
+16-07-2024 14:15:48: --------------------------------------------------------------------------------------------
+16-07-2024 14:15:48: New request: method(GET) remoteAddress(/127.0.0.1:55253) 
+16-07-2024 14:15:48: Path: /dlr_logo.jpeg
+16-07-2024 14:15:48: 
+16-07-2024 14:15:48: --------------------------------------------------------------------------------------------
+16-07-2024 14:15:48: New request: method(GET) remoteAddress(/127.0.0.1:55253) 
+16-07-2024 14:15:48: Path: /favicon.ico
+16-07-2024 14:15:48: Responding 400: File favicon.ico not found

@@ -1,0 +1,31 @@
+20-09-2024 12:46:16: Server started on port 8080
+20-09-2024 12:46:20: 
+20-09-2024 12:46:20: --------------------------------------------------------------------------------------------
+20-09-2024 12:46:20: New request: method(POST) remoteAddress(/0:0:0:0:0:0:0:1:56859) 
+20-09-2024 12:46:20: Path: /uper2json
+20-09-2024 12:46:20: Requesting UPER2JSON ContentType: text/plain
+20-09-2024 12:46:20: Body length: 127
+20-09-2024 12:46:20: Received payload: len(61) uper:010e000000001a91207d5922de5713c22f8ffffffe11dbba1f0002218080004065abd7d4fdb0fffa0ea2fff8843f9e617e90ffc0a660c33000f0001b80
+20-09-2024 12:46:20: Decoding: Payload: mid(null(14:1)) encoding(UPER) len(61)
+20-09-2024 12:46:22: Encoding to JSON
+20-09-2024 12:46:22: Responding: {"its_header":{"protocolVersion":1,"messageId":14,"stationId":0},"payload":{"managementContainer":{"referenceTime":2904607948800,"referencePosition":{"latitude":640022904,"longitude":-626512385,"positionConfidenceEllipse":{"semiMajorConfidence":4091,"semiMinorConfidence":571,"semiMajorOrientation":1908},"altitude":{"altitudeValue":153952,"altitudeConfidence":4}},"messageRateRange":{"messageRateMin":{"mantissa":34,"exponent":-1},"messageRateMax":{"mantissa":3,"exponent":-5}}},"cpmContainers":[{"o... truncated
+20-09-2024 12:47:00: 
+20-09-2024 12:47:00: --------------------------------------------------------------------------------------------
+20-09-2024 12:47:00: New request: method(POST) remoteAddress(/0:0:0:0:0:0:0:1:56868) 
+20-09-2024 12:47:00: Path: /uper2json
+20-09-2024 12:47:00: Requesting UPER2JSON ContentType: text/plain
+20-09-2024 12:47:00: Body length: 127
+20-09-2024 12:47:00: Received payload: len(61) uper:010e000000001a91207d5922de5713c22f8ffffffe11dbba1f0002218080004065abd7d4fdb0fffa0ea2fff8843f9e617e90ffc0a660c33000f0001b80
+20-09-2024 12:47:00: Decoding: Payload: mid(CollectivePerceptionMessage(14:1)) encoding(UPER) len(61)
+20-09-2024 12:47:00: Encoding to JSON
+20-09-2024 12:47:00: Responding: {"its_header":{"protocolVersion":1,"messageId":14,"stationId":0},"payload":{"managementContainer":{"referenceTime":2904607948800,"referencePosition":{"latitude":640022904,"longitude":-626512385,"positionConfidenceEllipse":{"semiMajorConfidence":4091,"semiMinorConfidence":571,"semiMajorOrientation":1908},"altitude":{"altitudeValue":153952,"altitudeConfidence":4}},"messageRateRange":{"messageRateMin":{"mantissa":34,"exponent":-1},"messageRateMax":{"mantissa":3,"exponent":-5}}},"cpmContainers":[{"o... truncated
+20-09-2024 12:47:12: 
+20-09-2024 12:47:12: --------------------------------------------------------------------------------------------
+20-09-2024 12:47:12: New request: method(POST) remoteAddress(/0:0:0:0:0:0:0:1:56868) 
+20-09-2024 12:47:12: Path: /uper2json
+20-09-2024 12:47:12: Requesting UPER2JSON ContentType: text/plain
+20-09-2024 12:47:12: Body length: 127
+20-09-2024 12:47:12: Received payload: len(61) uper:010e000000001a91207d5922de5713c22f8ffffffe11dbba1f0002218080004065abd7d4fdb0fffa0ea2fff8843f9e617e90ffc0a660c33000f0001b80
+20-09-2024 12:47:12: Decoding: Payload: mid(CollectivePerceptionMessage(14:1)) encoding(UPER) len(61)
+20-09-2024 12:47:12: Encoding to JSON
+20-09-2024 12:47:12: Responding: {"its_header":{"protocolVersion":1,"messageId":14,"stationId":0},"payload":{"managementContainer":{"referenceTime":2904607948800,"referencePosition":{"latitude":640022904,"longitude":-626512385,"positionConfidenceEllipse":{"semiMajorConfidence":4091,"semiMinorConfidence":571,"semiMajorOrientation":1908},"altitude":{"altitudeValue":153952,"altitudeConfidence":4}},"messageRateRange":{"messageRateMin":{"mantissa":34,"exponent":-1},"messageRateMax":{"mantissa":3,"exponent":-5}}},"cpmContainers":[{"o... truncated

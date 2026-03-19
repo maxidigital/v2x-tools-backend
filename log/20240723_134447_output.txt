@@ -1,0 +1,50 @@
+23-07-2024 13:44:47: Server started on port 8080
+23-07-2024 13:44:54: 
+23-07-2024 13:44:54: --------------------------------------------------------------------------------------------
+23-07-2024 13:44:54: New request: method(GET) remoteAddress(/127.0.0.1:59975) 
+23-07-2024 13:44:54: Path: /
+23-07-2024 13:44:54: 
+23-07-2024 13:44:54: --------------------------------------------------------------------------------------------
+23-07-2024 13:44:54: New request: method(GET) remoteAddress(/127.0.0.1:59975) 
+23-07-2024 13:44:54: Path: /styles.css
+23-07-2024 13:44:54: 
+23-07-2024 13:44:54: --------------------------------------------------------------------------------------------
+23-07-2024 13:44:54: New request: method(GET) remoteAddress(/127.0.0.1:59976) 
+23-07-2024 13:44:54: Path: /dlr_logo.jpeg
+23-07-2024 13:44:54: 
+23-07-2024 13:44:54: --------------------------------------------------------------------------------------------
+23-07-2024 13:44:54: New request: method(GET) remoteAddress(/127.0.0.1:59975) 
+23-07-2024 13:44:54: Path: /v2xConverter.js
+23-07-2024 13:44:54: 
+23-07-2024 13:44:54: --------------------------------------------------------------------------------------------
+23-07-2024 13:44:54: New request: method(GET) remoteAddress(/127.0.0.1:59976) 
+23-07-2024 13:44:54: Path: /favicon.ico
+23-07-2024 13:44:54: Responding 400: File favicon.ico not found
+23-07-2024 13:44:58: 
+23-07-2024 13:44:58: --------------------------------------------------------------------------------------------
+23-07-2024 13:44:58: New request: method(GET) remoteAddress(/127.0.0.1:59975) 
+23-07-2024 13:44:58: Path: /command/random
+23-07-2024 13:44:58: Random message request: null(6:2)
+23-07-2024 13:44:59: Responding random: uper:0206b51fc24f95379d398e6828f3f34fb28ed92662e943e930c032e440301f7131938f7db8c85993d2c2250a43d691aaa81173d0b43f62f03774125b6442b6b1eea10483a7b7413d1dd3411e2928110404a4a75d2468505484024c0d4e043afb05206c36ade356dff3787073694936235ed62f833c1a97eee2784437e179b4f8d560d657db9cf29aae323f58ff69e77778765d06de4a4c421e1e61978646e5a9b1084ecdb514b63b0b6463290a87604102d2873440c78b230697e3b0f40f12d3abef4882cc8268791d5d0438e37486ca17e3f299373a10a2402444a700f00611ce1ed5defc41e1712a952735021b2643269829f83d3136f5a22f2575666c51e014a5b3272aa97989027b662dfc71257efc0538269a478f7db708dc87ec1be96d2ce374e6ae83c9fad63f2db64c131438582c5804048d88ed0a5d5415dd987ec10604c4e8e260549b58f04b4019ad99461fc97c811f4c2957bcbbf6d89d5b1540f5dfbe5cac282d8c1dc4757c8cecc8b159349e121f2510cc92f738d32409356eca8ce45e190f905cca668f72737e4287d1bf72610b575606b7bb13a45e1dfe933fa0f88b66e78e2dfad4fcbbf11f6406d4899bd2a36df0adfe7e4894b9cc762dd263401b3bbe39e9a6afb168d4e8e26212ad3a5600
+23-07-2024 13:45:07: 
+23-07-2024 13:45:07: --------------------------------------------------------------------------------------------
+23-07-2024 13:45:07: New request: method(GET) remoteAddress(/127.0.0.1:59975) 
+23-07-2024 13:45:07: Path: /command/random
+23-07-2024 13:45:07: Random message request: CAM(2:2)
+23-07-2024 13:45:07: Responding random: uper:0202725b429519804a69bfa909ea97888b6e43b788b46540ea86c35158faa9118f17553c9df384633606571724a56980c7083b2ab8113a7c3e2fd2910bf636a57bd022bfe2d2807c8d13bb350ab55e9d12632d1cebbb20e46385a510d6965da2fdac531c327b592411d128d91fe6a22ed8527bb1d328aa5017a94a7bf04272c1e672a72416576bc015097b85be7985752ca31bfc853a2f526f08abd5cdced4902f968cba6e09ebd3d82f59caf25408
+23-07-2024 13:45:41: 
+23-07-2024 13:45:41: --------------------------------------------------------------------------------------------
+23-07-2024 13:45:41: New request: method(GET) remoteAddress(/127.0.0.1:59988) 
+23-07-2024 13:45:41: Path: /command/random
+23-07-2024 13:45:41: Random message request: SREM(9:2)
+23-07-2024 13:45:41: Responding random: uper:0209573215db01cd897995c2cf128380f20ff9d308c1f3c876d3cb91075e883865e5cf869c7a70f4d3cd075dd932a0dfb7769e6834f3e99506ec3d3af34197972def0030
+23-07-2024 13:45:46: 
+23-07-2024 13:45:46: --------------------------------------------------------------------------------------------
+23-07-2024 13:45:46: New request: method(POST) remoteAddress(/127.0.0.1:59988) 
+23-07-2024 13:45:46: Path: /localhost
+23-07-2024 13:45:46: Processing POST request: application/json
+23-07-2024 13:45:46: Received data from frontend: {"textData":"uper:0209573215db01cd897995c2cf128380f20ff9d308c1f3c876d3cb91075e883865e5cf869c7a70f4d3cd075dd932a0dfb7769e6834f3e99506ec3d3af34197972def0030","sendFormat":"UPER","receiveFormat":"XML"}
+23-07-2024 13:45:46: Received data from frontend: {"textData":"uper:0209573215db01cd897995c2cf128380f20ff9d308c1f3c876d3cb91075e883865e5cf869c7a70f4d3cd075dd932a0dfb7769e6834f3e99506ec3d3af34197972def0030","sendFormat":"UPER","receiveFormat":"XML"}
+23-07-2024 13:45:46: Decoding: Payload: mid(SREM(9:2)) encoding(UPER) len(68)
+23-07-2024 13:45:46: Encoding to XML
+23-07-2024 13:45:46: Responding: <?xml version="1.0" encoding="UTF-8"?><sREM>    <header>        <protocolVersion>2</protocolVersion>        <messageID>9</messageID>        <stationID>1462900187</stationID>    </header>    <srm>        <second>14769</second>        <requestor>            <id>                <entityID>cae16789</entityID>            </id>            <position>                <position>                    <lat>40515583</lat>                    <long_>837204511</long_>                </position>                <heading>7747</heading>            </position>            <routeName>Sed ut perspiciatis unde omnis iste natus erro</routeName>            <transitStatus>anADAuse aBikeLoad doorOpen charging</transitStatus>            <transitOccupancy>occupancyUnknown</transitOccupancy>            <transitSchedule>-110</transitSchedule>        </requestor>    </srm></sREM>

@@ -1,0 +1,47 @@
+23-07-2024 12:45:36: Server started on port 8080
+23-07-2024 12:45:42: 
+23-07-2024 12:45:42: --------------------------------------------------------------------------------------------
+23-07-2024 12:45:42: New request: method(GET) remoteAddress(/127.0.0.1:55558) 
+23-07-2024 12:45:42: Path: /doc/index.html
+23-07-2024 12:45:49: 
+23-07-2024 12:45:49: --------------------------------------------------------------------------------------------
+23-07-2024 12:45:49: New request: method(GET) remoteAddress(/127.0.0.1:55558) 
+23-07-2024 12:45:49: Path: /
+23-07-2024 12:45:49: 
+23-07-2024 12:45:49: --------------------------------------------------------------------------------------------
+23-07-2024 12:45:49: New request: method(GET) remoteAddress(/127.0.0.1:55558) 
+23-07-2024 12:45:49: Path: /styles.css
+23-07-2024 12:45:49: 
+23-07-2024 12:45:49: --------------------------------------------------------------------------------------------
+23-07-2024 12:45:49: New request: method(GET) remoteAddress(/127.0.0.1:55560) 
+23-07-2024 12:45:49: Path: /v2xConverter.js
+23-07-2024 12:45:49: 
+23-07-2024 12:45:49: --------------------------------------------------------------------------------------------
+23-07-2024 12:45:49: New request: method(GET) remoteAddress(/127.0.0.1:55558) 
+23-07-2024 12:45:49: Path: /dlr_logo.jpeg
+23-07-2024 12:45:54: 
+23-07-2024 12:45:54: --------------------------------------------------------------------------------------------
+23-07-2024 12:45:54: New request: method(GET) remoteAddress(/127.0.0.1:55558) 
+23-07-2024 12:45:54: Path: /
+23-07-2024 12:45:54: 
+23-07-2024 12:45:54: --------------------------------------------------------------------------------------------
+23-07-2024 12:45:54: New request: method(GET) remoteAddress(/127.0.0.1:55558) 
+23-07-2024 12:45:54: Path: /styles.css
+23-07-2024 12:45:54: 
+23-07-2024 12:45:54: --------------------------------------------------------------------------------------------
+23-07-2024 12:45:54: New request: method(GET) remoteAddress(/127.0.0.1:55558) 
+23-07-2024 12:45:54: Path: /dlr_logo.jpeg
+23-07-2024 12:45:54: 
+23-07-2024 12:45:54: --------------------------------------------------------------------------------------------
+23-07-2024 12:45:54: New request: method(GET) remoteAddress(/127.0.0.1:55560) 
+23-07-2024 12:45:54: Path: /v2xConverter.js
+23-07-2024 12:46:17: 
+23-07-2024 12:46:17: --------------------------------------------------------------------------------------------
+23-07-2024 12:46:17: New request: method(POST) remoteAddress(/127.0.0.1:55568) 
+23-07-2024 12:46:17: Path: /localhost
+23-07-2024 12:46:17: Processing POST request: application/json
+23-07-2024 12:46:17: Received data from frontend: {"textData":"uper:020100000000010000000000000000000000000000000006b49d201d693a401ffffffe11dbba1000000000","sendFormat":"UPER","receiveFormat":"XML"}
+23-07-2024 12:46:17: Received data from frontend: {"textData":"uper:020100000000010000000000000000000000000000000006b49d201d693a401ffffffe11dbba1000000000","sendFormat":"UPER","receiveFormat":"XML"}
+23-07-2024 12:46:17: Decoding: Payload: mid(null(1:2)) encoding(UPER) len(43)
+23-07-2024 12:46:17: Encoding to XML
+23-07-2024 12:46:17: Responding: <?xml version="1.0" encoding="UTF-8"?><dENM>    <header>        <protocolVersion>2</protocolVersion>        <messageId>1</messageId>        <stationId>0</stationId>    </header>    <denm>        <management>            <actionId>                <originatingStationId>0</originatingStationId>                <sequenceNumber>0</sequenceNumber>            </actionId>            <detectionTime>0</detectionTime>            <referenceTime>0</referenceTime>            <eventPosition>                <latitude>900000001</latitude>                <longitude>1800000001</longitude>                <positionConfidenceEllipse>                    <semiMajorConfidence>4095</semiMajorConfidence>                    <semiMinorConfidence>4095</semiMinorConfidence>                    <semiMajorOrientation>3601</semiMajorOrientation>                </positionConfidenceEllipse>                <altitude>                    <altitudeValue>800001</altitudeValue>                    <altitudeConfidence>alt-000-01</altitudeConfidence>                </altitude>            </eventPosition>            <validityDuration>0</validityDuration>            <stationType>0</stationType>        </management>    </denm></dENM>
