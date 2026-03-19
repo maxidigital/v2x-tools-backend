@@ -36,7 +36,7 @@
         <dependency>
             <groupId>de.dlr.ts.v2x</groupId>
             <artifactId>wind.connector</artifactId>
-            <version>6.0</version>
+            <version>6.1</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.angus</groupId>
