@@ -16,11 +16,11 @@
         <!--<repository>
             <id>github-v2x-framework</id>
             <url>https://maven.pkg.github.com/maxidigital/v2x-framework</url>
-        </repository>
+        </repository>-->
         <repository>
             <id>github-underwater</id>
-            <url>https://maven.pkg.github.com/blue.underwater</url>
-        </repository>-->
+            <url>https://maven.pkg.github.com/maxidigital/underwater</url>
+        </repository>
     </repositories>
     
     <properties>
@@ -58,7 +58,7 @@
         <dependency>
             <groupId>blue.underwater</groupId>
             <artifactId>email.admin</artifactId>
-            <version>1.0</version>
+            <version>1.0.1</version>
         </dependency>
         <!--<dependency>
             <groupId>org.json</groupId>
