@@ -1,2 +1,0 @@
-timestamp, ip, received, sent
-1741771187789, /127.0.0.1:54172, {"textData":"uper:0202000000000000000d693a403ad274803ffffffc23b7742000e11fdffffe3fe1ed0737fe03fff400","sendFormat":"UPER","receiveFormat":"XML"}, Error decoding V2X message, WEB

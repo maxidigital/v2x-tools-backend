@@ -1,7 +1,0 @@
-06-09-2024 15:50:29: Server started on port 8080
-06-09-2024 15:50:36: 
-06-09-2024 15:50:36: --------------------------------------------------------------------------------------------
-06-09-2024 15:50:36: New request: method(POST) remoteAddress(/0:0:0:0:0:0:0:1:54699) 
-06-09-2024 15:50:36: Path: /uper2json
-06-09-2024 15:50:40: Requesting UPER2JSON ContentType: text/plain
-06-09-2024 15:50:49: Responding: ErrordecodingV2Xmessage

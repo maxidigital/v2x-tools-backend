@@ -1,0 +1,70 @@
+
+**/log/**
+/target/
+**/inoutLogging/**
+*.prefs
+*.classpath
+*.project
+**/.settings
+**/nbproject/**
+**/target/**
+*.history
+**/.vscode/**
+*.factorypath**
+**/.intern
+**/*.conf
+**/*.versionsBackup
+**/pom.xml.releaseBackup
+*.zip
+**/tester/*.txt
+**/tester/*.xml
+**/testerOutput/**
+**/config.xml
+
+
+### Java ###
+# Compiled class file
+*.class
+
+# Log file
+*.log
+*.csv
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+!libs/wind.connector.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+### NetBeans ###
+**/nbproject/private/
+**/nbproject/Makefile-*.mk
+**/nbproject/Package-*.bash
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+### Eclipse ###
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders

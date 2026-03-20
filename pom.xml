@@ -13,14 +13,14 @@
     <version>1.0</version>    
     
     <repositories>
-        <repository>
+        <!--<repository>
             <id>github-v2x-framework</id>
             <url>https://maven.pkg.github.com/maxidigital/v2x-framework</url>
         </repository>
         <repository>
             <id>github-underwater</id>
             <url>https://maven.pkg.github.com/blue.underwater</url>
-        </repository>
+        </repository>-->
     </repositories>
     
     <properties>
@@ -33,10 +33,17 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <!--<dependency>
+            <groupId>de.dlr.ts.v2x</groupId>
+            <artifactId>wind.connector</artifactId>
+            <version>6.2</version>
+        </dependency>-->
         <dependency>
             <groupId>de.dlr.ts.v2x</groupId>
             <artifactId>wind.connector</artifactId>
             <version>6.2</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/wind.connector.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.eclipse.angus</groupId>
