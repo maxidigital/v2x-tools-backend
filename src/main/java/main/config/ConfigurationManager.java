@@ -1,80 +1,62 @@
 package main.config;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
 import main.A;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ConfigurationManager {
 
-    private final Properties properties = new Properties();
+    @Value("${telegram.bot.token:}")
+    private String telegramBotToken;
 
-    public ConfigurationManager() {
-        loadConfiguration();
-    }
+    @Value("${telegram.chat.id:}")
+    private String telegramChatId;
 
-    private void loadConfiguration() {
-        try {
-            FileInputStream fis = new FileInputStream("config.properties");
-            properties.load(fis);
-            fis.close();
-            A.p("Configuration loaded from config.properties");
-        } catch (IOException e) {
-            A.p("Warning: Could not load config.properties: " + e.getMessage());
-        }
+    @Value("${telegram.enabled:true}")
+    private boolean telegramEnabled;
 
-        loadEnvironmentVariables();
-    }
+    @Value("${monitoring.enabled:true}")
+    private boolean monitoringEnabled;
 
-    private void loadEnvironmentVariables() {
-        String botToken = System.getenv("TELEGRAM_BOT_TOKEN");
-        if (botToken != null) properties.setProperty("telegram.bot.token", botToken);
+    @Value("${monitoring.rate.limit.per.window:10}")
+    private int rateLimitPerWindow;
 
-        String chatId = System.getenv("TELEGRAM_CHAT_ID");
-        if (chatId != null) properties.setProperty("telegram.chat.id", chatId);
-
-        String enabled = System.getenv("TELEGRAM_ENABLED");
-        if (enabled != null) properties.setProperty("telegram.enabled", enabled);
-    }
+    @Value("${monitoring.rate.limit.window.ms:60000}")
+    private long rateLimitWindowMs;
 
     public String getTelegramBotToken() {
-        return properties.getProperty("telegram.bot.token", "").trim();
+        return telegramBotToken;
     }
 
     public String getTelegramChatId() {
-        return properties.getProperty("telegram.chat.id", "").trim();
+        return telegramChatId;
     }
 
     public boolean isTelegramEnabled() {
-        return Boolean.parseBoolean(properties.getProperty("telegram.enabled", "true"));
+        return telegramEnabled;
     }
 
     public boolean isMonitoringEnabled() {
-        return Boolean.parseBoolean(properties.getProperty("monitoring.enabled", "true"));
+        return monitoringEnabled;
     }
 
     public int getRateLimitPerWindow() {
-        return Integer.parseInt(properties.getProperty("monitoring.rate.limit.per.window", "10"));
+        return rateLimitPerWindow;
     }
 
     public long getRateLimitWindowMs() {
-        return Long.parseLong(properties.getProperty("monitoring.rate.limit.window.ms", "60000"));
-    }
-
-    public String getProperty(String key, String defaultValue) {
-        return properties.getProperty(key, defaultValue);
+        return rateLimitWindowMs;
     }
 
     public void printConfiguration() {
         A.p("=== Current Configuration ===");
-        A.p("Telegram Bot Token: " + (getTelegramBotToken().isEmpty() ? "NOT SET" : "***SET***"));
-        A.p("Telegram Chat ID: " + getTelegramChatId());
-        A.p("Telegram Enabled: " + isTelegramEnabled());
-        A.p("Monitoring Enabled: " + isMonitoringEnabled());
-        A.p("Rate Limit Per Window: " + getRateLimitPerWindow());
-        A.p("Rate Limit Window (ms): " + getRateLimitWindowMs());
+        A.p("Telegram Bot Token: " + (telegramBotToken.isEmpty() ? "NOT SET" : "***SET***"));
+        A.p("Telegram Chat ID: " + (telegramChatId.isEmpty() ? "NOT SET" : "***SET***"));
+        A.p("Telegram Enabled: " + telegramEnabled);
+        A.p("Monitoring Enabled: " + monitoringEnabled);
+        A.p("Rate Limit Per Window: " + rateLimitPerWindow);
+        A.p("Rate Limit Window (ms): " + rateLimitWindowMs);
         A.p("===========================");
     }
 }
