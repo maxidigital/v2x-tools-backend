@@ -18,7 +18,7 @@ public class TelegramCenter {
 
     private final String BOT_TOKEN;
     private final String CHAT_ID;
-    private static final String NOTIFICATION_SERVICE_URL = "http://localhost:8081";
+    private static final String TELEGRAM_API_URL = "https://api.telegram.org/bot";
 
     // Rate limiting
     private final ConcurrentHashMap<String, Long> lastMessageTime = new ConcurrentHashMap<>();
@@ -44,10 +44,8 @@ public class TelegramCenter {
         this.filter = new NotificationFilter();
 
         A.p("TelegramCenter initialized successfully");
-        A.p("Using Notification Service: " + NOTIFICATION_SERVICE_URL);
+        A.p("Bot Token: " + (BOT_TOKEN.isEmpty() ? "NOT SET" : "SET"));
         A.p("Rate Limit: " + MAX_MESSAGES_PER_WINDOW + " messages per " + (RATE_LIMIT_WINDOW / 1000) + "s");
-
-        testNotificationService();
     }
 
     public void sendNotification(String message, NotificationType type) {
@@ -94,8 +92,12 @@ public class TelegramCenter {
     }
 
     private boolean sendNotificationToService(String message, NotificationType type) {
+        if (BOT_TOKEN.isEmpty() || CHAT_ID.isEmpty()) {
+            A.p("Telegram not configured, skipping notification");
+            return false;
+        }
         try {
-            URL url = new URL(NOTIFICATION_SERVICE_URL + "/notify");
+            URL url = new URL(TELEGRAM_API_URL + BOT_TOKEN + "/sendMessage");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
@@ -103,10 +105,9 @@ public class TelegramCenter {
             conn.setConnectTimeout(5000);
             conn.setReadTimeout(10000);
 
-            String level = mapTypeToLevel(type);
             String jsonPayload = String.format(
-                "{\"app\":\"v2x.tools\",\"level\":\"%s\",\"message\":\"%s\"}",
-                level,
+                "{\"chat_id\":\"%s\",\"text\":\"%s\",\"parse_mode\":\"HTML\"}",
+                CHAT_ID,
                 message.replace("\"", "\\\"").replace("\n", "\\n")
             );
 
@@ -116,44 +117,16 @@ public class TelegramCenter {
 
             int responseCode = conn.getResponseCode();
             if (responseCode == 200) {
-                A.p("Notification sent successfully via service");
+                A.p("Telegram notification sent successfully");
                 return true;
             } else {
-                A.p("Notification service error: " + responseCode);
+                A.p("Telegram API error: " + responseCode);
                 return false;
             }
         } catch (Exception e) {
-            A.p("Error sending notification to service: " + e.getMessage());
+            A.p("Error sending Telegram notification: " + e.getMessage());
             return false;
         }
-    }
-
-    private String mapTypeToLevel(NotificationType type) {
-        switch (type) {
-            case ERROR: return "ERROR";
-            case SECURITY: return "ERROR";
-            default: return "INFO";
-        }
-    }
-
-    private void testNotificationService() {
-        executor.submit(() -> {
-            try {
-                URL url = new URL(NOTIFICATION_SERVICE_URL + "/health");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("GET");
-                conn.setConnectTimeout(3000);
-                conn.setReadTimeout(3000);
-                int responseCode = conn.getResponseCode();
-                if (responseCode == 200) {
-                    A.p("Notification service is available");
-                } else {
-                    A.p("Notification service returned: " + responseCode);
-                }
-            } catch (Exception e) {
-                A.p("Cannot reach notification service: " + e.getMessage());
-            }
-        });
     }
 
     private boolean canSendMessage(String messageType) {
@@ -219,7 +192,7 @@ public class TelegramCenter {
                "🚫 Messages filtered: " + totalMessagesFiltered + "\n" +
                "⏱️ Uptime: " + getUptimeString() + "\n" +
                "🔧 Rate limit: " + MAX_MESSAGES_PER_WINDOW + "/min\n" +
-               "🔗 Service: " + NOTIFICATION_SERVICE_URL;
+               "🤖 Bot: " + (BOT_TOKEN.isEmpty() ? "NOT SET" : "SET");
     }
 
     public void shutdown() {
