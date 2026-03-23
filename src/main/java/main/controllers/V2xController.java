@@ -1,15 +1,19 @@
 package main.controllers;
 
+import main.services.ConversionResult;
+import main.services.V2XConversionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import main.services.V2XConversionService;
-import main.services.ConversionResult;
 
 @RestController
 @RequestMapping("/api/v2x")
 public class V2xController {
 
-    private final V2XConversionService conversionService = V2XConversionService.getInstance();
+    private final V2XConversionService conversionService;
+
+    public V2xController(V2XConversionService conversionService) {
+        this.conversionService = conversionService;
+    }
 
     @PostMapping("/{from}/{to}")
     public ResponseEntity<String> convert(
