@@ -50,7 +50,7 @@ public class ContactController {
                     "<p>" + formData.get("message").replace("\n", "<br/>") + "</p>" +
                     "</body></html>";
 
-            Email email = EmailBuilder.create("noreply@v2x.tools", "contact@v2xnow.de", "v2x.tools");
+            Email email = EmailBuilder.create("noreply@v2x.tools", "maxidigital@gmail.com", "v2x.tools");
             email.setSubject("[v2x.tools Contact] " + formData.get("subject")).setHtmlContent(htmlContent);
             EmailAdmin.getInstance().send(email);
 
@@ -87,7 +87,7 @@ public class ContactController {
             }
 
             if (isProblemReport) {
-                Email adminEmail = EmailBuilder.create("noreply@v2x.tools", "contact@v2xnow.de", "v2x.tools");
+                Email adminEmail = EmailBuilder.create("noreply@v2x.tools", "maxidigital@gmail.com", "v2x.tools");
                 adminEmail.setSubject("[v2x.tools] Conversion Problem Report").setHtmlContent(htmlContent);
                 EmailAdmin.getInstance().send(adminEmail);
 
