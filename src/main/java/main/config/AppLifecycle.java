@@ -26,9 +26,7 @@ public class AppLifecycle {
         config.printConfiguration();
         messageLoader.loadAll();
 
-        if (config.isTelegramEnabled()) {
-            telegramCenter.notifyServerStatus("Starting", "V2X.tools server started");
-        }
+        telegramCenter.notifyServerStatus("Starting", "V2X.tools server started");
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             A.p("Shutting down monitoring system...");

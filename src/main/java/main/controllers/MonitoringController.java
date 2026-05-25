@@ -28,9 +28,7 @@ public class MonitoringController {
     public ResponseEntity<String> stats() {
         String stats = "V2X.tools Monitoring Dashboard\n\n" +
                 "Configuration:\n" +
-                "- Telegram Enabled: " + config.isTelegramEnabled() + "\n" +
-                "- Bot Token: " + (config.getTelegramBotToken().isEmpty() ? "NOT SET" : "SET") + "\n" +
-                "- Chat ID: " + config.getTelegramChatId() + "\n\n" +
+                "- Notification Service: " + config.getNotificationServiceUrl() + "\n\n" +
                 conversionService.getStats() + "\n\n" +
                 telegramCenter.getStats();
         return ResponseEntity.ok(stats);
@@ -41,15 +39,12 @@ public class MonitoringController {
         String clientIp = getClientIp(request);
 
         telegramCenter.sendNotification(
-                "Test Notification\nFrom: " + clientIp + "\nEndpoint: /api/monitoring/test\nMonitoring system is working!",
+                "Test from " + clientIp + " via /api/monitoring/test",
                 NotificationType.STATUS
         );
 
         String response = "Test notification sent!\n\n" +
-                "Configuration:\n" +
-                "- Telegram Enabled: " + config.isTelegramEnabled() + "\n" +
-                "- Bot Token: " + (config.getTelegramBotToken().isEmpty() ? "NOT SET" : "SET") + "\n" +
-                "- Chat ID: " + config.getTelegramChatId() + "\n\n" +
+                "Notification Service: " + config.getNotificationServiceUrl() + "\n\n" +
                 "Check your Telegram for the test message.";
         return ResponseEntity.ok(response);
     }
