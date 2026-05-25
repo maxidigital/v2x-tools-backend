@@ -1,49 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.2.0</version>
     </parent>
-    
+
     <artifactId>v2x-tools-backend</artifactId>
     <packaging>jar</packaging>
-    <version>1.0</version>    
-    
-    <repositories>
-        <!--<repository>
-            <id>github-v2x-framework</id>
-            <url>https://maven.pkg.github.com/maxidigital/v2x-framework</url>
-        </repository>-->
-        <repository>
-            <id>github-underwater</id>
-            <url>https://maven.pkg.github.com/maxidigital/underwater</url>
-        </repository>
-    </repositories>
-    
+    <version>1.0</version>
+
     <properties>
-        <java.version>17</java.version>        
-        <maven.settings>settings.xml</maven.settings>
+        <java.version>17</java.version>
     </properties>
-        
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <!--<dependency>
-            <groupId>de.dlr.ts.v2x</groupId>
-            <artifactId>wind.connector</artifactId>
-            <version>6.2</version>
-        </dependency>-->
         <dependency>
             <groupId>de.dlr.ts.v2x</groupId>
             <artifactId>wind.connector</artifactId>
             <version>6.2</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/libs/wind.connector.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>de.dlr.ts.v2x</groupId>
+            <artifactId>wind_asn1_parser</artifactId>
+            <version>2.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/wind_asn1_parser-2.0.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>de.dlr.ts.v2x</groupId>
+            <artifactId>wind_parser</artifactId>
+            <version>2.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/wind_parser-2.0.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>de.dlr.ts.v2x</groupId>
+            <artifactId>wind_generic</artifactId>
+            <version>2.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/wind_generic-2.0.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>de.dlr.ts.v2x</groupId>
+            <artifactId>v2x-tools-repo-client</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/v2x-tools-repo-client-1.0.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>de.dlr.ts.v2x</groupId>
+            <artifactId>wind_generator</artifactId>
+            <version>2.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/wind_generator-2.1.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>de.dlr.ts.v2x</groupId>
+            <artifactId>wind.lib</artifactId>
+            <version>4.2</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/wind.lib-4.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>de.dlr.ts.v2x</groupId>
+            <artifactId>wind_commons</artifactId>
+            <version>2.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/wind_commons-2.0.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>de.dlr.ts.v2x</groupId>
+            <artifactId>utils.xmladmin2</artifactId>
+            <version>1.3.2</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/utils.xmladmin2-1.3.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>blue.underwater</groupId>
+            <artifactId>email.admin</artifactId>
+            <version>1.0.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/email.admin-1.0.1.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.eclipse.angus</groupId>
@@ -56,32 +102,12 @@
             <version>5.1.0</version>
         </dependency>
         <dependency>
-            <groupId>de.dlr.ts.v2x</groupId>
-            <artifactId>wind_asn1_parser</artifactId>
-            <version>2.0</version>
+            <groupId>com.mailjet</groupId>
+            <artifactId>mailjet-client</artifactId>
+            <version>5.2.1</version>
         </dependency>
-        <dependency>
-            <groupId>de.dlr.ts.v2x</groupId>
-            <artifactId>wind_parser</artifactId>
-            <version>2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>de.dlr.ts.v2x</groupId>
-            <artifactId>wind_generic</artifactId>
-            <version>2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>blue.underwater</groupId>
-            <artifactId>email.admin</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-        <!--<dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20231013</version>
-        </dependency>-->
-    </dependencies>    
-    
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -90,7 +116,7 @@
                 <configuration>
                     <includeSystemScope>true</includeSystemScope>
                 </configuration>
-            </plugin>                    
+            </plugin>
         </plugins>
     </build>
 </project>
