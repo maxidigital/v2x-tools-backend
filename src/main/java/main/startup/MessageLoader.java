@@ -3,12 +3,13 @@ package main.startup;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.dlr.ts.v2x.commons.translators.MessagesApp;
-import de.dlr.ts.v2x.wind_generator.Wind;
+import de.dlr.ts.v2x.wind_generic.WindGeneric;
 import main.A;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import repoClient.RepoClient;
-import wind_parser.WindParserException;
+import wind_parser.WindParser;
+import wind_parser.i.WindParserProject;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -33,7 +34,6 @@ public class MessageLoader {
         if (messages == null) return;
 
         RepoClient repoClient = new RepoClient(repoUrl);
-        Wind wind = new Wind();
         int registered = 0;
 
         for (Map<String, Object> m : messages) {
@@ -43,15 +43,12 @@ public class MessageLoader {
             int    protocolVersion = (Integer) m.get("protocolVersion");
 
             try {
-                wind.buildGeneric(alias, repoClient, mainType);
+                WindParser windParser = new WindParser();
+                WindParserProject project = windParser.parseByAlias(alias, repoClient);
+
                 a.MessageId mid = a.MessageId.create(messageId, protocolVersion);
-                MessagesApp.getInstance().registerMessage(mid, () -> {
-                    try {
-                        return wind.buildGeneric(alias, repoClient, mainType);
-                    } catch (WindParserException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
+                MessagesApp.getInstance().registerMessage(mid, () -> WindGeneric.build(project, mainType));
+
                 A.p("Registered: " + alias + "/" + mainType + " (messageId=" + messageId + ", protocolVersion=" + protocolVersion + ")");
                 registered++;
             } catch (Exception e) {
