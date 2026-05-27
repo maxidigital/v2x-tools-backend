@@ -1,6 +1,7 @@
 package main;
 
 import a.MessageId;
+import a.codecs.MessageTreeExpander;
 import a.generic.GenericSequence;
 import de.dlr.ts.v2x.commons.translators.MessagesApp;
 import de.dlr.ts.v2x.wind_generic.WindGeneric;
@@ -16,6 +17,7 @@ class WindEngineTest {
     /**
      * Verifica que WindParser resuelve cam_v2 + its_container_v2 desde el repo local,
      * y que WindGeneric.build() construye el árbol sin parsear de nuevo.
+     * Imprime el árbol del mensaje para inspección visual.
      */
     @Test
     void loadCAMFromLocalRepo_parsesAndBuilds() throws Exception {
@@ -28,6 +30,10 @@ class WindEngineTest {
 
         assertNotNull(seq);
         assertEquals("CAM", seq.name());
+
+        // Imprimir árbol del mensaje
+        MessageTreeExpander expander = new MessageTreeExpander();
+        expander.printExpandedStructures(expander.expandMessage(seq));
     }
 
     /**
