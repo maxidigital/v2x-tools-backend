@@ -17,9 +17,10 @@ public class ConvertController {
     @PostMapping("/api/convert")
     public ResponseEntity<String> convert(
             @RequestBody String body,
-            @RequestHeader(value = "X-Forwarded-For", required = false) String clientIp) {
+            @RequestHeader(value = "X-Forwarded-For", required = false) String clientIp,
+            @RequestHeader(value = "X-User-Id", required = false) Long userId) {
 
-        ConversionResult result = conversionService.convertFromWebRequest(body, clientIp, "/api/convert");
+        ConversionResult result = conversionService.convertFromWebRequest(body, clientIp, "/api/convert", userId);
 
         return ResponseEntity
             .status(result.getHttpStatusCode())

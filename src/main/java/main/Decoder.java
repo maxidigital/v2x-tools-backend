@@ -22,17 +22,22 @@ import main.json.JsonOut;
 public class Decoder
 {
 
+    private final MessagesApp mapp;
+
+    public Decoder(MessagesApp mapp) {
+        this.mapp = mapp;
+    }
+
     /**
      *
      * @param bytes
      * @return
      * @throws WindException
      */
-    public synchronized JsonOut decodeUPER2JSON(byte[] bytes) throws WindException {
+    public JsonOut decodeUPER2JSON(byte[] bytes) throws WindException {
         Payload payloadIn = Payload.create(bytes, Encoding.UPER);
 
         A.p("Decoding: %s", payloadIn);
-        MessagesApp mapp = MessagesApp.getInstance();
         MessageId mid = mapp.extractMessageId(bytes, Encoding.UPER);
         Sequence sequence = mapp.createEmptyMessage(mid);
         sequence = mapp.decode(sequence, payloadIn);
@@ -55,7 +60,6 @@ public class Decoder
 
         try {
             A.p("Decoding: %s", payloadIn);
-            MessagesApp mapp = MessagesApp.getInstance();
             Sequence sequence = mapp.createEmptyMessage(payloadIn.getMessageId());
             sequence = mapp.decode(sequence, payloadIn);
 

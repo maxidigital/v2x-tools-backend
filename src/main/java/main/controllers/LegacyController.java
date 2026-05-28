@@ -22,9 +22,10 @@ public class LegacyController {
     public ResponseEntity<String> uperToJson(
             @RequestBody byte[] body,
             @RequestHeader(value = "Content-Type", defaultValue = "text/plain") String contentType,
-            @RequestHeader(value = "X-Forwarded-For", required = false) String clientIp) {
+            @RequestHeader(value = "X-Forwarded-For", required = false) String clientIp,
+            @RequestHeader(value = "X-User-Id", required = false) Long userId) {
 
-        ConversionResult result = conversionService.convertUperToJson(body, contentType, clientIp, "/uper2json");
+        ConversionResult result = conversionService.convertUperToJson(body, contentType, clientIp, "/uper2json", userId);
 
         if (result.isSuccess()) {
             String compressed = JsonCompressor.compressJson(result.getResponseData());

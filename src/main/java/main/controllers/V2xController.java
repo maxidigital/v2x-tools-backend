@@ -20,10 +20,11 @@ public class V2xController {
             @PathVariable String from,
             @PathVariable String to,
             @RequestBody String body,
-            @RequestHeader(value = "X-Forwarded-For", required = false) String clientIp) {
+            @RequestHeader(value = "X-Forwarded-For", required = false) String clientIp,
+            @RequestHeader(value = "X-User-Id", required = false) Long userId) {
 
         ConversionResult result = conversionService.convert(
-            body.trim(), from, to, clientIp, "/api/v2x/" + from + "/" + to
+            body.trim(), from, to, clientIp, "/api/v2x/" + from + "/" + to, userId
         );
 
         return ResponseEntity
