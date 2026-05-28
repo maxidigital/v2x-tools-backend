@@ -45,6 +45,10 @@ public class RandomController {
                 seq = mapp.initialize(seq);
             } else {
                 seq = mapp.randomize(seq);
+                // Fix header: field(0)=protocolVersion, field(1)=messageID
+                i.Sequence header = (i.Sequence) seq.field(0).getElement();
+                ((i.Integer) header.field(0).getElement()).setValue(messageId.getProtocolVersion());
+                ((i.Integer) header.field(1).getElement()).setValue(messageId.getId());
             }
 
             Encoding encoding;

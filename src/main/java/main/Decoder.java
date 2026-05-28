@@ -60,7 +60,8 @@ public class Decoder
 
         try {
             A.p("Decoding: %s", payloadIn);
-            Sequence sequence = mapp.createEmptyMessage(payloadIn.getMessageId());
+            MessageId mid = mapp.extractMessageId(payloadIn.getBytes(), payloadIn.getEncoding());
+            Sequence sequence = mapp.createEmptyMessage(mid);
             sequence = mapp.decode(sequence, payloadIn);
 
             //System.out.println(sequence);
