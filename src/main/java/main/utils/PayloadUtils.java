@@ -3,6 +3,7 @@ package main.utils;
 import a.enums.Encoding;
 import a.messages.Payload;
 import main.ContentTypes;
+import java.util.Base64;
 
 /**
  * PayloadUtils - Centralized utility for V2X payload creation and validation
@@ -28,6 +29,10 @@ public class PayloadUtils {
             } catch (IllegalArgumentException e) {
                 throw e;
             }
+        }
+        if (contentType != null && contentType.equals(ContentTypes.CT_APPLICATION_BASE64)) {
+            byte[] decoded = Base64.getDecoder().decode(new String(blobData).trim());
+            return Payload.create(decoded, Encoding.UPER);
         }
         return Payload.create(blobData, Encoding.UPER);
     }
