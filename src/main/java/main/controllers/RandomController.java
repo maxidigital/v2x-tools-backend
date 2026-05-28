@@ -28,7 +28,7 @@ public class RandomController {
             @RequestParam String mid,
             @RequestParam(defaultValue = "UPER") String format,
             @RequestParam(defaultValue = "false") boolean minimal,
-            @RequestHeader(value = "X-User-Id", required = false) Long userId) {
+            @RequestHeader(value = "X-User-Id", defaultValue = "0") Long userId) {
 
         MessageId messageId = MessageId.createFromStringId(mid);
 
@@ -36,9 +36,7 @@ public class RandomController {
             return ResponseEntity.badRequest().body(P.f("Unknown messageId(%s)", messageId));
         }
 
-        MessagesApp mapp = (userId != null && userId > 0)
-                ? windEngineService.getOrCreate(userId)
-                : MessagesApp.getInstance();
+        MessagesApp mapp = windEngineService.getOrCreate(userId);
 
         try {
             Sequence seq = mapp.createEmptyMessage(messageId);

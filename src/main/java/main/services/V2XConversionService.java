@@ -25,11 +25,8 @@ public class V2XConversionService {
         this.windEngineService = windEngineService;
     }
 
-    /** Resolves the MessagesApp for the given userId. Falls back to the shared singleton for public access. */
     private MessagesApp engine(Long userId) {
-        if (userId != null && userId > 0)
-            return windEngineService.getOrCreate(userId);
-        return MessagesApp.getInstance();
+        return windEngineService.getOrCreate(userId != null ? userId : 0L);
     }
 
     public ConversionResult convert(String inputData, String fromFormat, String toFormat, String clientIP, String endpoint, Long userId) {
@@ -63,7 +60,7 @@ public class V2XConversionService {
         }
     }
 
-    public ConversionResult convertUperToJson(byte[] inputData, String contentType, String clientIP, String endpoint, Long userId) {
+    private ConversionResult convertUperToJson(byte[] inputData, String contentType, String clientIP, String endpoint, Long userId) {
         long startTime = System.currentTimeMillis();
 
         try {
@@ -101,26 +98,6 @@ public class V2XConversionService {
         }
     }
 
-    public ConversionResult convertFromWebRequest(String jsonRequestString, String clientIP, String endpoint, Long userId) {
-        long startTime = System.currentTimeMillis();
-
-        try {
-            JsonIn jsonIn = new JsonIn(jsonRequestString);
-            JsonOut result = new Decoder(engine(userId)).decode(jsonIn);
-            long responseTime = System.currentTimeMillis() - startTime;
-
-            logConversion(CSVLine.Origin.WEB, jsonIn.getTextData(), result, clientIP, responseTime);
-            sendMonitoringNotification(endpoint, clientIP, jsonIn.getTextData(), responseTime);
-
-            return ConversionResult.success(result.getData(), result.getResponseCode());
-
-        } catch (Exception e) {
-            long responseTime = System.currentTimeMillis() - startTime;
-            A.p("Web conversion error: " + e.getMessage());
-            telegramCenter.notifyError(e.getMessage(), endpoint, clientIP);
-            return ConversionResult.error("Message could not be decoded", 500);
-        }
-    }
 
     private Payload createV2XPayload(byte[] blobData, String contentType) {
         return PayloadUtils.createV2XPayload(blobData, contentType);

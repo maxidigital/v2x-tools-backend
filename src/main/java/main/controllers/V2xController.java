@@ -21,7 +21,7 @@ public class V2xController {
             @PathVariable String to,
             @RequestBody String body,
             @RequestHeader(value = "X-Forwarded-For", required = false) String clientIp,
-            @RequestHeader(value = "X-User-Id", required = false) Long userId) {
+            @RequestHeader(value = "X-User-Id", defaultValue = "0") Long userId) {
 
         ConversionResult result = conversionService.convert(
             body.trim(), from, to, clientIp, "/api/v2x/" + from + "/" + to, userId
