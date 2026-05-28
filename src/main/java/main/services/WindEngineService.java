@@ -11,8 +11,10 @@ import wind_parser.WindParser;
 import wind_parser.i.WindParserProject;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -26,7 +28,7 @@ public class WindEngineService {
     private String repoUrl;
 
     private final Map<Long, MessagesApp> engines = new ConcurrentHashMap<>();
-    private final Map<Long, List<String>> loadedAliases = new ConcurrentHashMap<>();
+    private final Map<Long, Set<String>> loadedAliases = new ConcurrentHashMap<>();
 
     /**
      * Returns the engine for the given userId, creating an empty one lazily if needed.
@@ -47,7 +49,7 @@ public class WindEngineService {
     }
 
     public List<String> getAliases(Long userId) {
-        return loadedAliases.getOrDefault(userId, List.of());
+        return List.copyOf(loadedAliases.getOrDefault(userId, Set.of()));
     }
 
     /**
@@ -74,7 +76,7 @@ public class WindEngineService {
                 A.p("WindEngine[%d] loaded: %s / %s (msgId=%d, prot=%d)",
                         userId, alias, mainType, messageId, protocolVersion);
                 registered.add(alias);
-                loadedAliases.computeIfAbsent(userId, id -> new ArrayList<>()).add(alias);
+                loadedAliases.computeIfAbsent(userId, id -> new LinkedHashSet<>()).add(alias);
             } catch (Exception e) {
                 A.p("WindEngine[%d] ERROR loading %s: %s", userId, alias, e.getMessage());
             }
