@@ -9,6 +9,7 @@ import i.Sequence;
 import i.WindException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import main.services.WindEngineService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,11 +17,18 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/command")
 public class RandomController {
 
+    private final WindEngineService windEngineService;
+
+    public RandomController(WindEngineService windEngineService) {
+        this.windEngineService = windEngineService;
+    }
+
     @GetMapping("/random")
     public ResponseEntity<String> random(
             @RequestParam String mid,
             @RequestParam(defaultValue = "UPER") String format,
-            @RequestParam(defaultValue = "false") boolean minimal) {
+            @RequestParam(defaultValue = "false") boolean minimal,
+            @RequestHeader(value = "X-User-Id", defaultValue = "0") Long userId) {
 
         MessageId messageId = MessageId.createFromStringId(mid);
 
@@ -28,13 +36,19 @@ public class RandomController {
             return ResponseEntity.badRequest().body(P.f("Unknown messageId(%s)", messageId));
         }
 
+        MessagesApp mapp = windEngineService.getOrCreate(userId);
+
         try {
-            Sequence seq = MessagesApp.getInstance().createEmptyMessage(messageId);
+            Sequence seq = mapp.createEmptyMessage(messageId);
 
             if (minimal) {
-                seq = MessagesApp.getInstance().initialize(seq);
+                seq = mapp.initialize(seq);
             } else {
-                seq = MessagesApp.getInstance().randomize(seq);
+                seq = mapp.randomize(seq);
+                // Fix header: field(0)=protocolVersion, field(1)=messageID
+                i.Sequence header = (i.Sequence) seq.field(0).getElement();
+                ((i.Integer) header.field(0).getElement()).setValue(messageId.getProtocolVersion());
+                ((i.Integer) header.field(1).getElement()).setValue(messageId.getId());
             }
 
             Encoding encoding;
@@ -45,7 +59,7 @@ public class RandomController {
                 default: encoding = Encoding.UPER; break;
             }
 
-            Payload payload = MessagesApp.getInstance().encode(seq, encoding);
+            Payload payload = mapp.encode(seq, encoding);
 
             String response = (encoding == Encoding.XML || encoding == Encoding.JSON)
                     ? payload.toText()

@@ -17,6 +17,7 @@ public class ContentTypes
     public static final String CT_TEXT_HTML = "text/html";
     public static final String CT_TEXT_PLAIN = "text/plain";
     public static final String CT_TEXT_CSS = "text/css";
+    public static final String CT_APPLICATION_BASE64 = "application/base64";
 
     public static final String CT_IMAGE_ICON = "image/x-icon";
     public static final String CT_IMAGE_PNG = "image/png";

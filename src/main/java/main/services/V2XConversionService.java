@@ -2,6 +2,7 @@ package main.services;
 
 import a.enums.Encoding;
 import a.messages.Payload;
+import de.dlr.ts.v2x.commons.translators.MessagesApp;
 import i.WindException;
 import main.A;
 import main.Decoder;
@@ -17,12 +18,18 @@ import org.springframework.stereotype.Service;
 public class V2XConversionService {
 
     private final TelegramCenter telegramCenter;
+    private final WindEngineService windEngineService;
 
-    public V2XConversionService(TelegramCenter telegramCenter) {
+    public V2XConversionService(TelegramCenter telegramCenter, WindEngineService windEngineService) {
         this.telegramCenter = telegramCenter;
+        this.windEngineService = windEngineService;
     }
 
-    public ConversionResult convert(String inputData, String fromFormat, String toFormat, String clientIP, String endpoint) {
+    private MessagesApp engine(Long userId) {
+        return windEngineService.getOrCreate(userId != null ? userId : 0L);
+    }
+
+    public ConversionResult convert(String inputData, String fromFormat, String toFormat, String clientIP, String endpoint, Long userId) {
         long startTime = System.currentTimeMillis();
 
         try {
@@ -37,7 +44,7 @@ public class V2XConversionService {
                 return ConversionResult.error("Unsupported format conversion", 400);
             }
 
-            JsonOut result = performConversion(inputData, sourceFormat, targetFormat);
+            JsonOut result = performConversion(inputData, sourceFormat, targetFormat, userId);
             long responseTime = System.currentTimeMillis() - startTime;
 
             logConversion(inputData, result, clientIP, endpoint, responseTime);
@@ -53,7 +60,7 @@ public class V2XConversionService {
         }
     }
 
-    public ConversionResult convertUperToJson(byte[] inputData, String contentType, String clientIP, String endpoint) {
+    private ConversionResult convertUperToJson(byte[] inputData, String contentType, String clientIP, String endpoint, Long userId) {
         long startTime = System.currentTimeMillis();
 
         try {
@@ -65,7 +72,7 @@ public class V2XConversionService {
 
             A.p("Received payload: len(%s) %s", payload.getLength(), payload.getHexWithEncoding());
 
-            JsonOut result = new Decoder().decodeUPER2JSON(payload.getBytes());
+            JsonOut result = new Decoder(engine(userId)).decodeUPER2JSON(payload.getBytes());
             long responseTime = System.currentTimeMillis() - startTime;
 
             CSVLine csvLine = new CSVLine(CSVLine.Origin.API,
@@ -91,32 +98,12 @@ public class V2XConversionService {
         }
     }
 
-    public ConversionResult convertFromWebRequest(String jsonRequestString, String clientIP, String endpoint) {
-        long startTime = System.currentTimeMillis();
-
-        try {
-            JsonIn jsonIn = new JsonIn(jsonRequestString);
-            JsonOut result = new Decoder().decode(jsonIn);
-            long responseTime = System.currentTimeMillis() - startTime;
-
-            logConversion(CSVLine.Origin.WEB, jsonIn.getTextData(), result, clientIP, responseTime);
-            sendMonitoringNotification(endpoint, clientIP, jsonIn.getTextData(), responseTime);
-
-            return ConversionResult.success(result.getData(), result.getResponseCode());
-
-        } catch (Exception e) {
-            long responseTime = System.currentTimeMillis() - startTime;
-            A.p("Web conversion error: " + e.getMessage());
-            telegramCenter.notifyError(e.getMessage(), endpoint, clientIP);
-            return ConversionResult.error("Message could not be decoded", 500);
-        }
-    }
 
     private Payload createV2XPayload(byte[] blobData, String contentType) {
         return PayloadUtils.createV2XPayload(blobData, contentType);
     }
 
-    private JsonOut performConversion(String inputData, V2XFormat from, V2XFormat to) throws WindException {
+    private JsonOut performConversion(String inputData, V2XFormat from, V2XFormat to, Long userId) throws WindException {
         Encoding fromEncoding = mapToEncoding(from);
         Encoding toEncoding = mapToEncoding(to);
 
@@ -125,7 +112,7 @@ public class V2XConversionService {
         }
 
         JsonIn jsonIn = new JsonIn(createJsonRequest(inputData, fromEncoding, toEncoding));
-        return new Decoder().decode(jsonIn);
+        return new Decoder(engine(userId)).decode(jsonIn);
     }
 
     private Encoding mapToEncoding(V2XFormat format) {
