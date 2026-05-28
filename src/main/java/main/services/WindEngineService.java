@@ -6,7 +6,7 @@ import de.dlr.ts.v2x.wind_generic.WindGeneric;
 import main.A;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import repoClient.RepoClient;
+import main.repo.RepoClient;
 import wind_parser.WindParser;
 import wind_parser.i.WindParserProject;
 
