@@ -62,7 +62,13 @@ public class WindEngineService {
         RepoClient repoClient = new RepoClient(repoUrl, userId);
         List<String> registered = new ArrayList<>();
 
+        Set<String> already = loadedAliases.computeIfAbsent(userId, id -> new LinkedHashSet<>());
+
         for (String alias : aliases) {
+            if (already.contains(alias)) {
+                A.p("WindEngine[%d] skip (already loaded): %s", userId, alias);
+                continue;
+            }
             try {
                 Map<String, Object> meta = repoClient.getModuleMeta(alias);
                 String mainType     = (String)  meta.get("mainType");
@@ -76,7 +82,7 @@ public class WindEngineService {
                 A.p("WindEngine[%d] loaded: %s / %s (msgId=%d, prot=%d)",
                         userId, alias, mainType, messageId, protocolVersion);
                 registered.add(alias);
-                loadedAliases.computeIfAbsent(userId, id -> new LinkedHashSet<>()).add(alias);
+                already.add(alias);
             } catch (Exception e) {
                 A.p("WindEngine[%d] ERROR loading %s: %s", userId, alias, e.getMessage());
             }
