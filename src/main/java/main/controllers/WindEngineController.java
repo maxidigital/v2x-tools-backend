@@ -23,12 +23,16 @@ public class WindEngineController {
             @PathVariable Long userId,
             @RequestBody List<String> aliases) {
 
-        List<String> registered = engineService.load(userId, aliases);
-        return ResponseEntity.ok(Map.of(
-                "userId",     userId,
-                "requested",  aliases.size(),
-                "registered", registered.size(),
-                "aliases",    registered));
+        WindEngineService.LoadResult result = engineService.load(userId, aliases);
+        var body = new java.util.LinkedHashMap<String, Object>();
+        body.put("userId",     userId);
+        body.put("requested",  aliases.size());
+        body.put("registered", result.registered().size());
+        body.put("skipped",    result.skipped().size());
+        body.put("aliases",    result.registered());
+        if (!result.errors().isEmpty())
+            body.put("errors", result.errors());
+        return ResponseEntity.ok(body);
     }
 
     /** Returns the aliases loaded in the engine for the given userId. */

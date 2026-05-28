@@ -52,21 +52,25 @@ public class WindEngineService {
         return List.copyOf(loadedAliases.getOrDefault(userId, Set.of()));
     }
 
+    public record LoadResult(List<String> registered, List<String> skipped, Map<String, String> errors) {}
+
     /**
      * Loads the given aliases into the user's engine (creates it if needed).
      * Each alias is parsed once; the supplier is instantaneous on createEmptyMessage().
-     * Returns the list of aliases that were successfully registered.
      */
-    public List<String> load(Long userId, List<String> aliases) {
+    public LoadResult load(Long userId, List<String> aliases) {
         MessagesApp engine = getOrCreate(userId);
         RepoClient repoClient = new RepoClient(repoUrl, userId);
         List<String> registered = new ArrayList<>();
+        List<String> skipped    = new ArrayList<>();
+        Map<String, String> errors = new java.util.LinkedHashMap<>();
 
         Set<String> already = loadedAliases.computeIfAbsent(userId, id -> new LinkedHashSet<>());
 
         for (String alias : aliases) {
             if (already.contains(alias)) {
                 A.p("WindEngine[%d] skip (already loaded): %s", userId, alias);
+                skipped.add(alias);
                 continue;
             }
             try {
@@ -85,8 +89,9 @@ public class WindEngineService {
                 already.add(alias);
             } catch (Exception e) {
                 A.p("WindEngine[%d] ERROR loading %s: %s", userId, alias, e.getMessage());
+                errors.put(alias, e.getMessage());
             }
         }
-        return registered;
+        return new LoadResult(registered, skipped, errors);
     }
 }
