@@ -31,6 +31,14 @@ public class WindEngineController {
                 "aliases",    registered));
     }
 
+    /** Returns the aliases loaded in the engine for the given userId. */
+    @GetMapping("/{userId}/aliases")
+    public ResponseEntity<?> aliases(@PathVariable Long userId) {
+        return ResponseEntity.ok(Map.of(
+                "userId",   userId,
+                "aliases",  engineService.getAliases(userId)));
+    }
+
     /** Evicts the engine for the given userId. */
     @DeleteMapping("/{userId}")
     public ResponseEntity<?> evict(@PathVariable Long userId) {

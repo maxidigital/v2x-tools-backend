@@ -26,6 +26,7 @@ public class WindEngineService {
     private String repoUrl;
 
     private final Map<Long, MessagesApp> engines = new ConcurrentHashMap<>();
+    private final Map<Long, List<String>> loadedAliases = new ConcurrentHashMap<>();
 
     /**
      * Returns the engine for the given userId, creating an empty one lazily if needed.
@@ -42,6 +43,11 @@ public class WindEngineService {
      */
     public void evict(Long userId) {
         engines.remove(userId);
+        loadedAliases.remove(userId);
+    }
+
+    public List<String> getAliases(Long userId) {
+        return loadedAliases.getOrDefault(userId, List.of());
     }
 
     /**
@@ -68,6 +74,7 @@ public class WindEngineService {
                 A.p("WindEngine[%d] loaded: %s / %s (msgId=%d, prot=%d)",
                         userId, alias, mainType, messageId, protocolVersion);
                 registered.add(alias);
+                loadedAliases.computeIfAbsent(userId, id -> new ArrayList<>()).add(alias);
             } catch (Exception e) {
                 A.p("WindEngine[%d] ERROR loading %s: %s", userId, alias, e.getMessage());
             }
