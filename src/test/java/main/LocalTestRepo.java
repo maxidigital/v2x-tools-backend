@@ -18,25 +18,23 @@ import java.util.Map;
  * Loads ASN.1 content from classpath resources.
  * OID lookup uses a unique numeric token per module (robust to format variations
  * between the ASN.1 parser and different OID string representations).
+ *
+ * WindId = ("", alias, "1.0") — consistent with production RepoClient behaviour.
  */
 public class LocalTestRepo implements Asn1Repo {
 
-    private record ModuleEntry(WindId windId, String content) {}
+    private record ModuleEntry(String alias, String content) {}
     private record OidEntry(String token, ModuleEntry entry) {}
 
     private final Map<String, ModuleEntry> byAlias = new HashMap<>();
     private final List<OidEntry>           byOid   = new ArrayList<>();
 
     public LocalTestRepo() {
-        ModuleEntry cam = new ModuleEntry(
-                WindId.create("de.dlr.ts.v2x", "cam_v2", "4.0"),
-                loadResource("cam_v2.asn"));
+        ModuleEntry cam = new ModuleEntry("cam_v2", loadResource("cam_v2.asn"));
         byAlias.put("cam_v2", cam);
         byOid.add(new OidEntry("302637", cam));   // en (302637) cam — unique to CAM v2
 
-        ModuleEntry its = new ModuleEntry(
-                WindId.create("de.dlr.ts.v2x", "its_container_v2", "4.0"),
-                loadResource("its_container_v2.asn"));
+        ModuleEntry its = new ModuleEntry("its_container_v2", loadResource("its_container_v2.asn"));
         byAlias.put("its_container_v2", its);
         byOid.add(new OidEntry("102894", its));   // ts (102894) cdd — unique to ITS-Container v2
     }
@@ -55,17 +53,19 @@ public class LocalTestRepo implements Asn1Repo {
         throw new Asn1RepoException("Unknown module: " + name + " / " + oid);
     }
 
+    /** WindId = alias — consistent with production RepoClient. No storage needed. */
     @Override
     public WindId getWindIdByAlias(String alias) throws Asn1RepoException {
-        ModuleEntry e = byAlias.get(alias);
-        if (e == null) throw new Asn1RepoException("Unknown alias: " + alias);
-        return e.windId();
+        if (!byAlias.containsKey(alias))
+            throw new Asn1RepoException("Unknown alias: " + alias);
+        return WindId.create("", alias, "1.0");
     }
 
     @Override
     public WindId getWindIdByNameAndOid(String name, String oid) throws Asn1RepoException {
         for (OidEntry e : byOid)
-            if (oid.contains(e.token())) return e.entry().windId();
+            if (oid.contains(e.token()))
+                return WindId.create("", e.entry().alias(), "1.0");
         throw new Asn1RepoException("Unknown module: " + name + " / " + oid);
     }
 
