@@ -72,13 +72,15 @@ public class RepoClient implements Asn1Repo {
     }
 
     /**
-     * WindId for OID lookups: extract the alias from the /by-oid response (already cached).
-     * No extra HTTP call needed.
+     * WindId for OID lookups: use the module alias if set, otherwise fall back to the
+     * ASN.1 module name (which is always unique and stable).
+     * No extra HTTP call needed — derived from the cached /by-oid response.
      */
     @Override
     public WindId getWindIdByNameAndOid(String name, String oid) throws Asn1RepoException {
-        String alias = (String) getOidJson(oid).getOrDefault("alias", "");
-        return WindId.create("", alias, "1.0");
+        Object aliasObj = getOidJson(oid).get("alias");
+        String id = (aliasObj instanceof String s && !s.isBlank()) ? s : name;
+        return WindId.create("", id, "1.0");
     }
 
     /** Returns full module metadata (alias, mainType, messageId, protocolVersion, ...). */
