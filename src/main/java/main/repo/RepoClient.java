@@ -72,15 +72,31 @@ public class RepoClient implements Asn1Repo {
     }
 
     /**
-     * WindId for OID lookups: use the module alias if set, otherwise fall back to the
-     * ASN.1 module name (which is always unique and stable).
-     * No extra HTTP call needed — derived from the cached /by-oid response.
+     * WindId for OID lookups:
+     * - If the module has an alias → use it (message modules set by admin)
+     * - Otherwise → derive a snake_case name from the ASN.1 module name stored in DB
+     *   (library modules like ETSI-ITS-CDD don't have aliases, but need a valid package name)
+     * No extra HTTP call — derived from the cached /by-oid response.
      */
     @Override
     public WindId getWindIdByNameAndOid(String name, String oid) throws Asn1RepoException {
-        Object aliasObj = getOidJson(oid).get("alias");
-        String id = (aliasObj instanceof String s && !s.isBlank()) ? s : name;
+        Map<String, Object> module = getOidJson(oid);
+        Object aliasObj = module.get("alias");
+        if (aliasObj instanceof String s && !s.isBlank())
+            return WindId.create("", s, "1.0");
+        String moduleName = (String) module.get("moduleName");
+        String id = toSnakeCase(moduleName != null ? moduleName : name);
         return WindId.create("", id, "1.0");
+    }
+
+    /** Converts an ASN.1 module name to a snake_case Java package identifier.
+     *  Examples: "ETSI-ITS-CDD" → "etsi_its_cdd", "EfcDsrcApplication" → "efc_dsrc_application" */
+    private static String toSnakeCase(String name) {
+        return name.replaceAll("([a-z])([A-Z])", "$1_$2")
+                   .replaceAll("[^a-zA-Z0-9]+", "_")
+                   .replaceAll("_+", "_")
+                   .replaceAll("^_|_$", "")
+                   .toLowerCase();
     }
 
     /** Returns full module metadata (alias, mainType, messageId, protocolVersion, ...). */
