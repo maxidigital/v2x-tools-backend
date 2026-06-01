@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/engine")
+@RequestMapping("/api/v2x/messages")
 public class WindEngineController {
 
     private final WindEngineService engineService;
@@ -18,9 +18,9 @@ public class WindEngineController {
     }
 
     /** Loads the given aliases into the user's engine. Body: ["cam_v2", "denm_v2"] */
-    @PostMapping("/{userId}/load")
+    @PostMapping("/load")
     public ResponseEntity<?> load(
-            @PathVariable Long userId,
+            @RequestHeader(value = "X-User-Id", defaultValue = "0") Long userId,
             @RequestBody List<String> aliases) {
 
         WindEngineService.LoadResult result = engineService.load(userId, aliases);
@@ -35,17 +35,19 @@ public class WindEngineController {
         return ResponseEntity.ok(body);
     }
 
-    /** Returns the aliases loaded in the engine for the given userId. */
-    @GetMapping("/{userId}/aliases")
-    public ResponseEntity<?> aliases(@PathVariable Long userId) {
+    /** Returns the aliases loaded in the engine for the given user. */
+    @GetMapping
+    public ResponseEntity<?> aliases(
+            @RequestHeader(value = "X-User-Id", defaultValue = "0") Long userId) {
         return ResponseEntity.ok(Map.of(
-                "userId",   userId,
-                "aliases",  engineService.getAliases(userId)));
+                "userId",  userId,
+                "aliases", engineService.getAliases(userId)));
     }
 
-    /** Evicts the engine for the given userId. */
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<?> evict(@PathVariable Long userId) {
+    /** Evicts the engine for the given user. */
+    @DeleteMapping
+    public ResponseEntity<?> evict(
+            @RequestHeader(value = "X-User-Id", defaultValue = "0") Long userId) {
         engineService.evict(userId);
         return ResponseEntity.ok().build();
     }

@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/command")
+@RequestMapping("/api/v2x")
 public class RandomController {
 
     private final WindEngineService windEngineService;
@@ -23,7 +23,7 @@ public class RandomController {
         this.windEngineService = windEngineService;
     }
 
-    @GetMapping("/random")
+    @GetMapping("/generate")
     public ResponseEntity<String> random(
             @RequestParam String mid,
             @RequestParam(defaultValue = "UPER") String format,
