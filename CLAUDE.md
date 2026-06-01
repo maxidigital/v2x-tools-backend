@@ -1,99 +1,91 @@
-# V2X.tools - Proyecto de Herramientas V2X
+# v2x-tools-backend
 
-## Descripción General
-V2X.tools es una aplicación web para decodificar y codificar mensajes V2X (Vehicle-to-Everything) usando UPER (Unaligned Packed Encoding Rules). Es una herramienta diseñada para ingenieros automotrices e investigadores que trabajan con comunicación vehicular, autos conectados y sistemas de tráfico inteligente.
+Spring Boot 3.2 / Java 17. Backend REST para encoding/decoding de mensajes V2X (UPER).
+Deployado en Railway — auto-deploya en cada push a `main`.
 
-## Tecnologías Principales
-- **Backend**: Java 8 con servidor HTTP embebido (com.sun.net.httpserver)
-- **Frontend**: HTML5, JavaScript vanilla, Tailwind CSS
-- **Build**: Maven para Java, npm para assets frontend
-- **Dependencias clave**:
-  - wind.connector (v6.0) - Biblioteca V2X del DLR
-  - telegrambots (v5.1.0) - Para notificaciones
-  - better-sqlite3 - Base de datos local
-  - Tailwind CSS v4.1.4 - Estilos
+## Dependencias
 
-## Estructura del Proyecto
+### Maven Central (resuelven automáticamente)
+`spring-boot-starter-web`, `telegrambots`, `angus-mail`, `mailjet-client`
 
-### Backend (Java)
-- **MainWeb.java**: Punto de entrada principal, configura el servidor HTTP
-- **handlers/**: Manejo de rutas HTTP
-  - MainHandler: Maneja rutas web principales
-  - UPER2JSONHandler: Convierte UPER a JSON
-  - ContactFormHandler: Procesa formularios de contacto
-  - SimpleApiDocsHandler: Documentación API
-  - SitemapHandler: Genera sitemap.xml
-- **services/**: Lógica de negocio
-  - V2XConversionService: Servicio principal de conversión
-- **monitoring/**: Sistema de notificaciones Telegram
-- **stats/**: Recopilación de estadísticas de uso
+### JARs internos (`libs/` — commiteados al repo)
+Los artefactos DLR y de underwater no están en Maven Central ni en ningún registry
+público. Se commitean directamente en `libs/` con `scope=system` en el `pom.xml`.
+**Esto es intencional** — evita gestión de credenciales en Railway y cualquier otro
+entorno de build.
 
-### Frontend (web/)
-- **index.html**: Interfaz principal con formularios de conversión
-- **v2xConverter.js**: Lógica JavaScript del cliente
-- **styles.css**: Estilos personalizados + Tailwind
-- **doc/**: Documentación API interactiva
+| Archivo | Proyecto fuente |
+|---|---|
+| `wind.connector.jar` | `v2x-framework/tools/wind.connector` |
+| `wind.lib-4.2.jar` | `v2x-framework/commons/wind.lib` |
+| `wind_asn1_parser-2.0.jar` | `v2x-tools-wind/wind_asn1_parser` |
+| `wind_parser-2.0.jar` | `v2x-tools-wind/wind_parser` |
+| `wind_generic-2.0.jar` | `v2x-tools-wind/wind_generic` |
+| `wind_generator-2.1.jar` | `v2x-tools-wind/wind_generator` |
+| `wind_commons-2.0.jar` | `v2x-tools-wind/wind_commons` |
+| `utils.xmladmin2-1.3.2.jar` | `v2x-framework/tools/utils.xmladmin2` |
+| `email.admin-1.0.1.jar` | `underwater/admin/email.admin` |
 
-## API Endpoints
+### Cómo actualizar un JAR
 
-### Nuevos endpoints REST (recomendados):
-- `POST /api/v2x/uper/json` - UPER a JSON
-- `POST /api/v2x/uper/xml` - UPER a XML  
-- `POST /api/v2x/json/uper` - JSON a UPER
-- `POST /api/v2x/xml/json` - XML a JSON
-
-### Endpoints deprecados:
-- `/uper2json` - Será eliminado en v2.0 (Junio 2025)
-
-## Configuración
-
-### Variables de entorno y argumentos:
-- `--port`: Puerto del servidor (default: 8080)
-- `--web-enabled`: Habilita interfaz web
-- `--forwarding-port`: Puerto de reenvío
-- `--log`: Habilita logging
-- `--debug`: Modo debug
-
-### Archivos de configuración:
-- `config.properties`: Configuración general
-- `nginx-v2x.conf` / `nginx-v2x-ssl.conf`: Configuración nginx
-
-## Scripts de Deployment
-- `deploy.sh`: Script principal de despliegue
-- `restart.sh`: Reinicia el servicio
-- `localhost-run.sh`: Ejecuta localmente
-- `status.sh`: Verifica estado del servicio
-- `logs.sh`: Ver logs
-
-## Desarrollo
-
-### Requisitos previos
-Las dependencias DLR se resuelven desde GitHub Packages. Requiere las variables de entorno:
 ```bash
-export GITHUB_ACTOR=<tu_usuario_github>
-export GITHUB_TOKEN=<token_con_read:packages>
+# 1. Rebuild el proyecto fuente (ejemplo: wind.lib)
+cd v2x-framework/commons/wind.lib && mvn package
+
+# 2. Si es wind.connector (fat jar que embebe wind.lib):
+cd v2x-framework/tools/wind.connector && mvn package
+cp target/wind.connector.jar v2x-tools-backend/libs/
+
+# 3. Commit y push → Railway redeploya automáticamente
+git add libs/wind.connector.jar
+git commit -m "chore: update wind.connector to vX.Y"
+git push
 ```
 
-### Compilar backend:
+## Build
+
 ```bash
-mvn clean package -s settings.xml
+# Build local (no requiere credenciales)
+mvn clean package -DskipTests
+
+# Con tests
+mvn clean package
 ```
 
-### Cuando cambia wind.lib o wind.connector
-Ya no hay paso manual. Publicar el artefacto actualizado a GitHub Packages desde v2x-framework:
-```bash
-cd v2x-framework && mvn deploy -s ../apps/courses.app/settings.xml
+No se necesita `-s settings.xml` para buildear localmente.
+`settings.xml` existe solo si en algún momento se necesita resolver
+algo de GitHub Packages (no es el caso actualmente).
+
+## Deploy
+
+Railway auto-deploya en cada push a `main`. No hay pasos manuales.
+
+## Estructura
+
 ```
-El próximo `mvn package` en el backend descarga la versión actualizada automáticamente.
+src/main/java/main/
+├── config/         Spring config (CORS, lifecycle)
+├── controllers/    REST endpoints (V2x, Asn1, Stats, Contact, etc.)
+├── services/       Lógica de negocio (V2XConversionService, WindEngineService)
+├── repo/           RepoClient — HTTP client para v2x-tools-repo
+├── monitoring/     Notificaciones Telegram
+├── stats/          CSV de estadísticas de uso
+└── utils/          Utilidades
+```
 
-## Notas Importantes
-- Versión actual: 1.8
-- Puerto por defecto: 8080
-- Requiere Java 17 (Spring Boot 3.2), GITHUB_TOKEN para build
-- Los endpoints legacy están marcados como deprecados
-- Copyright: German Aerospace Center (DLR)
+## Endpoints principales
 
-## Monitoreo
-- Sistema de notificaciones via Telegram
-- Recopilación de estadísticas en archivos CSV
-- Logs en carpeta `log/`
+- `POST /api/convert` — encode/decode/convert mensajes V2X
+- `GET  /command/random` — genera payload random/minimal/maximal
+- `GET  /api/capabilities` — descripción de capacidades (para MCP)
+- `POST /api/support/report` — reporte de soporte
+
+## Notas
+
+- `wind.connector` es un fat jar que embebe `wind.lib`, `portshub`,
+  `commons.translators` y `commons.modules.serializers`.
+  `includeSystemScope=true` en el spring-boot-maven-plugin asegura que
+  los system-scope JARs se incluyan en el fat jar final.
+- `RepoClient` en `main/repo/` implementa la interfaz `Asn1Repo` de
+  `wind_parser`. Hay una copia idéntica en `v2x-tools-repo-client`
+  (artefacto separado para uso de `wind_generator`).

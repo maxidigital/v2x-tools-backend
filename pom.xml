@@ -16,95 +16,78 @@
         <java.version>17</java.version>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>github-v2x-framework</id>
-            <url>https://maven.pkg.github.com/maxidigital/v2x-framework</url>
-        </repository>
-        <repository>
-            <id>github-v2x-tools-wind</id>
-            <url>https://maven.pkg.github.com/maxidigital/v2x-tools-wind</url>
-        </repository>
-        <repository>
-            <id>github-underwater</id>
-            <url>https://maven.pkg.github.com/maxidigital/underwater</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- wind.connector is a fat jar embedding wind.lib, portshub,
-             commons.translators, commons.modules.serializers — exclude them
-             to avoid duplicate classes in the Spring Boot fat jar. -->
+        <!-- DLR/internal JARs are committed to libs/ (system scope).
+             This avoids credential management in Railway and other build
+             environments. To update a JAR: rebuild the source project,
+             copy the new JAR to libs/, commit, and push. -->
         <dependency>
             <groupId>de.dlr.ts.v2x</groupId>
             <artifactId>wind.connector</artifactId>
             <version>6.2</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>de.dlr.ts.v2x</groupId>
-                    <artifactId>wind.lib</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>de.dlr.ts.v2x</groupId>
-                    <artifactId>portshub</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>de.dlr.ts.v2x</groupId>
-                    <artifactId>commons.translators</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>de.dlr.ts.v2x</groupId>
-                    <artifactId>commons.modules.serializers</artifactId>
-                </exclusion>
-            </exclusions>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/wind.connector.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>de.dlr.ts.v2x</groupId>
             <artifactId>wind_asn1_parser</artifactId>
             <version>2.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/wind_asn1_parser-2.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>de.dlr.ts.v2x</groupId>
             <artifactId>wind_parser</artifactId>
             <version>2.0</version>
-            <!-- old published pom references DLR internal HTTP nexus via wind_repo;
-                 exclude it since the backend doesn't use wind_repo directly -->
-            <exclusions>
-                <exclusion>
-                    <groupId>de.dlr.ts.v2x</groupId>
-                    <artifactId>wind_repo</artifactId>
-                </exclusion>
-            </exclusions>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/wind_parser-2.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>de.dlr.ts.v2x</groupId>
             <artifactId>wind_generic</artifactId>
             <version>2.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/wind_generic-2.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>de.dlr.ts.v2x</groupId>
             <artifactId>wind_generator</artifactId>
             <version>2.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/wind_generator-2.1.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>de.dlr.ts.v2x</groupId>
+            <artifactId>wind.lib</artifactId>
+            <version>4.2</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/wind.lib-4.2.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>de.dlr.ts.v2x</groupId>
             <artifactId>wind_commons</artifactId>
             <version>2.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/wind_commons-2.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>de.dlr.ts.v2x</groupId>
             <artifactId>utils.xmladmin2</artifactId>
             <version>1.3.2</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/utils.xmladmin2-1.3.2.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>blue.underwater</groupId>
             <artifactId>email.admin</artifactId>
             <version>1.0.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/email.admin-1.0.1.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -134,6 +117,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <includeSystemScope>true</includeSystemScope>
+                </configuration>
             </plugin>
         </plugins>
     </build>
