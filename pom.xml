@@ -72,6 +72,14 @@
             <groupId>de.dlr.ts.v2x</groupId>
             <artifactId>wind_parser</artifactId>
             <version>2.0</version>
+            <!-- old published pom references DLR internal HTTP nexus via wind_repo;
+                 exclude it since the backend doesn't use wind_repo directly -->
+            <exclusions>
+                <exclusion>
+                    <groupId>de.dlr.ts.v2x</groupId>
+                    <artifactId>wind_repo</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>de.dlr.ts.v2x</groupId>
