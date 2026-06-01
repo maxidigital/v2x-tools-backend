@@ -1,5 +1,9 @@
 
 **/log/**
+dependency-reduced-pom.xml
+output.txt
+**/extracted-libs/**
+**/counter/**
 /target/
 **/inoutLogging/**
 *.prefs

@@ -178,6 +178,33 @@ v2x-cli batch --file conversions.csv --output results/
 - Tutorial interactivo para nuevos usuarios
 - Exportación a más formatos (CSV, Excel, PDF)
 
+### 7. **Validador ASN.1 mejorado (Anforderung futuro)**
+
+El `Asn1Validator` actual (`v2x-tools-repo/main/validator/Asn1Validator.java`) implementa
+4 capas de validación sin modificar el parser central `wind_asn1_parser`:
+
+- **Layer 1** — Chequeos estructurales (regex, sin parser): detecta keywords faltantes
+  (`DEFINITIONS`, `BEGIN`, `END`, `::=`) y errores de orden. Previene cuelgues del parser
+  (el sub-lexer de `extractModulesTokens()` termina en `END`, no en `EOF`).
+- **Layer 2** — Chequeos sintácticos según ITU-T X.680 (regex, sin parser), con número de línea:
+  balance de `{}` `()` `[]`, IMPORTS/EXPORTS sin `;`, nombres de módulo/tipo con
+  mayúscula, underscores prohibidos en identificadores, tipos duplicados en el módulo.
+- **Layer 3** — Llamada a `wind_asn1_parser` para errores de body (`parser.hasErrors()`).
+- **Layer 4** — Chequeos sobre el AST: campos duplicados en SEQUENCE/CHOICE, nombres
+  de campo que deben empezar con minúscula.
+
+**Limitación conocida en Layer 3**: `wind_asn1_parser` usa internamente
+`lexer.expectingError()` que **retorna un String** en vez de registrar el error
+→ algunos errores de sintaxis se pierden silenciosamente.
+
+**Anforderung futuro**: clonar `wind_asn1_parser` en un paquete dedicado
+`main.validator.parser` dentro de `v2x-tools-repo` y optimizarlo para detección
+de errores, sin tocar el parser original:
+- Corregir `Lexer.expectingError()` para registrar `ParseError` en vez de retornar String
+- Corregir loops en `Asn1ModuleImpl` para chequear token `END` además de `EOF`
+- El `Asn1Validator` usaría el clon (Layer 3+4) en lugar del original
+- El parser original queda completamente intocable y seguro
+
 ## 📊 **Monitoreo y Testing**
 
 ### 1. **Testing**
