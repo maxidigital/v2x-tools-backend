@@ -9,9 +9,7 @@ import main.A;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import main.repo.RepoClient;
-import wind_parser.WindParser;
 import wind_parser.i.ParserSequence;
-import wind_parser.i.WindParserProject;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -29,11 +27,6 @@ public class WindEngineService {
 
     @Value("${wind.repo.url:https://v2x-tools-repo-production.up.railway.app/}")
     private String repoUrl;
-
-    /** "parser" (default): parse ASN.1 in-engine. "definition": consume the digested
-     *  definition from the repo and reuse WindGeneric.build. Flip to roll back instantly. */
-    @Value("${wind.engine.source:parser}")
-    private String engineSource;
 
     private final WindMessageCodec codec = new WindMessageCodec();
 
@@ -84,28 +77,13 @@ public class WindEngineService {
                 continue;
             }
             try {
-                if ("definition".equalsIgnoreCase(engineSource)) {
-                    // New path: repo digested the ASN.1; we just deserialize + reuse the builder.
-                    MessageDefinition def = codec.parse(repoClient.getDefinition(alias));
-                    ParserSequence root = def.rootSequence();
-                    MessageId mid = MessageId.create(def.getMessageId(), def.getProtocolVersion());
-                    engine.registerMessage(mid, () -> WindGeneric.build(root));
-                    A.p("WindEngine[%d] loaded (definition): %s (msgId=%d, prot=%d)",
-                            userId, alias, def.getMessageId(), def.getProtocolVersion());
-                } else {
-                    // Legacy path: parse the ASN.1 in-engine.
-                    Map<String, Object> meta = repoClient.getModuleMeta(alias);
-                    String mainType     = (String)  meta.get("mainType");
-                    int messageId       = (Integer) meta.get("messageId");
-                    int protocolVersion = (Integer) meta.get("protocolVersion");
-
-                    WindParserProject project = new WindParser().parseByAlias(alias, repoClient);
-                    MessageId mid = MessageId.create(messageId, protocolVersion);
-                    engine.registerMessage(mid, () -> WindGeneric.build(project, mainType));
-
-                    A.p("WindEngine[%d] loaded (parser): %s / %s (msgId=%d, prot=%d)",
-                            userId, alias, mainType, messageId, protocolVersion);
-                }
+                // The repo digested the ASN.1; the engine just deserializes + reuses the builder.
+                MessageDefinition def = codec.parse(repoClient.getDefinition(alias));
+                ParserSequence root = def.rootSequence();
+                MessageId mid = MessageId.create(def.getMessageId(), def.getProtocolVersion());
+                engine.registerMessage(mid, () -> WindGeneric.build(root));
+                A.p("WindEngine[%d] loaded: %s (msgId=%d, prot=%d)",
+                        userId, alias, def.getMessageId(), def.getProtocolVersion());
                 registered.add(alias);
                 already.add(alias);
             } catch (Exception e) {
