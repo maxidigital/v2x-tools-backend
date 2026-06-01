@@ -67,27 +67,30 @@ V2X.tools es una aplicación web para decodificar y codificar mensajes V2X (Vehi
 
 ## Desarrollo
 
+### Requisitos previos
+Las dependencias DLR se resuelven desde GitHub Packages. Requiere las variables de entorno:
+```bash
+export GITHUB_ACTOR=<tu_usuario_github>
+export GITHUB_TOKEN=<token_con_read:packages>
+```
+
 ### Compilar backend:
 ```bash
-mvn clean package
+mvn clean package -s settings.xml
 ```
 
-### Compilar CSS:
+### Cuando cambia wind.lib o wind.connector
+Ya no hay paso manual. Publicar el artefacto actualizado a GitHub Packages desde v2x-framework:
 ```bash
-npm run build:css
+cd v2x-framework && mvn deploy -s ../apps/courses.app/settings.xml
 ```
-
-### Desarrollo con hot-reload CSS:
-```bash
-npm run watch:css
-```
+El próximo `mvn package` en el backend descarga la versión actualizada automáticamente.
 
 ## Notas Importantes
 - Versión actual: 1.8
 - Puerto por defecto: 8080
-- Requiere Java 8+
+- Requiere Java 17 (Spring Boot 3.2), GITHUB_TOKEN para build
 - Los endpoints legacy están marcados como deprecados
-- Incluye Google Analytics (G-EGM7LYNG67)
 - Copyright: German Aerospace Center (DLR)
 
 ## Monitoreo

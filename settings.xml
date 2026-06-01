@@ -6,6 +6,11 @@
             <password>${env.GITHUB_TOKEN}</password>
         </server>
         <server>
+            <id>github-v2x-tools-wind</id>
+            <username>${env.GITHUB_ACTOR}</username>
+            <password>${env.GITHUB_TOKEN}</password>
+        </server>
+        <server>
             <id>github-underwater</id>
             <username>${env.GITHUB_ACTOR}</username>
             <password>${env.GITHUB_TOKEN}</password>
