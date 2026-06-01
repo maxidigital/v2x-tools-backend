@@ -12,6 +12,7 @@ import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +30,9 @@ public class RepoClient implements Asn1Repo {
 
     private final String baseUrl;
     private final Long userId;
-    private final HttpClient http = HttpClient.newHttpClient();
+    private final HttpClient http = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(5))
+            .build();
     private final ObjectMapper mapper = new ObjectMapper();
     private final Map<String, Map<String, Object>> oidCache = new HashMap<>();
 
@@ -125,6 +128,7 @@ public class RepoClient implements Asn1Repo {
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
+                    .timeout(Duration.ofSeconds(10))
                     .GET()
                     .build();
             return http.send(request, HttpResponse.BodyHandlers.ofString());

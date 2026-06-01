@@ -9,36 +9,30 @@ package main.json;
 import a.enums.Encoding;
 import org.json.JSONObject;
 
-/**
- *
- * @author bott_ma
- */
-public class JsonIn
-{
+public class JsonIn {
 
     private final String textData;
     private final Encoding inFormat;
     private final Encoding outFormat;
 
-    /**
-     *
-     * @param jsonString
-     */
     public JsonIn(String jsonString) {
         JSONObject jsonObject = new JSONObject(jsonString);
 
-        textData = jsonObject.getString("textData");
-        String _sendFormat = jsonObject.getString("sendFormat");
-        String _receiveFormat = jsonObject.getString("receiveFormat");
+        textData = jsonObject.optString("textData", null);
+        String sendFormat = jsonObject.optString("sendFormat", null);
+        String receiveFormat = jsonObject.optString("receiveFormat", null);
 
-        this.inFormat = Encoding.guessEncoding(_sendFormat);
-        this.outFormat = Encoding.guessEncoding(_receiveFormat);
+        if (textData == null)     throw new IllegalArgumentException("Missing field: textData");
+        if (sendFormat == null)   throw new IllegalArgumentException("Missing field: sendFormat");
+        if (receiveFormat == null) throw new IllegalArgumentException("Missing field: receiveFormat");
+
+        this.inFormat = Encoding.guessEncoding(sendFormat);
+        this.outFormat = Encoding.guessEncoding(receiveFormat);
+
+        if (this.inFormat == null)  throw new IllegalArgumentException("Unknown format: " + sendFormat);
+        if (this.outFormat == null) throw new IllegalArgumentException("Unknown format: " + receiveFormat);
     }
 
-    /**
-     *
-     * @return
-     */
     public String getTextData() {
         return textData;
     }
@@ -50,5 +44,4 @@ public class JsonIn
     public Encoding getOutFormat() {
         return outFormat;
     }
-
 }

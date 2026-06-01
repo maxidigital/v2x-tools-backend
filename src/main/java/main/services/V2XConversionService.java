@@ -52,11 +52,17 @@ public class V2XConversionService {
 
             return ConversionResult.success(result.getData(), result.getResponseCode());
 
+        } catch (WindException | IllegalArgumentException e) {
+            long responseTime = System.currentTimeMillis() - startTime;
+            A.p("Conversion error [%dms]: %s", responseTime, e.getMessage());
+            telegramCenter.notifyError(e.getMessage(), endpoint, clientIP);
+            return ConversionResult.error(e.getMessage(), 400);
         } catch (Exception e) {
             long responseTime = System.currentTimeMillis() - startTime;
-            A.p("Conversion error: " + e.getMessage());
+            A.p("Unexpected error [%dms]: %s", responseTime, e.getMessage());
+            e.printStackTrace();
             telegramCenter.notifyError(e.getMessage(), endpoint, clientIP);
-            return ConversionResult.error("Error decoding V2X message: " + e.getMessage(), 500);
+            return ConversionResult.error("Internal error during conversion", 500);
         }
     }
 
