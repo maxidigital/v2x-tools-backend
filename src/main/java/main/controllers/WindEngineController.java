@@ -1,5 +1,8 @@
 package main.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import main.services.WindEngineService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +12,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v2x/messages")
+@Tag(name = "Messages", description = "Manage which message types are loaded for a user")
 public class WindEngineController {
 
     private final WindEngineService engineService;
@@ -17,10 +21,15 @@ public class WindEngineController {
         this.engineService = engineService;
     }
 
-    /** Loads the given aliases into the user's engine. Body: ["cam_v2", "denm_v2"] */
     @PostMapping("/load")
+    @Operation(
+        summary = "Load message types",
+        description = "Loads the given message aliases into the user's engine. " +
+                      "Example body: [\"cam_v2\", \"denm_v2\"]. " +
+                      "Public modules use userId=0 and are loaded at startup."
+    )
     public ResponseEntity<?> load(
-            @RequestHeader(value = "X-User-Id", defaultValue = "0") Long userId,
+            @Parameter(description = "User ID (0 = anonymous/public)") @RequestHeader(value = "X-User-Id", defaultValue = "0") Long userId,
             @RequestBody List<String> aliases) {
 
         WindEngineService.LoadResult result = engineService.load(userId, aliases);
@@ -35,19 +44,19 @@ public class WindEngineController {
         return ResponseEntity.ok(body);
     }
 
-    /** Returns the aliases loaded in the engine for the given user. */
     @GetMapping
+    @Operation(summary = "List loaded message types", description = "Returns the aliases currently loaded in the user's engine.")
     public ResponseEntity<?> aliases(
-            @RequestHeader(value = "X-User-Id", defaultValue = "0") Long userId) {
+            @Parameter(description = "User ID (0 = anonymous/public)") @RequestHeader(value = "X-User-Id", defaultValue = "0") Long userId) {
         return ResponseEntity.ok(Map.of(
                 "userId",  userId,
                 "aliases", engineService.getAliases(userId)));
     }
 
-    /** Evicts the engine for the given user. */
     @DeleteMapping
+    @Operation(summary = "Reset engine", description = "Evicts the user's engine from the cache. Next conversion will reload from scratch.")
     public ResponseEntity<?> evict(
-            @RequestHeader(value = "X-User-Id", defaultValue = "0") Long userId) {
+            @Parameter(description = "User ID (0 = anonymous/public)") @RequestHeader(value = "X-User-Id", defaultValue = "0") Long userId) {
         engineService.evict(userId);
         return ResponseEntity.ok().build();
     }
