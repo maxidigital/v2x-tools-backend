@@ -107,6 +107,23 @@ public class RepoClient implements Asn1Repo {
         return getAliasJson(alias);
     }
 
+    /** Fetches the digested message definition (JSON) for an alias, with public fallback. */
+    public String getDefinition(String alias) throws Asn1RepoException {
+        String path = "api/modules/definition?alias=" + encode(alias);
+        if (userId != null && userId > 0) {
+            HttpResponse<String> resp = sendGet(baseUrl + aliasPath(path));
+            if (resp.statusCode() == 200)
+                return resp.body();
+            if (resp.statusCode() != 404)
+                throw new Asn1RepoException("HTTP " + resp.statusCode() + " fetching definition for " + alias);
+            // 404 → fall through to public
+        }
+        HttpResponse<String> resp = sendGet(baseUrl + path);
+        if (resp.statusCode() != 200)
+            throw new Asn1RepoException("HTTP " + resp.statusCode() + " fetching definition for " + alias);
+        return resp.body();
+    }
+
     /** Fetches and caches the full module JSON by OID. OIDs are globally unique — no userId needed. */
     private Map<String, Object> getOidJson(String oid) throws Asn1RepoException {
         Map<String, Object> cached = oidCache.get(oid);
