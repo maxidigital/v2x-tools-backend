@@ -12,15 +12,16 @@ import main.monitoring.TelegramCenter;
 import main.monitoring.NotificationType;
 import main.stats.CSVLine;
 import main.utils.PayloadUtils;
+import main.engine.EngineService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class V2XConversionService {
 
     private final TelegramCenter telegramCenter;
-    private final WindEngineService windEngineService;
+    private final EngineService windEngineService;
 
-    public V2XConversionService(TelegramCenter telegramCenter, WindEngineService windEngineService) {
+    public V2XConversionService(TelegramCenter telegramCenter, EngineService windEngineService) {
         this.telegramCenter = telegramCenter;
         this.windEngineService = windEngineService;
     }

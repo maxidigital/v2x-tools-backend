@@ -9,7 +9,7 @@ import i.Sequence;
 import i.WindException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import main.services.WindEngineService;
+import main.engine.EngineService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v2x")
 public class RandomController {
 
-    private final WindEngineService windEngineService;
+    private final EngineService windEngineService;
 
-    public RandomController(WindEngineService windEngineService) {
+    public RandomController(EngineService windEngineService) {
         this.windEngineService = windEngineService;
     }
 
