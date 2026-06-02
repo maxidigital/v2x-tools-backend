@@ -1,175 +1,77 @@
 package main.services;
 
-import a.enums.Encoding;
-import a.messages.Payload;
-import de.dlr.ts.v2x.commons.translators.MessagesApp;
-import i.WindException;
 import main.A;
-import main.Decoder;
-import main.json.JsonOut;
-import main.json.JsonIn;
+import main.engine.EngineClient;
+import main.engine.EngineResult;
+import main.loader.MessageLoader;
+import main.loader.MessageNotAvailableException;
 import main.monitoring.TelegramCenter;
-import main.monitoring.NotificationType;
 import main.stats.CSVLine;
-import main.utils.PayloadUtils;
 import org.springframework.stereotype.Service;
 
+/**
+ * The hub's conversion reactor. It does NOT convert — it asks the engine (over HTTP via
+ * EngineClient) and reacts to the typed result: on notLoaded it resolves the definition
+ * (loader → repo → engine) and retries; ok/decodeError pass through. No wind types here.
+ */
 @Service
 public class V2XConversionService {
 
     private final TelegramCenter telegramCenter;
-    private final WindEngineService windEngineService;
+    private final EngineClient engine;
+    private final MessageLoader loader;
 
-    public V2XConversionService(TelegramCenter telegramCenter, WindEngineService windEngineService) {
+    public V2XConversionService(TelegramCenter telegramCenter, EngineClient engine, MessageLoader loader) {
         this.telegramCenter = telegramCenter;
-        this.windEngineService = windEngineService;
+        this.engine = engine;
+        this.loader = loader;
     }
 
-    private MessagesApp engine(Long userId) {
-        return windEngineService.getOrCreate(userId != null ? userId : 0L);
-    }
-
-    public ConversionResult convert(String inputData, String fromFormat, String toFormat, String clientIP, String endpoint, Long userId) {
-        long startTime = System.currentTimeMillis();
+    public ConversionResult convert(String inputData, String fromFormat, String toFormat,
+            String clientIP, String endpoint, Long userId) {
+        long start = System.currentTimeMillis();
+        if (inputData == null || inputData.trim().isEmpty())
+            return ConversionResult.error("Input data is empty", 400);
 
         try {
-            if (inputData == null || inputData.trim().isEmpty()) {
-                return ConversionResult.error("Input data is empty", 400);
+            EngineResult r = engine.convert(userId, inputData, fromFormat, toFormat, null);
+
+            if ("notLoaded".equals(r.status)) {
+                try {
+                    loader.ensureLoaded(userId, r.messageId, r.protocolVersion);
+                } catch (MessageNotAvailableException e) {
+                    return ConversionResult.error(
+                            "Message type not available (" + r.messageId + ":" + r.protocolVersion + ")", 404);
+                }
+                r = engine.convert(userId, inputData, fromFormat, toFormat, null); // retry, now loaded
             }
 
-            V2XFormat sourceFormat = parseFormat(fromFormat);
-            V2XFormat targetFormat = parseFormat(toFormat);
-
-            if (sourceFormat == null || targetFormat == null) {
-                return ConversionResult.error("Unsupported format conversion", 400);
+            if ("ok".equals(r.status)) {
+                long rt = System.currentTimeMillis() - start;
+                log(inputData, r.data, clientIP, rt);
+                notifyUsage(endpoint, clientIP, inputData, rt);
+                return ConversionResult.success(r.data, 200);
             }
+            if ("decodeError".equals(r.status)) {
+                telegramCenter.notifyError(r.error, endpoint, clientIP);
+                return ConversionResult.error(r.error, 400);
+            }
+            return ConversionResult.error("Message type not available", 404);
 
-            JsonOut result = performConversion(inputData, sourceFormat, targetFormat, userId);
-            long responseTime = System.currentTimeMillis() - startTime;
-
-            logConversion(inputData, result, clientIP, endpoint, responseTime);
-            sendMonitoringNotification(endpoint, clientIP, inputData, responseTime);
-
-            return ConversionResult.success(result.getData(), result.getResponseCode());
-
-        } catch (WindException | IllegalArgumentException e) {
-            long responseTime = System.currentTimeMillis() - startTime;
-            A.p("Conversion error [%dms]: %s", responseTime, e.getMessage());
-            telegramCenter.notifyError(e.getMessage(), endpoint, clientIP);
-            return ConversionResult.error(e.getMessage(), 400);
         } catch (Exception e) {
-            long responseTime = System.currentTimeMillis() - startTime;
-            A.p("Unexpected error [%dms]: %s", responseTime, e.getMessage());
-            e.printStackTrace();
-            telegramCenter.notifyError(e.getMessage(), endpoint, clientIP);
+            A.p("Unexpected error during conversion: %s", e.getMessage());
+            telegramCenter.notifyError(String.valueOf(e.getMessage()), endpoint, clientIP);
             return ConversionResult.error("Internal error during conversion", 500);
         }
     }
 
-    private ConversionResult convertUperToJson(byte[] inputData, String contentType, String clientIP, String endpoint, Long userId) {
-        long startTime = System.currentTimeMillis();
-
-        try {
-            Payload payload = createV2XPayload(inputData, contentType);
-
-            if (payload == null || payload == Payload.EMPTY) {
-                return ConversionResult.error("Invalid input data", 400);
-            }
-
-            A.p("Received payload: len(%s) %s", payload.getLength(), payload.getHexWithEncoding());
-
-            JsonOut result = new Decoder(engine(userId)).decodeUPER2JSON(payload.getBytes());
-            long responseTime = System.currentTimeMillis() - startTime;
-
-            CSVLine csvLine = new CSVLine(CSVLine.Origin.API,
-                    System.currentTimeMillis(), clientIP,
-                    payload.getHexWithEncoding(), result.getData());
-            A.counterLogger(csvLine.getLine());
-
-            sendMonitoringNotification(endpoint, clientIP, payload.getHexWithEncoding(), responseTime);
-
-            if (endpoint.contains("uper2json")) {
-                sendDeprecationNotification(endpoint, clientIP);
-            }
-
-            return ConversionResult.success(result.getData(), result.getResponseCode());
-
-        } catch (WindException | IllegalArgumentException ex) {
-            telegramCenter.notifyError(ex.getMessage(), endpoint, clientIP);
-            return ConversionResult.error("Error decoding V2X message", 500);
-
-        } catch (Exception ex) {
-            telegramCenter.notifyError(ex.getMessage(), endpoint, clientIP);
-            return ConversionResult.error("Internal server error", 500);
-        }
+    private void log(String inputData, String data, String clientIP, long responseTime) {
+        String in = inputData.length() > 100 ? inputData.substring(0, 100) + "..." : inputData;
+        A.counterLogger(new CSVLine(CSVLine.Origin.API, System.currentTimeMillis(), clientIP, in, data).getLine());
+        A.p("Conversion completed: client=%s, responseTime=%dms", clientIP, responseTime);
     }
 
-
-    private Payload createV2XPayload(byte[] blobData, String contentType) {
-        return PayloadUtils.createV2XPayload(blobData, contentType);
-    }
-
-    private JsonOut performConversion(String inputData, V2XFormat from, V2XFormat to, Long userId) throws WindException {
-        Encoding fromEncoding = mapToEncoding(from);
-        Encoding toEncoding = mapToEncoding(to);
-
-        if (fromEncoding == null || toEncoding == null) {
-            throw new UnsupportedOperationException("Conversion from " + from + " to " + to + " not supported");
-        }
-
-        JsonIn jsonIn = new JsonIn(createJsonRequest(inputData, fromEncoding, toEncoding));
-        return new Decoder(engine(userId)).decode(jsonIn);
-    }
-
-    private Encoding mapToEncoding(V2XFormat format) {
-        switch (format) {
-            case UPER: return Encoding.UPER;
-            case JSON: return Encoding.JSON;
-            case XML: return Encoding.XML;
-            case WER: return Encoding.WER;
-            default: return null;
-        }
-    }
-
-    private String createJsonRequest(String textData, Encoding sendFormat, Encoding receiveFormat) {
-        org.json.JSONObject json = new org.json.JSONObject();
-        json.put("textData", textData);
-        json.put("sendFormat", sendFormat.name());
-        json.put("receiveFormat", receiveFormat.name());
-        return json.toString();
-    }
-
-    private V2XFormat parseFormat(String format) {
-        if (format == null) return null;
-        switch (format.toUpperCase().trim()) {
-            case "UPER": return V2XFormat.UPER;
-            case "JSON": return V2XFormat.JSON;
-            case "XML": return V2XFormat.XML;
-            case "WER": return V2XFormat.WER;
-            default: return null;
-        }
-    }
-
-    public void logConversion(CSVLine.Origin origin, String inputData, JsonOut result, String clientIP, long responseTime) {
-        CSVLine csvLine = new CSVLine(origin, System.currentTimeMillis(), clientIP,
-                inputData.length() > 100 ? inputData.substring(0, 100) + "..." : inputData,
-                result.getData());
-        A.counterLogger(csvLine.getLine());
-        A.p("Conversion completed: origin=%s, client=%s, responseTime=%dms", origin, clientIP, responseTime);
-    }
-
-    public void logConversion(CSVLine.Origin origin, Payload payload, JsonOut result, String clientIP, long responseTime) {
-        String inputDescription = PayloadUtils.getPayloadDescription(payload);
-        CSVLine csvLine = new CSVLine(origin, System.currentTimeMillis(), clientIP, inputDescription, result.getData());
-        A.counterLogger(csvLine.getLine());
-        A.p("Conversion completed: origin=%s, client=%s, payload=%s, responseTime=%dms", origin, clientIP, inputDescription, responseTime);
-    }
-
-    private void logConversion(String inputData, JsonOut result, String clientIP, String endpoint, long responseTime) {
-        logConversion(CSVLine.Origin.API, inputData, result, clientIP, responseTime);
-    }
-
-    private void sendMonitoringNotification(String endpoint, String clientIP, String data, long responseTime) {
+    private void notifyUsage(String endpoint, String clientIP, String data, long responseTime) {
         try {
             telegramCenter.notifyApiUsage(endpoint, clientIP, data, responseTime);
         } catch (Exception e) {
@@ -177,26 +79,10 @@ public class V2XConversionService {
         }
     }
 
-    private void sendDeprecationNotification(String endpoint, String clientIP) {
-        try {
-            String message = String.format(
-                "DEPRECATED API USAGE\nEndpoint: %s\nClient: %s\nSunset: 2025-06-01\nMigration: Use /api/v2x/uper/json",
-                endpoint, clientIP
-            );
-            telegramCenter.sendNotification(message, NotificationType.SECURITY);
-        } catch (Exception e) {
-            A.p("Failed to send deprecation notification: " + e.getMessage());
-        }
-    }
-
     public String getStats() {
-        return "V2X Conversion Service Stats\n" +
-               "Service: Active\n" +
-               "Formats supported: UPER, JSON, XML, WER\n" +
-               "Monitoring: Enabled";
-    }
-
-    public enum V2XFormat {
-        UPER, JSON, XML, WER
+        return "V2X Conversion Service Stats\n"
+                + "Service: Active\n"
+                + "Formats supported: UPER, JSON, XML, WER\n"
+                + "Monitoring: Enabled";
     }
 }
