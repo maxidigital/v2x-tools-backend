@@ -3,7 +3,7 @@ package main.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import main.engine.EngineService;
+import main.engine.EngineClient;
 import main.loader.MessageLoader;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,11 +16,11 @@ import java.util.Map;
 @Tag(name = "Messages", description = "Manage which message types are loaded for a user")
 public class WindEngineController {
 
-    private final EngineService engineService;
+    private final EngineClient engine;
     private final MessageLoader loader;
 
-    public WindEngineController(EngineService engineService, MessageLoader loader) {
-        this.engineService = engineService;
+    public WindEngineController(EngineClient engine, MessageLoader loader) {
+        this.engine = engine;
         this.loader = loader;
     }
 
@@ -53,14 +53,14 @@ public class WindEngineController {
             @Parameter(description = "User ID (0 = anonymous/public)") @RequestHeader(value = "X-User-Id", defaultValue = "0") Long userId) {
         return ResponseEntity.ok(Map.of(
                 "userId",  userId,
-                "aliases", engineService.getAliases(userId)));
+                "aliases", engine.messages(userId)));
     }
 
     @DeleteMapping
     @Operation(summary = "Reset engine", description = "Evicts the user's engine from the cache. Next conversion will reload from scratch.")
     public ResponseEntity<?> evict(
             @Parameter(description = "User ID (0 = anonymous/public)") @RequestHeader(value = "X-User-Id", defaultValue = "0") Long userId) {
-        engineService.evict(userId);
+        engine.evict(userId);
         return ResponseEntity.ok().build();
     }
 }

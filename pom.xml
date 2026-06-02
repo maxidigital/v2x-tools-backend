@@ -28,24 +28,10 @@
              copy the new JAR to libs/, commit, and push. -->
         <dependency>
             <groupId>de.dlr.ts.v2x</groupId>
-            <artifactId>wind.connector</artifactId>
-            <version>6.2</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/wind.connector.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>de.dlr.ts.v2x</groupId>
             <artifactId>wind_asn1_parser</artifactId>
             <version>2.0</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/libs/wind_asn1_parser-2.0.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>de.dlr.ts.v2x</groupId>
-            <artifactId>wind_generic</artifactId>
-            <version>2.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/wind_generic-2.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>de.dlr.ts.v2x</groupId>
@@ -60,13 +46,6 @@
             <version>2.0</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/libs/wind_commons-2.0.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>de.dlr.ts.v2x</groupId>
-            <artifactId>wind_model</artifactId>
-            <version>2.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/wind_model-2.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>de.dlr.ts.v2x</groupId>
