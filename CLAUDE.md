@@ -3,10 +3,19 @@
 Spring Boot 3.2 / Java 17. Backend REST para encoding/decoding de mensajes V2X (UPER).
 Deployado en Railway — auto-deploya en cada push a `main`.
 
+> **Arquitectura (3 servicios)**: el backend **ya no hace conversión V2X**. La conversión
+> vive en `v2x-tools-engine` (servicio aparte, dueño de todo el "wind" de codecs). El backend
+> le habla **solo por HTTP** vía `EngineClient` (`main/engine/`), reacciona al `EngineResult`
+> tipado y, ante `notLoaded`, usa `MessageLoader` (`main/loader/`) para traer la definición del
+> repo y cargarla en el engine. Las definiciones ASN.1 las digiere `v2x-tools-repo`.
+> Por eso el backend ya **no** depende de los jars wind de parseo/codecs — solo le quedan
+> `wind.lib` + `wind_commons` para utils de logging (`A`, `StatsHandler`).
+
 ## Dependencias
 
 ### Maven Central (resuelven automáticamente)
-`spring-boot-starter-web`, `telegrambots`, `angus-mail`, `mailjet-client`
+`spring-boot-starter-web`, `telegrambots`, `angus-mail`, `mailjet-client`,
+`springdoc-openapi-starter-webmvc-ui`
 
 ### JARs internos (`libs/` — commiteados al repo)
 Los artefactos DLR y de underwater no están en Maven Central ni en ningún registry
@@ -14,31 +23,23 @@ público. Se commitean directamente en `libs/` con `scope=system` en el `pom.xml
 **Esto es intencional** — evita gestión de credenciales en Railway y cualquier otro
 entorno de build.
 
-| Archivo | Proyecto fuente |
-|---|---|
-| `wind.connector.jar` | `v2x-framework/tools/wind.connector` |
-| `wind.lib-4.2.jar` | `v2x-framework/commons/wind.lib` |
-| `wind_asn1_parser-2.0.jar` | `v2x-tools-wind/wind_asn1_parser` |
-| `wind_parser-2.0.jar` | `v2x-tools-wind/wind_parser` |
-| `wind_generic-2.0.jar` | `v2x-tools-wind/wind_generic` |
-| `wind_generator-2.1.jar` | `v2x-tools-wind/wind_generator` |
-| `wind_commons-2.0.jar` | `v2x-tools-wind/wind_commons` |
-| `utils.xmladmin2-1.3.2.jar` | `v2x-framework/tools/utils.xmladmin2` |
-| `email.admin-1.0.1.jar` | `underwater/admin/email.admin` |
+| Archivo | Proyecto fuente | Uso |
+|---|---|---|
+| `wind.lib-4.2.jar` | `v2x-framework/commons/wind.lib` | utils de logging (`A`) |
+| `wind_commons-2.0.jar` | `v2x-tools-wind/wind_commons` | `StatsHandler` |
+| `utils.xmladmin2-1.3.2.jar` | `v2x-framework/tools/utils.xmladmin2` | transitiva |
+| `email.admin-1.0.1.jar` | `underwater/admin/email.admin` | email de soporte |
 
 ### Cómo actualizar un JAR
 
 ```bash
 # 1. Rebuild el proyecto fuente (ejemplo: wind.lib)
 cd v2x-framework/commons/wind.lib && mvn package
+cp target/wind.lib-4.2.jar v2x-tools-backend/libs/
 
-# 2. Si es wind.connector (fat jar que embebe wind.lib):
-cd v2x-framework/tools/wind.connector && mvn package
-cp target/wind.connector.jar v2x-tools-backend/libs/
-
-# 3. Commit y push → Railway redeploya automáticamente
-git add libs/wind.connector.jar
-git commit -m "chore: update wind.connector to vX.Y"
+# 2. Commit y push → Railway redeploya automáticamente
+git add libs/wind.lib-4.2.jar
+git commit -m "chore: update wind.lib to vX.Y"
 git push
 ```
 
@@ -65,8 +66,10 @@ Railway auto-deploya en cada push a `main`. No hay pasos manuales.
 ```
 src/main/java/main/
 ├── config/         Spring config (CORS, lifecycle)
-├── controllers/    REST endpoints (V2x, Asn1, Stats, Contact, etc.)
-├── services/       Lógica de negocio (V2XConversionService, WindEngineService)
+├── controllers/    REST endpoints (V2x, Stats, Contact, etc.)
+├── services/       Lógica de negocio (V2XConversionService — reactor sin wind)
+├── engine/         EngineClient + EngineResult — HTTP client al v2x-tools-engine
+├── loader/         MessageLoader — trae definiciones del repo y las carga en el engine
 ├── repo/           RepoClient — HTTP client para v2x-tools-repo
 ├── monitoring/     Notificaciones Telegram
 ├── stats/          CSV de estadísticas de uso
@@ -75,17 +78,24 @@ src/main/java/main/
 
 ## Endpoints principales
 
-- `POST /api/convert` — encode/decode/convert mensajes V2X
+- `POST /api/convert` — encode/decode/convert mensajes V2X (delega en el engine vía HTTP)
 - `GET  /command/random` — genera payload random/minimal/maximal
 - `GET  /api/capabilities` — descripción de capacidades (para MCP)
 - `POST /api/support/report` — reporte de soporte
 
+El parseo ASN.1 (`POST /api/asn1/parse`) se movió a **`v2x-tools-repo`** (es la autoridad ASN.1).
+
+## Configuración
+
+- `wind.engine.url` (`application.properties`) — URL del engine. Local: `http://localhost:8090`.
+  En Railway: `WIND_ENGINE_URL=http://v2x-tools-engine.railway.internal:8090`.
+
 ## Notas
 
-- `wind.connector` es un fat jar que embebe `wind.lib`, `portshub`,
-  `commons.translators` y `commons.modules.serializers`.
-  `includeSystemScope=true` en el spring-boot-maven-plugin asegura que
-  los system-scope JARs se incluyan en el fat jar final.
-- `RepoClient` en `main/repo/` implementa la interfaz `Asn1Repo` de
-  `wind_parser`. Hay una copia idéntica en `v2x-tools-repo-client`
-  (artefacto separado para uso de `wind_generator`).
+- El backend **no importa wind de codecs/parser**. La conversión la hace `v2x-tools-engine`
+  (HTTP). `V2XConversionService` solo reacciona al `EngineResult` tipado (`ok` / `notLoaded`
+  / `decodeError`) — nunca toca tipos wind ni hace pre-checks.
+- `includeSystemScope=true` en el spring-boot-maven-plugin asegura que los system-scope JARs
+  (`libs/`) se incluyan en el fat jar final.
+- `RepoClient` en `main/repo/` es un cliente HTTP del repo. (La antigua implementación de la
+  interfaz `Asn1Repo` de `wind_parser` ya no vive acá — el repo es la autoridad ASN.1.)
