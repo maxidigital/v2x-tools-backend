@@ -28,6 +28,16 @@ public class EngineService {
     private final WindMessageCodec codec = new WindMessageCodec();
     private final Map<Long, MessagesApp> engines = new ConcurrentHashMap<>();
     private final Map<Long, Set<String>> loaded = new ConcurrentHashMap<>();
+    private final Map<Long, Set<String>> loadedMids = new ConcurrentHashMap<>();
+
+    private static String key(MessageId mid) {
+        return mid.getId() + ":" + mid.getProtocolVersion();
+    }
+
+    /** Whether a definition for this messageId+protocolVersion is registered for the user. */
+    public boolean isLoaded(Long userId, MessageId mid) {
+        return loadedMids.getOrDefault(userId, Set.of()).contains(key(mid));
+    }
 
     /** The per-user MessagesApp, created empty on first use. */
     public MessagesApp getOrCreate(Long userId) {
@@ -40,6 +50,7 @@ public class EngineService {
     public void evict(Long userId) {
         engines.remove(userId);
         loaded.remove(userId);
+        loadedMids.remove(userId);
     }
 
     public List<String> getAliases(Long userId) {
@@ -60,6 +71,7 @@ public class EngineService {
         MessageId mid = MessageId.create(def.getMessageId(), def.getProtocolVersion());
         getOrCreate(userId).registerMessage(mid, () -> WindGeneric.build(root));
         loaded.computeIfAbsent(userId, id -> new LinkedHashSet<>()).add(def.getAlias());
+        loadedMids.computeIfAbsent(userId, id -> ConcurrentHashMap.newKeySet()).add(key(mid));
         A.p("Engine[%d] loaded: %s (msgId=%d, prot=%d)",
                 userId, def.getAlias(), def.getMessageId(), def.getProtocolVersion());
         return def.getAlias();

@@ -52,6 +52,19 @@ public class RepoClient {
         return resp.body();
     }
 
+    /** Fetches the digested definition for a (messageId, protocolVersion). Throws
+     *  DefinitionNotFoundException on 404 so the loader can negative-cache the absence. */
+    public String getDefinitionByMessage(int messageId, int protocolVersion) {
+        String path = "api/modules/definition?messageId=" + messageId + "&protocolVersion=" + protocolVersion;
+        HttpResponse<String> resp = sendGet(baseUrl + aliasPath(path));
+        if (resp.statusCode() == 404)
+            throw new DefinitionNotFoundException(
+                    "no definition for messageId=" + messageId + " protocolVersion=" + protocolVersion);
+        if (resp.statusCode() != 200)
+            throw new RuntimeException("HTTP " + resp.statusCode() + " fetching definition for messageId=" + messageId);
+        return resp.body();
+    }
+
     private String aliasPath(String path) {
         return (userId != null && userId > 0) ? path + "&userId=" + userId : path;
     }

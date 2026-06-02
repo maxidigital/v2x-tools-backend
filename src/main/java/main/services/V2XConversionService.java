@@ -12,7 +12,10 @@ import main.monitoring.TelegramCenter;
 import main.monitoring.NotificationType;
 import main.stats.CSVLine;
 import main.utils.PayloadUtils;
+import a.MessageId;
 import main.engine.EngineService;
+import main.loader.MessageLoader;
+import main.loader.MessageNotAvailableException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,10 +23,12 @@ public class V2XConversionService {
 
     private final TelegramCenter telegramCenter;
     private final EngineService windEngineService;
+    private final MessageLoader loader;
 
-    public V2XConversionService(TelegramCenter telegramCenter, EngineService windEngineService) {
+    public V2XConversionService(TelegramCenter telegramCenter, EngineService windEngineService, MessageLoader loader) {
         this.telegramCenter = telegramCenter;
         this.windEngineService = windEngineService;
+        this.loader = loader;
     }
 
     private MessagesApp engine(Long userId) {
@@ -53,6 +58,8 @@ public class V2XConversionService {
 
             return ConversionResult.success(result.getData(), result.getResponseCode());
 
+        } catch (MessageNotAvailableException e) {
+            return ConversionResult.error("Message type not available: " + e.getMessage(), 404);
         } catch (WindException | IllegalArgumentException e) {
             long responseTime = System.currentTimeMillis() - startTime;
             A.p("Conversion error [%dms]: %s", responseTime, e.getMessage());
@@ -119,7 +126,16 @@ public class V2XConversionService {
         }
 
         JsonIn jsonIn = new JsonIn(createJsonRequest(inputData, fromEncoding, toEncoding));
-        return new Decoder(engine(userId)).decode(jsonIn);
+
+        // Lazy cache-miss: if the message for this payload isn't loaded, the loader resolves
+        // it from the repo (by messageId) and pushes it into the engine before we decode.
+        Long uid = userId != null ? userId : 0L;
+        Payload payloadIn = Payload.create(jsonIn.getTextData(), jsonIn.getInFormat());
+        MessageId mid = windEngineService.getOrCreate(uid).extractMessageId(payloadIn.getBytes(), payloadIn.getEncoding());
+        if (!windEngineService.isLoaded(uid, mid))
+            loader.ensureLoaded(uid, mid);
+
+        return new Decoder(engine(uid)).decode(jsonIn);
     }
 
     private Encoding mapToEncoding(V2XFormat format) {
