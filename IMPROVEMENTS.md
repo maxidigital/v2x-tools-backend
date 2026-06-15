@@ -72,6 +72,21 @@ Controllers (HTTP) → Services → Repositories → External Services
 - Switch expressions mejoradas
 - Var para inferencia de tipos local
 
+> **Estado / evaluación (junio 2026).** Los 3 servicios + `repo-client` ya están en **Java 17**.
+> Falta solo el **framework wind** (`v2x-framework` + `v2x-tools-wind`, ~74 módulos, Java 8).
+>
+> - **Bajo valor / no urgente**: el engine (17) ya corre los jars wind (8) sin problema — Java 17 es
+>   retrocompatible con bytecode 8. No se gana nada funcional; solo features de lenguaje 9-17 en wind.
+> - **Sin bloqueadores de código**: no hay JAXB / `sun.misc` / Nashorn ni APIs removidas; el único
+>   `com.sun` es `com.sun.net.httpserver` (soportado en 17).
+> - **Sin consumidores externos** (confirmado por Maxi) → la compatibilidad downstream **no es un
+>   problema** (antes era el mayor riesgo: colegas DLR / ROS / dispositivos RSU en Java 8).
+> - **La fricción real**: toolchain viejo (`maven-compiler-plugin 2.3.2` → modernizar, arrastra
+>   shade/surefire) y el `1.8` esparcido en varios poms (no es un cambio de una sola línea).
+> - **Orden sugerido si se hace**: hojas primero (`wind_commons`, `wind.lib`) → `wind_parser` /
+>   `wind_model` / `wind_generic` → dejar `per.*` (codegen ASN.1) para el final. Rebuild + `tests/e2e.sh`
+>   tras cada paso, y revendorizar los jars del engine.
+
 ### 4. **Patrones de diseño**
 - Factory Pattern para crear conversores
 - Strategy Pattern para diferentes formatos
