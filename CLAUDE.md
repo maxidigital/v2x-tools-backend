@@ -79,7 +79,7 @@ src/main/java/main/
 ## Endpoints principales
 
 - `POST /api/convert` — encode/decode/convert mensajes V2X (delega en el engine vía HTTP)
-- `GET  /command/random` — genera payload random/minimal/maximal
+- `GET  /api/v2x/generate` — genera payload random/minimal/maximal
 - `GET  /api/capabilities` — descripción de capacidades (para MCP)
 - `POST /api/support/report` — reporte de soporte
 
