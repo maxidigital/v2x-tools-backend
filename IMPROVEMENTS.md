@@ -1,5 +1,19 @@
 # V2X.tools - Plan de Mejoras
 
+> **Estado (junio 2026).** Buena parte de la sección **Arquitectura** ya se ejecutó — y más allá de
+> lo previsto, con el **detach en 3 servicios** (repo + engine + backend):
+>
+> - ✅ **Framework moderno**: backend, engine y repo migrados a **Spring Boot 3 / Java 17** (el
+>   backend legacy Java 8 con `com.sun.net.httpserver` ya no está activo).
+> - ✅ **Separación de capas**: controllers → services → engine/loader/repo, y el split en 3
+>   servicios HTTP con contrato tipado (`EngineResult`: `ok` / `notFound` / `decodeError`).
+> - ✅ **Tests**: suite end-to-end (`tests/e2e.sh`) de los 3 servicios.
+> - ⚠️ **Parcial**: "manejo de errores consistente" (resuelto vía resultado tipado); el rate limiting
+>   existente es solo para **notificaciones** (`NotificationFilter`), no para la API.
+> - ⬜ **Pendiente** (sigue válido): logging SLF4J (todavía `A.java`), rate limiting de API, API
+>   keys/auth, validación de entrada, caché, async, CI/CD + Docker, modernización del frontend, y el
+>   **validador ASN.1 mejorado** (clonar `wind_asn1_parser` — ver §Nuevas Funcionalidades 7).
+
 ## 🔒 **Seguridad (Prioridad Alta)**
 
 ### 1. **Validación de entrada**
@@ -286,11 +300,11 @@ ENTRYPOINT ["java", "-jar", "/app.jar"]
 - [ ] Rate limiting básico
 - [ ] Headers de seguridad mejorados
 - [ ] Logs de auditoría
-- [ ] Actualizar a Java 17
+- [x] Actualizar a Java 17 — hecho (backend + engine + repo)
 
 ### **Fase 2: Estabilidad (3-4 semanas)**
 - [ ] Migrar a SLF4J para logging estructurado
-- [ ] Manejo de errores consistente
+- [x] Manejo de errores consistente — vía resultado tipado `EngineResult` (ok/notFound/decodeError)
 - [ ] Tests unitarios básicos
 - [ ] CI/CD pipeline con GitHub Actions
 - [ ] Containerización con Docker
