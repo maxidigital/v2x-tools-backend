@@ -63,12 +63,17 @@ public class EngineClient {
             throw new RuntimeException("engine load failed: HTTP " + resp.statusCode());
     }
 
-    /** Generate a sample payload for a loaded message. */
-    public String generate(Long userId, String mid, String format, boolean minimal) {
+    /** Generate a sample payload. Typed result, like convert: ok / notFound / decodeError. */
+    public EngineResult generate(Long userId, String mid, String format, boolean minimal) {
         String url = base() + "/engine/generate?mid=" + enc(mid) + "&format=" + enc(format) + "&minimal=" + minimal;
         HttpRequest req = HttpRequest.newBuilder(URI.create(url)).timeout(Duration.ofSeconds(15))
                 .header("X-User-Id", uid(userId)).GET().build();
-        return send(req).body();
+        HttpResponse<String> resp = send(req);
+        try {
+            return mapper.readValue(resp.body(), EngineResult.class);
+        } catch (Exception e) {
+            throw new RuntimeException("invalid engine response: " + e.getMessage(), e);
+        }
     }
 
     /** List the messages loaded for a user in the engine. */

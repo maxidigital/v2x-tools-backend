@@ -1,6 +1,7 @@
 package main.controllers;
 
-import main.engine.EngineClient;
+import main.services.ConversionResult;
+import main.services.V2XConversionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -12,10 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v2x")
 public class RandomController {
 
-    private final EngineClient engine;
+    private final V2XConversionService service;
 
-    public RandomController(EngineClient engine) {
-        this.engine = engine;
+    public RandomController(V2XConversionService service) {
+        this.service = service;
     }
 
     @GetMapping("/generate")
@@ -24,6 +25,8 @@ public class RandomController {
             @RequestParam(defaultValue = "UPER") String format,
             @RequestParam(defaultValue = "false") boolean minimal,
             @RequestHeader(value = "X-User-Id", defaultValue = "0") Long userId) {
-        return ResponseEntity.ok(engine.generate(userId, mid, format, minimal));
+        ConversionResult result = service.generate(userId, mid, format, minimal);
+        return ResponseEntity.status(result.getHttpStatusCode())
+                .body(result.isSuccess() ? result.getResponseData() : result.getErrorMessage());
     }
 }

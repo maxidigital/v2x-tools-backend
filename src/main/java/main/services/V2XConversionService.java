@@ -10,9 +10,12 @@ import main.stats.CSVLine;
 import org.springframework.stereotype.Service;
 
 /**
- * The hub's conversion reactor. It does NOT convert — it asks the engine (over HTTP via
- * EngineClient) and reacts to the typed result: on notLoaded it resolves the definition
- * (loader → repo → engine) and retries; ok/decodeError pass through. No wind types here.
+ * The hub's engine reactor (convert + generate). It does NOT do V2X itself — it asks the engine
+ * (over HTTP via EngineClient) and reacts to the typed result: on notFound it resolves the
+ * definition (loader → repo → engine) and retries; ok/decodeError pass through. No wind types here.
+ *
+ * Server-side lazy-load runs ONLY for the public/anonymous user (id 0); other users manage their
+ * own loaded state explicitly (via /messages/load) and get a plain notFound if it's missing.
  */
 @Service
 public class V2XConversionService {
@@ -36,7 +39,7 @@ public class V2XConversionService {
         try {
             EngineResult r = engine.convert(userId, inputData, fromFormat, toFormat, null);
 
-            if ("notLoaded".equals(r.status)) {
+            if ("notFound".equals(r.status) && isPublicUser(userId)) {
                 try {
                     loader.ensureLoaded(userId, r.messageId, r.protocolVersion);
                 } catch (MessageNotAvailableException e) {
@@ -63,6 +66,41 @@ public class V2XConversionService {
             telegramCenter.notifyError(String.valueOf(e.getMessage()), endpoint, clientIP);
             return ConversionResult.error("Internal error during conversion", 500);
         }
+    }
+
+    /**
+     * Generates a sample payload. Same reactor as convert: on notFound (only for the public user 0)
+     * it lazy-loads the definition from the repo and retries. The mid carries the message type.
+     */
+    public ConversionResult generate(Long userId, String mid, String format, boolean minimal) {
+        try {
+            EngineResult r = engine.generate(userId, mid, format, minimal);
+
+            if ("notFound".equals(r.status) && isPublicUser(userId)) {
+                try {
+                    loader.ensureLoaded(userId, r.messageId, r.protocolVersion);
+                } catch (MessageNotAvailableException e) {
+                    return ConversionResult.error(
+                            "Message type not available (" + r.messageId + ":" + r.protocolVersion + ")", 404);
+                }
+                r = engine.generate(userId, mid, format, minimal); // retry, now loaded
+            }
+
+            if ("ok".equals(r.status))
+                return ConversionResult.success(r.data, 200);
+            if ("decodeError".equals(r.status))
+                return ConversionResult.error(r.error, 400);
+            return ConversionResult.error("Message type not available (" + r.messageId + ":" + r.protocolVersion + ")", 404);
+
+        } catch (Exception e) {
+            A.p("Unexpected error during generate: %s", e.getMessage());
+            return ConversionResult.error("Internal error during generate", 500);
+        }
+    }
+
+    /** Server-side lazy-load is reserved for the public/anonymous user (id 0). */
+    private static boolean isPublicUser(Long userId) {
+        return userId != null && userId == 0L;
     }
 
     private void log(String inputData, String data, String clientIP, long responseTime) {
