@@ -24,8 +24,9 @@ public class RandomController {
             @RequestParam String mid,
             @RequestParam(defaultValue = "UPER") String format,
             @RequestParam(defaultValue = "false") boolean minimal,
+            @RequestParam(defaultValue = "SMALL") String size,
             @RequestHeader(value = "X-User-Id", defaultValue = "0") Long userId) {
-        ConversionResult result = service.generate(userId, mid, format, minimal);
+        ConversionResult result = service.generate(userId, mid, format, minimal, size);
         return ResponseEntity.status(result.getHttpStatusCode())
                 .body(result.isSuccess() ? result.getResponseData() : result.getErrorMessage());
     }

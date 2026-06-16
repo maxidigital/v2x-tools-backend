@@ -72,9 +72,9 @@ public class V2XConversionService {
      * Generates a sample payload. Same reactor as convert: on notFound (only for the public user 0)
      * it lazy-loads the definition from the repo and retries. The mid carries the message type.
      */
-    public ConversionResult generate(Long userId, String mid, String format, boolean minimal) {
+    public ConversionResult generate(Long userId, String mid, String format, boolean minimal, String size) {
         try {
-            EngineResult r = engine.generate(userId, mid, format, minimal);
+            EngineResult r = engine.generate(userId, mid, format, minimal, size);
 
             if ("notFound".equals(r.status) && isPublicUser(userId)) {
                 try {
@@ -83,7 +83,7 @@ public class V2XConversionService {
                     return ConversionResult.error(
                             "Message type not available (" + r.messageId + ":" + r.protocolVersion + ")", 404);
                 }
-                r = engine.generate(userId, mid, format, minimal); // retry, now loaded
+                r = engine.generate(userId, mid, format, minimal, size); // retry, now loaded
             }
 
             if ("ok".equals(r.status))
