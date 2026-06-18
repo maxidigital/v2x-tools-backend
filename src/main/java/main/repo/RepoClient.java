@@ -1,6 +1,7 @@
 package main.repo;
 
-import java.io.IOException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -8,81 +9,88 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 /**
- * Minimal HTTP client for the module repo. The engine no longer parses ASN.1, so this
- * only fetches the digested message definition (JSON) the engine consumes.
- *
- * userId scopes the lookup to the user's private modules; alias lookups fall back to
- * public (userId=0) on 404.
+ * HTTP client for the module repo (the ASN.1 authority). The repo is machine-keyed: trees are fetched
+ * by the derived {@code moduleId} only; modules are listed (moduleId+oid+name) and their types browsed.
  */
+@Component
 public class RepoClient {
 
-    private final String baseUrl;
-    private final Long userId;
-    private final HttpClient http = HttpClient.newBuilder()
-            .connectTimeout(Duration.ofSeconds(5))
-            .build();
+    @Value("${wind.repo.url:http://localhost:8081}")
+    private String repoUrl;
 
-    /** Public modules only (userId=0). */
-    public RepoClient(String baseUrl) {
-        this(baseUrl, 0L);
+    private final HttpClient http = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5)).build();
+    private final ObjectMapper mapper = new ObjectMapper();
+
+    private String base() {
+        return repoUrl.endsWith("/") ? repoUrl.substring(0, repoUrl.length() - 1) : repoUrl;
     }
 
-    /** Modules for the given userId. */
-    public RepoClient(String baseUrl, Long userId) {
-        this.baseUrl = baseUrl.endsWith("/") ? baseUrl : baseUrl + "/";
-        this.userId = userId;
-    }
-
-    /** Fetches the digested message definition (JSON) for an alias, with public fallback. */
-    public String getDefinition(String alias) {
-        String path = "api/modules/definition?alias=" + encode(alias);
-        if (userId != null && userId > 0) {
-            HttpResponse<String> resp = sendGet(baseUrl + aliasPath(path));
-            if (resp.statusCode() == 200)
-                return resp.body();
-            if (resp.statusCode() != 404)
-                throw new RuntimeException("HTTP " + resp.statusCode() + " fetching definition for " + alias);
-            // 404 → fall through to public
-        }
-        HttpResponse<String> resp = sendGet(baseUrl + path);
-        if (resp.statusCode() != 200)
-            throw new RuntimeException("HTTP " + resp.statusCode() + " fetching definition for " + alias);
-        return resp.body();
-    }
-
-    /** Fetches the digested definition for a (messageId, protocolVersion). Throws
-     *  DefinitionNotFoundException on 404 so the loader can negative-cache the absence. */
-    public String getDefinitionByMessage(int messageId, int protocolVersion) {
-        String path = "api/modules/definition?messageId=" + messageId + "&protocolVersion=" + protocolVersion;
-        HttpResponse<String> resp = sendGet(baseUrl + aliasPath(path));
+    /** Digested tree for (moduleId, type). Throws DefinitionNotFoundException on 404. */
+    public String tree(String moduleId, String type) {
+        String url = base() + "/api/modules/tree?moduleId=" + enc(moduleId) + "&type=" + enc(type);
+        HttpResponse<String> resp = get(url);
         if (resp.statusCode() == 404)
-            throw new DefinitionNotFoundException(
-                    "no definition for messageId=" + messageId + " protocolVersion=" + protocolVersion);
+            throw new DefinitionNotFoundException("no tree for " + moduleId + ":" + type + " — " + resp.body());
         if (resp.statusCode() != 200)
-            throw new RuntimeException("HTTP " + resp.statusCode() + " fetching definition for messageId=" + messageId);
+            throw new RuntimeException("HTTP " + resp.statusCode() + " fetching tree " + moduleId + ":" + type);
         return resp.body();
     }
 
-    private String aliasPath(String path) {
-        return (userId != null && userId > 0) ? path + "&userId=" + userId : path;
+    /** All modules: [{ id, moduleId, moduleName, oid, messageId, protocolVersion, ... }]. */
+    public List<JsonNode> modules() {
+        HttpResponse<String> resp = get(base() + "/api/modules");
+        if (resp.statusCode() != 200)
+            throw new RuntimeException("HTTP " + resp.statusCode() + " listing modules");
+        List<JsonNode> out = new ArrayList<>();
+        try {
+            mapper.readTree(resp.body()).forEach(out::add);
+        } catch (Exception e) {
+            throw new RuntimeException("invalid modules response: " + e.getMessage(), e);
+        }
+        return out;
     }
 
-    private HttpResponse<String> sendGet(String url) {
+    /** Type names declared in a module (by derived moduleId). */
+    public List<String> types(String moduleId) {
+        HttpResponse<String> resp = get(base() + "/api/modules/types?moduleId=" + enc(moduleId));
+        if (resp.statusCode() != 200)
+            throw new RuntimeException("HTTP " + resp.statusCode() + " listing types for " + moduleId);
+        List<String> out = new ArrayList<>();
         try {
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
-                    .timeout(Duration.ofSeconds(10))
-                    .GET()
-                    .build();
-            return http.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException("Request failed for " + url + ": " + e.getMessage(), e);
+            mapper.readTree(resp.body()).forEach(n -> out.add(n.asText()));
+        } catch (Exception e) {
+            throw new RuntimeException("invalid types response: " + e.getMessage(), e);
+        }
+        return out;
+    }
+
+    /** The module with the given OID (detail incl. moduleId), or null if not found. */
+    public JsonNode moduleByOid(String oid) {
+        HttpResponse<String> resp = get(base() + "/api/modules/by-oid?oid=" + enc(oid));
+        if (resp.statusCode() == 404) return null;
+        if (resp.statusCode() != 200)
+            throw new RuntimeException("HTTP " + resp.statusCode() + " fetching module by oid");
+        try {
+            return mapper.readTree(resp.body());
+        } catch (Exception e) {
+            throw new RuntimeException("invalid by-oid response: " + e.getMessage(), e);
         }
     }
 
-    private static String encode(String value) {
-        return URLEncoder.encode(value, StandardCharsets.UTF_8);
+    private HttpResponse<String> get(String url) {
+        try {
+            HttpRequest req = HttpRequest.newBuilder(URI.create(url)).timeout(Duration.ofSeconds(20)).GET().build();
+            return http.send(req, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            throw new RuntimeException("repo request failed for " + url + ": " + e.getMessage(), e);
+        }
     }
+
+    private static String enc(String s) { return URLEncoder.encode(s == null ? "" : s, StandardCharsets.UTF_8); }
 }

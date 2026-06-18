@@ -22,6 +22,17 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <!-- Hub state: users, module aliases, saved messages (Postgres on Railway). -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
         <!-- DLR/internal JARs are committed to libs/ (system scope).
              This avoids credential management in Railway and other build
              environments. To update a JAR: rebuild the source project,

@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import main.config.ConfigurationManager;
 import main.monitoring.NotificationType;
 import main.monitoring.TelegramCenter;
-import main.services.V2XConversionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,14 +11,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/monitoring")
 public class MonitoringController {
 
-    private final V2XConversionService conversionService;
     private final TelegramCenter telegramCenter;
     private final ConfigurationManager config;
 
-    public MonitoringController(V2XConversionService conversionService,
-                                TelegramCenter telegramCenter,
+    public MonitoringController(TelegramCenter telegramCenter,
                                 ConfigurationManager config) {
-        this.conversionService = conversionService;
         this.telegramCenter = telegramCenter;
         this.config = config;
     }
@@ -29,7 +25,6 @@ public class MonitoringController {
         String stats = "V2X.tools Monitoring Dashboard\n\n" +
                 "Configuration:\n" +
                 "- Notification Service: " + config.getNotificationServiceUrl() + "\n\n" +
-                conversionService.getStats() + "\n\n" +
                 telegramCenter.getStats();
         return ResponseEntity.ok(stats);
     }
