@@ -1,5 +1,6 @@
 package main.hub;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,10 +50,26 @@ public class ResolutionService {
         }
         SavedMessage m = messages.find(userId, ref)
                 .orElseThrow(() -> new IllegalArgumentException("no saved message: " + ref));
-        String desc = m.getDescription() != null && !m.getDescription().isBlank()
-                ? m.getDescription() : ("message:" + ref);
-        return new Resolved(m.getModuleId(), m.getTypeName(),
-                m.getFixups() == null ? "[]" : m.getFixups(), desc);
+        JsonNode d;
+        try {
+            d = mapper.readTree(m.getData() == null || m.getData().isBlank() ? "{}" : m.getData());
+        } catch (Exception e) {
+            throw new IllegalArgumentException("corrupt message data for '" + ref + "': " + e.getMessage());
+        }
+        String moduleAlias = text(d, "moduleAlias");
+        String rootType = text(d, "rootType");
+        if (moduleAlias == null || rootType == null)
+            throw new IllegalArgumentException("message '" + ref + "' missing moduleAlias/rootType");
+        String moduleId = aliases.resolveModuleId(userId, moduleAlias);
+        String fixupsJson = d.has("fixups") ? d.get("fixups").toString() : "[]";
+        String desc = text(d, "description");
+        if (desc == null || desc.isBlank()) desc = "message:" + ref;
+        return new Resolved(moduleId, rootType, fixupsJson, desc);
+    }
+
+    private static String text(JsonNode n, String field) {
+        JsonNode v = n.get(field);
+        return v == null || v.isNull() ? null : v.asText();
     }
 
     private String engineId(Long userId, String ref) {
