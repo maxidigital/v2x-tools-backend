@@ -27,7 +27,10 @@ public class EngineClient {
     private final ObjectMapper mapper = new ObjectMapper();
 
     private String base() {
-        return engineUrl.endsWith("/") ? engineUrl.substring(0, engineUrl.length() - 1) : engineUrl;
+        String u = engineUrl.trim();
+        if (u.endsWith("/")) u = u.substring(0, u.length() - 1);
+        if (!u.contains("://")) u = (u.contains(".railway.internal") ? "http://" : "https://") + u;
+        return u;
     }
 
     /** Load tree + metadata; returns the engineId the engine assigns (hash of the content). */

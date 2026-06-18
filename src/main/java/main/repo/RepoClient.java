@@ -28,7 +28,10 @@ public class RepoClient {
     private final ObjectMapper mapper = new ObjectMapper();
 
     private String base() {
-        return repoUrl.endsWith("/") ? repoUrl.substring(0, repoUrl.length() - 1) : repoUrl;
+        String u = repoUrl.trim();
+        if (u.endsWith("/")) u = u.substring(0, u.length() - 1);
+        if (!u.contains("://")) u = (u.contains(".railway.internal") ? "http://" : "https://") + u;
+        return u;
     }
 
     /** Digested tree for (moduleId, type). Throws DefinitionNotFoundException on 404. */
