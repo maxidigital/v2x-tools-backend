@@ -63,7 +63,7 @@ public class EngineClient {
                 .timeout(Duration.ofSeconds(20))
                 .header("X-Engine-Id", engineId)
                 .header("Content-Type", binaryIn ? "application/octet-stream" : "text/plain")
-                .header("Accept", "text/plain")
+                .header("Accept", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofByteArray(payload))
                 .build();
         return parse(send(req));
@@ -75,7 +75,7 @@ public class EngineClient {
                 .timeout(Duration.ofSeconds(20))
                 .header("X-Engine-Id", engineId)
                 .header("Content-Type", "application/json")
-                .header("Accept", "text/plain")
+                .header("Accept", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(
                         optionsJson == null || optionsJson.isBlank() ? "{}" : optionsJson, StandardCharsets.UTF_8))
                 .build();
@@ -89,11 +89,23 @@ public class EngineClient {
     }
 
     private EngineResult parse(HttpResponse<String> resp) {
+        int sc = resp.statusCode();
+        String body = resp.body();
+        if (sc < 200 || sc >= 300)
+            throw new RuntimeException("engine returned HTTP " + sc + ": " + snippet(body));
+        if (body == null || body.isBlank())
+            throw new RuntimeException("engine returned empty body (HTTP " + sc + ")");
         try {
-            return mapper.readValue(resp.body(), EngineResult.class);
+            return mapper.readValue(body, EngineResult.class);
         } catch (Exception e) {
-            throw new RuntimeException("invalid engine response: " + e.getMessage(), e);
+            throw new RuntimeException(
+                    "invalid engine response (HTTP " + sc + "): " + e.getMessage() + " | body: " + snippet(body), e);
         }
+    }
+
+    private static String snippet(String body) {
+        if (body == null || body.isBlank()) return "<empty>";
+        return body.length() > 500 ? body.substring(0, 500) + "…" : body;
     }
 
     private HttpResponse<String> send(HttpRequest req) {
