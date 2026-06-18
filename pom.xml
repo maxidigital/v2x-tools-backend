@@ -32,6 +32,13 @@
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <!-- jackson-module-jaxb-annotations (transitive, via springdoc / system jars) references the old
+             javax.xml.bind API; Hibernate 6.3's JSON format mapper init trips over it. Provide the API. -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
 
         <!-- DLR/internal JARs are committed to libs/ (system scope).
              This avoids credential management in Railway and other build
