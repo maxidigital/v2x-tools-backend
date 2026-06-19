@@ -139,7 +139,6 @@ public class HubController {
             String moduleId = text(m, "moduleId");
             Map<String, Object> e = new LinkedHashMap<>();
             e.put("oid", text(m, "oid"));
-            e.put("moduleName", text(m, "moduleName"));
             e.put("moduleId", moduleId);
             e.put("aliases", byModule.getOrDefault(moduleId, List.of()));
             out.add(e);
