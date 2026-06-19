@@ -23,13 +23,15 @@ public class HubController {
     private final ResolutionService resolution;
     private final AliasService aliases;
     private final SavedMessageService messages;
+    private final MessageIdentifier identifier;
     private final RepoClient repo;
 
     public HubController(ResolutionService resolution, AliasService aliases,
-                         SavedMessageService messages, RepoClient repo) {
+                         SavedMessageService messages, MessageIdentifier identifier, RepoClient repo) {
         this.resolution = resolution;
         this.aliases = aliases;
         this.messages = messages;
+        this.identifier = identifier;
         this.repo = repo;
     }
 
@@ -37,7 +39,7 @@ public class HubController {
 
     @PostMapping("/convert")
     public ResponseEntity<?> convert(
-            @RequestHeader("X-Ref") String ref,
+            @RequestHeader(value = "X-Ref", required = false) String ref,
             @RequestHeader("X-From") String from,
             @RequestHeader("X-To") String to,
             @RequestHeader(value = "X-User-Id", defaultValue = "0") Long userId,
@@ -46,7 +48,11 @@ public class HubController {
             @RequestBody(required = false) byte[] payload) {
         try {
             boolean binaryIn = contentType != null && contentType.toLowerCase().contains("octet-stream");
-            EngineResult r = resolution.convert(userId, ref, payload == null ? new byte[0] : payload, binaryIn, from, to);
+            byte[] body = payload == null ? new byte[0] : payload;
+            // X-Ref optional: when absent (or "auto"), auto-detect the message from the payload's header.
+            if (ref == null || ref.isBlank() || ref.equalsIgnoreCase("auto"))
+                ref = identifier.identify(userId, body, binaryIn, from);
+            EngineResult r = resolution.convert(userId, ref, body, binaryIn, from, to);
             return render(r, wantsBinary(accept));
         } catch (IllegalArgumentException | DefinitionNotFoundException e) {
             return ResponseEntity.status(404).body(Map.of("error", String.valueOf(e.getMessage())));
