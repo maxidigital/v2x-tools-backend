@@ -1,116 +1,114 @@
-# v2x-tools-backend
+# v2x-tools-backend (el **hub**)
 
-Spring Boot 3.2 / Java 17. Backend REST para encoding/decoding de mensajes V2X (UPER).
-Deployado en Railway — auto-deploya en cada push a `main`.
+Spring Boot 3.2 / Java 17. **Hub público** de la suite V2X: la fachada REST que usan el frontend y los
+usuarios de la API. Deployado en Railway — auto-deploya en cada push a `main`.
 
-> **Arquitectura (3 servicios)**: el backend **ya no hace conversión V2X**. La conversión
-> vive en `v2x-tools-engine` (servicio aparte, dueño de todo el "wind" de codecs). El backend
-> le habla **solo por HTTP** vía `EngineClient` (`main/engine/`), reacciona al `EngineResult`
-> tipado y, ante `notFound`, usa `MessageLoader` (`main/loader/`) para traer la definición del
-> repo y cargarla en el engine. Las definiciones ASN.1 las digiere `v2x-tools-repo`.
-> Por eso el backend ya **no** depende de los jars wind de parseo/codecs — solo le quedan
-> `wind.lib` + `wind_commons` para utils de logging (`A`, `StatsHandler`).
+> **Arquitectura (3 servicios HTTP).** El hub **no hace conversión ni parseo ASN.1**. Orquesta:
+> - **`v2x-tools-repo`** — autoridad ASN.1. Digiere el ASN.1 crudo → **árbol digerido** (`GET /api/modules/tree?moduleId=&type=`).
+> - **`v2x-tools-engine`** — dueño de los codecs "wind". Codec universal **content-addressed**: `POST /engine/load`
+>   (árbol+metadata → `engineId`), y `convert`/`generate` toman el `engineId` por header. No sabe de V2X, users ni repos.
+>
+> Flujo: el hub resuelve un **ref** → `(moduleId, type, fixups)` → trae el árbol del repo → `engine.load` → `engineId`
+> (cacheado `ref→engineId`; ante `engineNotFound`, recarga y reintenta). El hub renderiza el binario (hex `uper:…`).
+> El hub **solo** depende de `wind.lib` + `wind_commons` para utils de logging — **nada** de wind de codecs/parser.
 
-> **Reactor único (convert + generate)**: ambos endpoints pasan por `V2XConversionService` y
-> siguen el mismo flujo — piden al engine, leen el `EngineResult` tipado (`ok` / `notFound` /
-> `decodeError`) y, ante `notFound`, resuelven la definición del repo (`ensureLoaded`) y reintentan.
-> El **lazy-load del repo está reservado al usuario público `0`**; otros usuarios gestionan su estado
-> a mano (`/messages/load`) y reciben `notFound` sin auto-carga. El `userId` viene del header
-> `X-User-Id` (default `0`). Generate (`RandomController`) ya **no** es un pasamanos: usa el reactor.
+## El modelo (universal, sin V2X en el path)
+
+- **alias** — nombre legible de un módulo (su OID). Tabla `module_alias`. `user_id 0` = público/default.
+- **saved message** — ref con nombre cuya definición vive en un blob `data` JSON
+  (`{moduleAlias, rootType, fixups[], description}`). Tabla `saved_message`. Los **fixups** son **solo de
+  generación** (fijan p.ej. el header); convert queda fiel.
+- **X-Ref** (cómo se identifica qué definición usar):
+  - **messageRef** (sin `:`, p.ej. `cam_v2`) — un saved message, con sus fixups sticky.
+  - **typeRef** (`alias:Type`, p.ej. `cam_v2:CAM`) — un tipo ASN.1 crudo del módulo, sin fixups.
+  - **auto-detect** — en `convert`, si **falta** `X-Ref` (o es `auto`), el hub lee el header ETSI ITS
+    `(protocolVersion, messageId)` del payload y elige el saved message que matchea. El índice se arma de
+    los fixups de header de los propios mensajes (sin data extra). UPER/WER = primeros 2 octetos; JSON/XML = se escanea el header.
+
+## Endpoints (`HubController`, `/api`)
+
+- `POST /api/convert` — convierte un payload. Headers `X-From`, `X-To` (UPER/WER/XML/JSON), `X-Ref`
+  **opcional** (omitir = auto-detect). `Content-Type: application/octet-stream` para binario crudo de entrada;
+  `Accept: application/octet-stream` para recibir UPER/WER como bytes.
+- `POST /api/generate` — genera una muestra. `X-Ref` requerido; body `{format, size, minimal}`.
+- `GET/POST/DELETE /api/messages` — saved messages (body de create: `{name, moduleAlias, rootType, fixups, description}`).
+- `GET/POST/DELETE /api/aliases` — aliases de módulo (headers `X-Alias`, `X-Module-Oid`).
+- `GET /api/modules` — módulos del repo + sus aliases. `GET /api/modules/types` (header `X-Module-Oid`).
+
+Todos llevan `X-User-Id` (default `0`). Errores: `200` ok, `400` `{error}` (no se pudo decodificar/codificar),
+`404` ref desconocido / auto-detect sin match.
+
+> El acceso público es vía **`v2x.tools/api/*`** — el frontend (Caddy) hace reverse-proxy de `/api/*` a este
+> backend (same-origin, sin CORS). La URL de Railway no se expone.
+
+## Estructura (`src/main/java/main/`)
+
+```
+hub/            EL HUB. HubController + servicios:
+                  AliasService, SavedMessageService, ResolutionService (el reactor ref→engineId),
+                  MessageIdentifier (auto-detect), SchemaFixup (limpieza de schema al boot).
+  entity/         ModuleAlias, SavedMessage (JPA).
+  repo/           ModuleAliasRepository, SavedMessageRepository (Spring Data).
+engine/         EngineClient + EngineResult — HTTP client tipado al engine (engineId API).
+repo/           RepoClient + DefinitionNotFoundException — HTTP client al repo (/tree, /modules, /types).
+controllers/    Cruft NO-V2X (legacy del backend viejo): ContactController (/api/contact),
+                StatsController (/api/access-stats), MonitoringController (/api/monitoring).
+monitoring/     Telegram (TelegramCenter, NotificationFilter/Type).
+stats/          CSV de estadísticas de uso (StatsHandler).
+config/         CORS, OpenApi, lifecycle, ConfigurationManager.
+forwarder/, handlers/, A.java, ContentTypes.java — utils.
+```
+
+> Hay paquetes **vacíos** sobrantes del refactor (`services/`, `loader/`, `gets/`, `telegram/`) — git no los
+> trackea, son leftovers locales. El viejo `V2XConversionService`/`MessageLoader`/`/api/v2x/*` ya **no existe**.
+> El cruft de `controllers/` + `monitoring/` + `stats/` es lo que motiva el **detach** del hub a su propio
+> servicio (opción A, pendiente).
+
+## DB (Postgres)
+
+El hub persiste `module_alias` + `saved_message`. En Railway: adjuntar un plugin Postgres (provee `PG*`).
+`ddl-auto=update` **no dropea columnas** → `hub/SchemaFixup.java` (ApplicationRunner + JdbcTemplate) dropea
+columnas huérfanas al boot (`IF EXISTS`, idempotente).
 
 ## Dependencias
 
-### Maven Central (resuelven automáticamente)
-`spring-boot-starter-web`, `telegrambots`, `angus-mail`, `mailjet-client`,
-`springdoc-openapi-starter-webmvc-ui`
+### Maven Central
+`spring-boot-starter-web`, `spring-boot-starter-data-jpa`, `postgresql`, `jaxb-api`, `telegrambots`,
+`angus-mail`, `mailjet-client`, `springdoc-openapi-starter-webmvc-ui`.
 
-### JARs internos (`libs/` — commiteados al repo)
-Los artefactos DLR y de underwater no están en Maven Central ni en ningún registry
-público. Se commitean directamente en `libs/` con `scope=system` en el `pom.xml`.
-**Esto es intencional** — evita gestión de credenciales en Railway y cualquier otro
-entorno de build.
+> ⚠️ **`javax.xml.bind:jaxb-api`** es necesario: Hibernate 6.3 (JSON format-mapper) tropieza con
+> `jackson-module-jaxb-annotations` (javax.xml.bind) al arrancar → `NoClassDefFoundError` → 502. El build
+> local con `-DskipTests` no lo detecta (es runtime).
 
-| Archivo | Proyecto fuente | Uso |
+### JARs internos (`libs/`, scope=system, commiteados)
+| Archivo | Fuente | Uso |
 |---|---|---|
 | `wind.lib-4.2.jar` | `v2x-framework/commons/wind.lib` | utils de logging (`A`) |
 | `wind_commons-2.0.jar` | `v2x-tools-wind/wind_commons` | `StatsHandler` |
 | `utils.xmladmin2-1.3.2.jar` | `v2x-framework/tools/utils.xmladmin2` | transitiva |
 | `email.admin-1.0.1.jar` | `underwater/admin/email.admin` | email de soporte |
 
-### Cómo actualizar un JAR
+`includeSystemScope=true` en el spring-boot-maven-plugin mete los system-scope al fat jar.
+
+## Build / Deploy
 
 ```bash
-# 1. Rebuild el proyecto fuente (ejemplo: wind.lib)
-cd v2x-framework/commons/wind.lib && mvn package
-cp target/wind.lib-4.2.jar v2x-tools-backend/libs/
-
-# 2. Commit y push → Railway redeploya automáticamente
-git add libs/wind.lib-4.2.jar
-git commit -m "chore: update wind.lib to vX.Y"
-git push
+mvn clean package -DskipTests   # local, sin credenciales
 ```
+Railway auto-deploya en cada push a `main`. **El build de Railway compila los tests** (no los corre) — un
+test que no compila rompe el deploy.
 
-## Build
+> ⚠️ **Cambios de contrato engine↔hub**: deployar **ambos juntos** (ventana de contrato mixto mientras buildea).
 
-```bash
-# Build local (no requiere credenciales)
-mvn clean package -DskipTests
+## Configuración (`application.properties` / env Railway)
 
-# Con tests
-mvn clean package
-```
-
-No se necesita `-s settings.xml` para buildear localmente.
-`settings.xml` existe solo si en algún momento se necesita resolver
-algo de GitHub Packages (no es el caso actualmente).
-
-## Deploy
-
-Railway auto-deploya en cada push a `main`. No hay pasos manuales.
-
-## Estructura
-
-```
-src/main/java/main/
-├── config/         Spring config (CORS, lifecycle)
-├── controllers/    REST endpoints (V2x, Stats, Contact, etc.)
-├── services/       Lógica de negocio (V2XConversionService — reactor sin wind)
-├── engine/         EngineClient + EngineResult — HTTP client al v2x-tools-engine
-├── loader/         MessageLoader — trae definiciones del repo y las carga en el engine
-├── repo/           RepoClient — HTTP client para v2x-tools-repo
-├── monitoring/     Notificaciones Telegram
-├── stats/          CSV de estadísticas de uso
-└── utils/          Utilidades
-```
-
-## Endpoints principales
-
-- `POST /api/v2x/{from}/{to}` — convierte un mensaje entre UPER/WER/XML/JSON (delega en el engine).
-  Auto-detecta el messageId del payload; lazy-load del repo solo para `userId=0`.
-- `GET  /api/v2x/generate` — genera un payload de muestra (`?mid=&format=&minimal=`). Mismo reactor
-  que convert: lazy-load del repo solo para `userId=0`.
-- `POST /api/v2x/messages/load` — carga explícita por alias (cualquier usuario; no es el lazy-load).
-- `GET/DELETE /api/v2x/messages` — lista / limpia los mensajes cargados del usuario en el engine.
-- `GET  /api/capabilities` — descripción de capacidades (para MCP)
-- `POST /api/support/report` — reporte de soporte
-
-Todos llevan el header `X-User-Id` (default `0`). El parseo ASN.1 (`POST /api/asn1/parse`) se movió
-a **`v2x-tools-repo`** (es la autoridad ASN.1).
-
-## Configuración
-
-- `wind.engine.url` (`application.properties`) — URL del engine. Local: `http://localhost:8090`.
-  En Railway: `WIND_ENGINE_URL=http://v2x-tools-engine.railway.internal:8090`.
+- `WIND_REPO_URL` — URL del repo. `RepoClient`/`EngineClient` prependen `http`/`https` si la URL no trae scheme.
+- `WIND_ENGINE_URL` — URL del engine. En Railway, red privada IPv6-only: usar `http://<svc>.railway.internal:<port>`.
+- `PG*` — Postgres del hub. `NOTIFICATION_SERVICE_URL` — hub de notificaciones. `monitoring.*` — rate limit Telegram.
 
 ## Notas
 
-- El backend **no importa wind de codecs/parser**. La conversión la hace `v2x-tools-engine`
-  (HTTP). `V2XConversionService` solo reacciona al `EngineResult` tipado (`ok` / `notFound`
-  / `decodeError`) — nunca toca tipos wind ni hace pre-checks. Convert y generate comparten ese reactor.
-- **Lazy-load solo para `userId=0`**: ante `notFound`, el backend va al repo y reintenta únicamente
-  para el usuario público (0). Para otros usuarios devuelve `notFound` (404) sin tocar el repo — ellos
-  cargan con `/api/v2x/messages/load`.
-- `includeSystemScope=true` en el spring-boot-maven-plugin asegura que los system-scope JARs
-  (`libs/`) se incluyan en el fat jar final.
-- `RepoClient` en `main/repo/` es un cliente HTTP del repo. (La antigua implementación de la
-  interfaz `Asn1Repo` de `wind_parser` ya no vive acá — el repo es la autoridad ASN.1.)
+- El hub **no toca tipos wind ni hace pre-checks** — reacciona al `EngineResult` tipado (`ok`/`engineNotFound`/`decodeError`).
+- **EngineClient siempre habla JSON con el engine** (`Accept: application/json`); el binario lo renderiza el hub.
+  (Histórico: mandar `Accept: text/plain` daba 406 → "No content to map".)
+- `auth` y `detach` del hub a su propio servicio están pendientes (el `userId` ya separa scope; hoy todo es `0`).
