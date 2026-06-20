@@ -2,6 +2,7 @@ package main.hub;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -132,21 +133,29 @@ public class HubController {
 
     // ── browse ──────────────────────────────────────────────────────────────────
 
-    /** Modules with their oid + aliases (the hub joins the repo's list with its alias table). */
+    /**
+     * Modules visible to the user: their own plus the public (user 0) ones. Returns {@code {moduleId, oid}}.
+     * {@code sort=name} (default) = alphabetical by the module name carried in the OID;
+     * {@code sort=uploaded} = by upload date (oldest first).
+     */
     @GetMapping("/modules")
-    public ResponseEntity<?> modules(@RequestHeader(value = "X-User-Id", defaultValue = "0") Long userId) {
-        // aliases by moduleId (default + user's)
-        Map<String, List<String>> byModule = new LinkedHashMap<>();
-        for (Map<String, Object> a : aliases.list(userId))
-            byModule.computeIfAbsent(String.valueOf(a.get("moduleId")), k -> new ArrayList<>())
-                    .add(String.valueOf(a.get("alias")));
+    public ResponseEntity<?> modules(@RequestHeader(value = "X-User-Id", defaultValue = "0") Long userId,
+                                     @RequestParam(defaultValue = "name") String sort) {
+        List<JsonNode> mods = new ArrayList<>(repo.modulesByUser(0L));
+        if (userId != null && userId != 0L) mods.addAll(repo.modulesByUser(userId));
+
+        Comparator<JsonNode> cmp;
+        if ("uploaded".equalsIgnoreCase(sort))
+            cmp = Comparator.comparing(m -> text(m, "uploadedAt"));
+        else
+            cmp = Comparator.comparing(m -> oidName(text(m, "oid")), String.CASE_INSENSITIVE_ORDER);
+        mods.sort(cmp);
+
         List<Map<String, Object>> out = new ArrayList<>();
-        for (JsonNode m : repo.modules()) {
-            String moduleId = text(m, "moduleId");
+        for (JsonNode m : mods) {
             Map<String, Object> e = new LinkedHashMap<>();
+            e.put("moduleId", text(m, "moduleId"));
             e.put("oid", text(m, "oid"));
-            e.put("moduleId", moduleId);
-            e.put("aliases", byModule.getOrDefault(moduleId, List.of()));
             out.add(e);
         }
         return ResponseEntity.ok(out);
@@ -181,6 +190,13 @@ public class HubController {
 
     private static boolean wantsBinary(String accept) {
         return accept != null && accept.toLowerCase().contains("octet-stream");
+    }
+
+    /** The module name carried in the OID = the prefix before '{' (every stored OID has its name in front). */
+    private static String oidName(String oid) {
+        if (oid == null) return "";
+        int i = oid.indexOf('{');
+        return (i >= 0 ? oid.substring(0, i) : oid).trim();
     }
 
     private static String text(JsonNode n, String field) {

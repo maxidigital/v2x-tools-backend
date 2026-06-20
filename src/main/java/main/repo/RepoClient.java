@@ -45,9 +45,9 @@ public class RepoClient {
         return resp.body();
     }
 
-    /** All modules: [{ id, moduleId, moduleName, oid, messageId, protocolVersion, ... }]. */
-    public List<JsonNode> modules() {
-        HttpResponse<String> resp = get(base() + "/api/modules");
+    /** Modules owned by a user (userId 0 = public): [{ id, moduleId, oid, uploadedAt }]. */
+    public List<JsonNode> modulesByUser(Long userId) {
+        HttpResponse<String> resp = get(base() + "/api/modules/by-user?userId=" + userId);
         if (resp.statusCode() != 200)
             throw new RuntimeException("HTTP " + resp.statusCode() + " listing modules");
         List<JsonNode> out = new ArrayList<>();
