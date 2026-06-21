@@ -22,23 +22,8 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- Hub state: users, module aliases, saved messages (Postgres on Railway). -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <!-- jackson-module-jaxb-annotations (transitive, via springdoc / system jars) references the old
-             javax.xml.bind API; Hibernate 6.3's JSON format mapper init trips over it. Provide the API. -->
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>2.3.1</version>
-        </dependency>
+        <!-- Hub (Postgres/JPA) moved to the v2x-tools-hub service. This backend now only serves the
+             legacy non-V2X cruft (contact form, access stats, monitoring/Telegram) — no database. -->
 
         <!-- DLR/internal JARs are committed to libs/ (system scope).
              This avoids credential management in Railway and other build
